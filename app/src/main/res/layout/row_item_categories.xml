@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   android:orientation="vertical"
+                                                   android:layout_width="120dp"
+                                                   android:elevation="5dp"
+                                                   android:gravity="center"
+                                                   android:layout_margin="7dp"
+                                                   android:layout_height="110dp">
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/id_imgview_categorie_item"
+                android:layout_width="60dp"
+                android:layout_gravity="center"
+                android:layout_height="60dp"
+                android:src="@drawable/icon_circle_black"/>
+        <TextView
+                android:id="@+id/id_label_cartegorie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Transfert d'argent"/>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

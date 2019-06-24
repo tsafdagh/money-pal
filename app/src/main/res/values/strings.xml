@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MoneyPal</string>
+    <string name="title_home">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_groupe">groupes</string>
+    <string name="phone_number">691621708</string>
+    <string name="text_view_date">solde du compte à la date du 14 May</string>
+    <string name="montant_total">35000 FCFA</string>
+    <string name="btn_tout_voir">Tout voir</string>
+    <string name="add_member">+ ADD MEMBER</string>
+    <string name="payMember">PAY MEMBER</string>
+</resources>

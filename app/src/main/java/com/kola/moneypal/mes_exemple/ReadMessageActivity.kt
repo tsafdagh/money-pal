@@ -9,8 +9,11 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.kola.moneypal.R
 import kotlinx.android.synthetic.main.activity_read_message.*
+import org.jetbrains.anko.toast
 import java.util.*
 import kotlin.collections.ArrayList
+import android.content.ContentResolver
+
 
 class ReadMessageActivity : AppCompatActivity() {
 
@@ -27,7 +30,7 @@ class ReadMessageActivity : AppCompatActivity() {
         ) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_SMS), requestReadSms)
         } else {
-            setSmsMessages("inbox", "address LiKE '${getString(R.string.phone_number)}'")
+            setSmsMessages("inbox", "address LiKE 'MobileMoney'")
         }
 
         all_sms.setOnClickListener {
@@ -51,19 +54,19 @@ class ReadMessageActivity : AppCompatActivity() {
         }
 
         one_number.setOnClickListener {
-            setSmsMessages("inbox", "address LiKE '${getString(R.string.phone_number)}'")
+            setSmsMessages("inbox", "address LiKE 'MobileMoney'")
         }
 
     }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == requestReadSms)  setSmsMessages("", "address LiKE '${getString(R.string.phone_number)}'")
+        if (requestCode == requestReadSms) setSmsMessages("inbox", "address LiKE 'MobileMoney'")
     }
 
     private fun setSmsMessages(uriString: String, selection: String?) {
 
-        val smsList = ArrayList<SmsData>()
+        /*val smsList = ArrayList<SmsData>()
 
         val cursor = contentResolver.query(
             Uri.parse("content://sms/$uriString"),
@@ -87,6 +90,7 @@ class ReadMessageActivity : AppCompatActivity() {
                         cursor.getString(messageId)
                     )
                 )
+                toast("new sms"+cursor.getString(messageId))
             } while (cursor.moveToFirst())
         }
 
@@ -94,6 +98,45 @@ class ReadMessageActivity : AppCompatActivity() {
 
         val adapter = ListAdapter(this, smsList)
 
-        sms_list_view.adapter = adapter
+        sms_list_view.adapter = adapter*/
+
+        val lstSms = ArrayList<smsObjet>()
+        var objSms: smsObjet
+        val message = Uri.parse("content://sms/$uriString")
+        val cr = this.contentResolver
+
+        val c = cr.query(message, null, selection, null, null)
+        this.startManagingCursor(c)
+        val totalSMS = c!!.getCount()
+
+        if (c!!.moveToFirst()) {
+            for (i in 0 until totalSMS) {
+
+
+                val id = c!!.getString(c!!.getColumnIndexOrThrow("_id"))
+                val address = c!!.getString(c!!.getColumnIndexOrThrow("address")
+                    )
+
+                val message = c!!.getString(c!!.getColumnIndexOrThrow("body"))
+                val readState = c!!.getString(c!!.getColumnIndex("read"))
+                val time = c!!.getString(c!!.getColumnIndexOrThrow("date"))
+                var foldername =""
+                if (c!!.getString(c!!.getColumnIndexOrThrow("type")).contains("1")) {
+                    foldername = "inbox"
+                } else {
+                    foldername = "sent"
+                }
+
+                objSms = smsObjet(id,address,message,readState,time,foldername)
+                toast("new sms $objSms")
+
+                lstSms.add(objSms)
+                c!!.moveToNext()
+            }
+        }
+        // else {
+        // throw new RuntimeException("You have no SMS");
+        // }
+        c!!.close()
     }
 }

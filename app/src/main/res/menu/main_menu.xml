@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/statistiques_des_d_penses"
+          android:id="@+id/id_menu_stat"/>
+    <item android:title="@string/mes_objectifs"
+          android:id="@+id/id_menu_objectifs"/>
+    <item android:title="@string/mon_compte"
+          android:id="@+id/id_menu_mon_compte"/>
+</menu>

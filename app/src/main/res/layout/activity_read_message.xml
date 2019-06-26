@@ -56,7 +56,14 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:textSize="14sp"
-                android:text="1 num"/>
+                android:text="mobile money"/>
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/orange_money"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:textSize="14sp"
+                android:text="orange money"/>
 
     </LinearLayout>
 

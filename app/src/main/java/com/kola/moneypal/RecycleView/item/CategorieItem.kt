@@ -3,6 +3,8 @@ package com.kola.moneypal.RecycleView.item
 import android.content.Context
 import com.kola.moneypal.R
 import com.kola.moneypal.entities.CategorieEntite
+import com.kola.moneypal.entities.CategorieNature
+import com.kola.moneypal.fragments.HomeFragment
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.row_item_categories.*

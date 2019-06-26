@@ -13,6 +13,7 @@ import org.jetbrains.anko.toast
 import java.util.*
 import kotlin.collections.ArrayList
 import android.content.ContentResolver
+import com.kola.moneypal.utils.SmsUtils
 
 
 class ReadMessageActivity : AppCompatActivity() {
@@ -30,38 +31,50 @@ class ReadMessageActivity : AppCompatActivity() {
         ) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_SMS), requestReadSms)
         } else {
-            setSmsMessages("inbox", "address LiKE 'MobileMoney'")
+            //setSmsMessages("inbox", "address LiKE 'MobileMoney'")
+            //SmsUtils.getMessagebyCriterion(this, "inbox", "address LiKE 'MobileMoney'")
         }
 
         all_sms.setOnClickListener {
-            setSmsMessages("", null)
+            SmsUtils.getMessagebyCriterion(this, "", null)
         }
 
         inbox_sms.setOnClickListener {
-            setSmsMessages("inbox", null)
+            SmsUtils.getMessagebyCriterion(this, "inbox", null)
+
         }
 
         outbox_sms.setOnClickListener {
-            setSmsMessages("outbox", null)
+            SmsUtils.getMessagebyCriterion(this, "outbox", null)
         }
 
         sent_sms.setOnClickListener {
-            setSmsMessages("sent", null)
+            SmsUtils.getMessagebyCriterion(this, "sent", null)
+
         }
 
         draft_sms.setOnClickListener {
-            setSmsMessages("draft", null)
+            SmsUtils.getMessagebyCriterion(this, "draft", null)
         }
 
         one_number.setOnClickListener {
-            setSmsMessages("inbox", "address LiKE 'MobileMoney'")
+            // setSmsMessages("inbox", "address LiKE 'MobileMoney'")
+            SmsUtils.getMessagebyCriterion(this, "inbox", "address LiKE 'MobileMoney'")
+
         }
+
+        orange_money.setOnClickListener {
+            SmsUtils.getMessagebyCriterion(this, "inbox", "address LiKE 'OrangeMoney'")
+
+        }
+
 
     }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == requestReadSms) setSmsMessages("inbox", "address LiKE 'MobileMoney'")
+        if (requestCode == requestReadSms) toast("Permisssion OK")//SmsUtils.getMessagebyCriterion(this, "inbox", "address LiKE 'MobileMoney'")
+
     }
 
     private fun setSmsMessages(uriString: String, selection: String?) {
@@ -106,28 +119,29 @@ class ReadMessageActivity : AppCompatActivity() {
         val cr = this.contentResolver
 
         val c = cr.query(message, null, selection, null, null)
-        this.startManagingCursor(c)
-        val totalSMS = c!!.getCount()
+        //this.startManagingCursor(c)
+        val totalSMS = c!!.count
 
         if (c!!.moveToFirst()) {
             for (i in 0 until totalSMS) {
 
 
                 val id = c!!.getString(c!!.getColumnIndexOrThrow("_id"))
-                val address = c!!.getString(c!!.getColumnIndexOrThrow("address")
-                    )
+                val address = c!!.getString(
+                    c!!.getColumnIndexOrThrow("address")
+                )
 
                 val message = c!!.getString(c!!.getColumnIndexOrThrow("body"))
                 val readState = c!!.getString(c!!.getColumnIndex("read"))
                 val time = c!!.getString(c!!.getColumnIndexOrThrow("date"))
-                var foldername =""
+                var foldername = ""
                 if (c!!.getString(c!!.getColumnIndexOrThrow("type")).contains("1")) {
                     foldername = "inbox"
                 } else {
                     foldername = "sent"
                 }
 
-                objSms = smsObjet(id,address,message,readState,time,foldername)
+                objSms = smsObjet(id, address, message, readState, time, foldername)
                 toast("new sms $objSms")
 
                 lstSms.add(objSms)

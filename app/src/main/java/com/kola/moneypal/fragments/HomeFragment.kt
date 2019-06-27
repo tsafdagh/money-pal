@@ -44,8 +44,14 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        id_btn_tout_voir.setOnClickListener {
 
+            Toast.makeText(this@HomeFragment.context, "Tout voir cliqué", Toast.LENGTH_SHORT)
+                .show()
+            findSpecificOrAllTransaction(null, true)
+        }
         loadData()
+        findSpecificOrAllTransaction(null, true)
     }
 
     private fun updateRecycleViewCategories(listCategorieTransaction: ArrayList<Item>) {
@@ -76,40 +82,169 @@ class HomeFragment : Fragment() {
     }
 
     private val onItemClick = OnItemClickListener { item, view ->
-        if (item is CategorieItem) {
-            if (item.categorieItm.natureCategorie == CategorieNature.NATURE_TRANSFERT_ARGENT) {
 
-                Toast.makeText(this@HomeFragment.context, "Categorie transfert d'argent cliquer",Toast.LENGTH_LONG).show()
+        findSpecificOrAllTransaction(item as Item, false)
+    }
 
-                val listorangeTransactions =
-                    SmsUtils.getMessagebyCriterion(this@HomeFragment.context!!, "inbox", "address LiKE 'OrangeMoney'")
-                //SmsUtils.getMessagebyCriterion(this, "inbox", "address LiKE 'MobileMoney'")
-                for (smstransaction in listorangeTransactions) {
-                    val transactionType = SmsUtils.findSpecificSpending(smstransaction)
-                    transactionType?.let {
-                        listTransactions.add(
-                            TransactionItem(
-                                transactionType,
-                                this@HomeFragment.context!!
-                            )
+    private fun findSpecificOrAllTransaction(item: Item?, isAll: Boolean) {
+
+        // on nétoie au préalable les élements de la liste précedemment affichés
+        listTransactions.clear()
+
+        // on recupère les messages provenant d'orange money  et de MTN Money
+        var listorangeTransactions =
+            SmsUtils.getMessagebyCriterion(this@HomeFragment.context!!, "inbox", "address LiKE 'OrangeMoney'")
+        listorangeTransactions.addAll(
+            SmsUtils.getMessagebyCriterion(
+                this@HomeFragment.context!!,
+                "inbox",
+                "address LiKE 'MobileMoney'"
+            )
+        )
+
+        // si la demande est de recupérer toutes les transactions confondus
+        if (isAll) {
+            // les transferts d'argents
+            var transactionType =
+                SmsUtils.findSpecificSpending(
+                    listorangeTransactions,
+                    CategorieNature.NATURE_TRANSFERT_ARGENT
+                )
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+            //les achats de credit
+            transactionType =
+                SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_ACHAT_CREDIT)
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+            //les factures d'éneo
+            transactionType =
+                SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_FACTURE_ENEO)
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+            // les achats de connexion
+            transactionType =
+                SmsUtils.findSpecificSpending(
+                    listorangeTransactions,
+                    CategorieNature.NATURE_ACHAT_CONNEXION
+                )
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+            listTransactions.shuffle() // on fait le mélange avant d'afficher
+            updateRecycleViewTransactions(listTransactions)
+
+        } else {
+            //si la demande est de recuperer un type spécifique de message
+
+            if (item is CategorieItem) {
+                when (item.categorieItm.natureCategorie) {
+                    CategorieNature.NATURE_TRANSFERT_ARGENT -> {
+
+                        Toast.makeText(
+                            this@HomeFragment.context,
+                            "Categorie transfert d'argent cliquée",
+                            Toast.LENGTH_SHORT
                         )
+                            .show()
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(
+                                listorangeTransactions,
+                                CategorieNature.NATURE_TRANSFERT_ARGENT
+                            )
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+                    }
+                    CategorieNature.NATURE_ACHAT_CREDIT -> {
+                        Toast.makeText(
+                            this@HomeFragment.context,
+                            "Categorie Achat de credit cliquée",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_ACHAT_CREDIT)
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+
+                    }
+
+                    CategorieNature.NATURE_FACTURE_ENEO -> {
+                        Toast.makeText(this@HomeFragment.context, "Categorie Facture Eneo cliquée", Toast.LENGTH_SHORT)
+                            .show()
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_FACTURE_ENEO)
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+
+                    }
+                    CategorieNature.NATURE_ACHAT_CONNEXION -> {
+                        Toast.makeText(
+                            this@HomeFragment.context,
+                            "Categorie Achat de connexion cliquée",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(
+                                listorangeTransactions,
+                                CategorieNature.NATURE_ACHAT_CONNEXION
+                            )
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+
                     }
                 }
 
-                updateRecycleViewTransactions(listTransactions)
-            }
-            if (item.categorieItm.natureCategorie == CategorieNature.NATURE_ACHAT_CONNEXION) {
-                //TODO code de lecture des transactions du type achat de connexion
-            }
-            if (item.categorieItm.natureCategorie == CategorieNature.NATURE_FACTURE_ENEO) {
-                //TODO code de lecture des transactions du type facture eneo
-
-            }
-            if (item.categorieItm.natureCategorie == CategorieNature.NATURE_ACHAT_CREDIT) {
-                //TODO code de lecture des transactions de nature achat de credit
             }
         }
-
     }
 
     private fun updateRecycleViewTransactions(listeCategorie: ArrayList<Item>) {
@@ -125,7 +260,9 @@ class HomeFragment : Fragment() {
             shouldInitrecycleViewTransaction = false
         }
 
-        fun updateItems() = transactioneSection.update(listeCategorie)
+        fun updateItems() {
+            transactioneSection.update(listeCategorie)
+        }
 
         if (shouldInitrecycleViewTransaction) {
             try {

@@ -6,12 +6,12 @@ data class TransactionEntitie(
     val montanttransaction: Double,
     val imageUrl: String,
 
-    val categorie:String,
+    val categorie:Int,
     val destinataire:String,
     val nouveauSolde:Number
 ){
     constructor( libeleTransaction: String?,
                  dateTransaction: String,
                  montanttransaction: Double,
-                 imageUrl: String): this(libeleTransaction,dateTransaction,montanttransaction,imageUrl,"","",0.0)
+                 imageUrl: String): this(libeleTransaction,dateTransaction,montanttransaction,imageUrl,0,"",0.0)
 }

@@ -5,6 +5,7 @@ object CategorieNature {
     const val NATURE_ACHAT_CREDIT = 2
     const val NATURE_ACHAT_CONNEXION = 3
     const val NATURE_FACTURE_ENEO = 4
+    const val NATURE_ALL = 5
 }
 
 data class CategorieEntite(

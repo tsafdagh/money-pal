@@ -8,6 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.fragments.HomeFragment
 import com.kola.moneypal.fragments.ObjectifGroupFragment
 import com.kola.moneypal.mes_exemple.ReadMessageActivity
@@ -16,23 +17,10 @@ import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
 
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                replaceFragment(HomeFragment())
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_groupe -> {
-                replaceFragment(ObjectifGroupFragment())
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
+        //supportActionBar?.hide()
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.navigation)
 
@@ -85,8 +73,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.id_menu_mon_compte -> {
-                toast("mon compte")
-                startActivity<ReadMessageActivity>()
+                startActivity<UserprofileActivitu>()
             }
             else -> {
                 toast(getString(R.string.selection_inconu))

@@ -72,6 +72,13 @@ object SmsUtils {
         val motClefFin = " Montant Net:"
     }
 
+    object modelDepostArgentOrange {
+        val motClefEntree = "Depot effectue par "
+        val motClefMilieu = "to"
+        val motClefMilieu2 = "Informations detaillees: "
+        val motClefFin = " ID transaction :"
+    }
+
     object modelAchatDeCreditOrange {
         val motClefEntre = "Rechargement reussi. Montant de la transaction"
         val motClefMilieu = "Nouveau Solde :"
@@ -138,6 +145,13 @@ object SmsUtils {
                     smsMessage.contains(modelFactureMtnEneo.motClefMilieu2, false)
         }
 
+        fun isModelDeposArgentOrange(smsMessage: String): Boolean {
+            return smsMessage.contains(modelDepostArgentOrange.motClefEntree, false) &&
+                    smsMessage.contains(modelDepostArgentOrange.motClefMilieu, false) &&
+                    smsMessage.contains(modelDepostArgentOrange.motClefMilieu2, false) &&
+                    smsMessage.contains(modelDepostArgentOrange.motClefFin, false)
+        }
+
         val listeRetour = ArrayList<TransactionEntitie>()
 
         when (natureRecherche) {
@@ -171,6 +185,42 @@ object SmsUtils {
                                 CategorieNature.NATURE_TRANSFERT_ARGENT,
                                 destinataire,
                                 nouveauSolde.toDouble()
+                            )
+                        )
+                    }
+                }
+                return listeRetour
+            }
+
+            CategorieNature.NATURE_DEPOS_ARGENT -> {
+
+                for (mySms in lisMySms) {
+                    // traitement des sms du type transfert d'argent orange
+                    if (isModelDeposArgentOrange(mySms.msg)) {
+
+                        val newListForMontantDepos = mySms.msg.split(Regex("Montant de transaction : | FCFA,"))
+                        var montant = newListForMontantDepos[1]
+
+                        val newListForSender = mySms.msg.split(Regex("Depot effectue par | to "))
+                        var sender = newListForSender[1]
+
+
+                        val newListForNouveauSolde = mySms.msg.split(Regex("Nouveau Solde : | FCFA."))
+                        var newSolde = newListForNouveauSolde[newListForNouveauSolde.size - 2]
+
+                        // on recupère le nouveau solde
+                        var newStrinForNewSolde = mySms.msg.split(Regex("Nouveau Solde: | FCFA."))
+
+                        // on retourne un nouvel orjet de type transaction
+                        listeRetour.add(
+                            TransactionEntitie(
+                                "Dépos ",
+                                mySms.time,
+                                montant.toDouble(),
+                                "",
+                                CategorieNature.NATURE_DEPOS_ARGENT,
+                                sender,
+                                newSolde.toDouble()
                             )
                         )
                     }
@@ -266,22 +316,40 @@ object SmsUtils {
                 }
                 return listeRetour
             }
-/*
-            CategorieNature.NATURE_ACHAT_CONNEXION -> {
 
-                if (isAchatDeConnexionOrange(mySms.msg)) {
-                    //TODO code pour le traitement de message de type achat de connexion orange et retourn d'un objet
+
+            // On détecte automatiquement le type du dernier message et on rappelle la fonction courante avec le type détecté
+            CategorieNature.NATURE_LAST_TRANSACTION -> {
+
+                if (lisMySms.size > 0) {
+                    var lastSMS = lisMySms.get(0)
+                    lisMySms.clear()
+
+                    // traitement des sms du type achat de connexion orange
+                    if (isAchatDeConnexionOrange(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_ACHAT_CONNEXION)
+                    }
+                    if (isAchatDeCreditOrange(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_ACHAT_CREDIT)
+                    }
+                    if (isAchatFactureMtnEneo(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_FACTURE_ENEO)
+                    }
+                    if (isModelDeposArgentOrange(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_DEPOS_ARGENT)
+                    }
+                    if (isTransfertArgentOrange(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_TRANSFERT_ARGENT)
+                    }
+
                 }
             }
-        }
 
-
-        if (isFacturecreditmtn(mySms.msg)) {
-            //TODO code pour le traitement de message de type achat de credit mtn et retourn d'un objet
-        }
-        if (isModelFactureMtnEneo(mySms.msg)) {
-            //TODO code pour le traitement de message de type facture eneo mtn et retourn d'un objet
-        }*/
         }
         return listeRetour
     }

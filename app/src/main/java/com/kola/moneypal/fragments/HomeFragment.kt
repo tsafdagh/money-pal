@@ -1,6 +1,6 @@
 package com.kola.moneypal.fragments
 
-
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,13 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kola.moneypal.DetailsTransactonActivity
 
 import com.kola.moneypal.R
 import com.kola.moneypal.RecycleView.item.CategorieItem
 import com.kola.moneypal.RecycleView.item.TransactionItem
+import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.entities.CategorieEntite
 import com.kola.moneypal.entities.CategorieNature
 import com.kola.moneypal.entities.TransactionEntitie
+import com.kola.moneypal.mes_exemple.smsObjet
+import com.kola.moneypal.utils.AnotherUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
@@ -46,13 +50,60 @@ class HomeFragment : Fragment() {
         super.onStart()
         id_btn_tout_voir.setOnClickListener {
 
-            Toast.makeText(this@HomeFragment.context, "Tout voir cliqué", Toast.LENGTH_SHORT)
-                .show()
             findSpecificOrAllTransaction(null, true)
         }
+        id_image_user_account.setOnClickListener {
+
+            startActivity(Intent(this@HomeFragment.context, UserprofileActivitu::class.java).apply {
+                /*        putExtra("extra_1", value1)
+                        putExtra("extra_2", value2)
+                        putExtra("extra_3", value3) */
+            })
+
+        }
+
+        id_tw_last_transaction.setOnClickListener {
+            setLastTransaction("MTN")
+        }
+
         loadData()
         findSpecificOrAllTransaction(null, true)
     }
+
+    private fun setLastTransaction(operator: String) {
+
+        // on nétoie d'abord toutes les transactions
+        listTransactions.clear()
+        // on recupère les messages provenant d'orange money  ou de MTN Money
+        var listTransactionsSMS = ArrayList<smsObjet>()
+
+        if (operator == "ORANGE") {
+            listTransactionsSMS =
+                SmsUtils.getMessagebyCriterion(this@HomeFragment.context!!, "inbox", "address LiKE 'OrangeMoney'")
+        } else {
+            listTransactionsSMS = SmsUtils.getMessagebyCriterion(
+                this@HomeFragment.context!!,
+                "inbox",
+                "address LiKE 'MobileMoney'"
+            )
+        }
+
+        var transactionType =
+            SmsUtils.findSpecificSpending(
+                listTransactionsSMS,
+                CategorieNature.NATURE_LAST_TRANSACTION
+            )
+        for (element in transactionType)
+            listTransactions.add(
+                TransactionItem(
+                    element,
+                    this@HomeFragment.context!!
+                )
+            )
+        updateRecycleViewTransactions(listTransactions)
+
+    }
+
 
     private fun updateRecycleViewCategories(listCategorieTransaction: ArrayList<Item>) {
         fun init() {
@@ -117,6 +168,21 @@ class HomeFragment : Fragment() {
                         this@HomeFragment.context!!
                     )
                 )
+
+            // les dépos d'agent dans le compte de l'utilisateur
+            transactionType =
+                SmsUtils.findSpecificSpending(
+                    listorangeTransactions,
+                    CategorieNature.NATURE_DEPOS_ARGENT
+                )
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+
             //les achats de credit
             transactionType =
                 SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_ACHAT_CREDIT)
@@ -150,7 +216,8 @@ class HomeFragment : Fragment() {
                         this@HomeFragment.context!!
                     )
                 )
-            listTransactions.shuffle() // on fait le mélange avant d'afficher
+            listTransactions.shuffle()
+            // on fait le mélange avant d'afficher
             updateRecycleViewTransactions(listTransactions)
 
         } else {
@@ -159,13 +226,6 @@ class HomeFragment : Fragment() {
             if (item is CategorieItem) {
                 when (item.categorieItm.natureCategorie) {
                     CategorieNature.NATURE_TRANSFERT_ARGENT -> {
-
-                        Toast.makeText(
-                            this@HomeFragment.context,
-                            "Categorie transfert d'argent cliquée",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
 
                         val transactionType =
                             SmsUtils.findSpecificSpending(
@@ -181,13 +241,25 @@ class HomeFragment : Fragment() {
                             )
                         updateRecycleViewTransactions(listTransactions)
                     }
+
+                    CategorieNature.NATURE_DEPOS_ARGENT -> {
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(
+                                listorangeTransactions,
+                                CategorieNature.NATURE_DEPOS_ARGENT
+                            )
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+                    }
+
                     CategorieNature.NATURE_ACHAT_CREDIT -> {
-                        Toast.makeText(
-                            this@HomeFragment.context,
-                            "Categorie Achat de credit cliquée",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
 
                         val transactionType =
                             SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_ACHAT_CREDIT)
@@ -203,9 +275,6 @@ class HomeFragment : Fragment() {
                     }
 
                     CategorieNature.NATURE_FACTURE_ENEO -> {
-                        Toast.makeText(this@HomeFragment.context, "Categorie Facture Eneo cliquée", Toast.LENGTH_SHORT)
-                            .show()
-
                         val transactionType =
                             SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_FACTURE_ENEO)
                         for (element in transactionType)
@@ -219,12 +288,6 @@ class HomeFragment : Fragment() {
 
                     }
                     CategorieNature.NATURE_ACHAT_CONNEXION -> {
-                        Toast.makeText(
-                            this@HomeFragment.context,
-                            "Categorie Achat de connexion cliquée",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
 
                         val transactionType =
                             SmsUtils.findSpecificSpending(
@@ -254,7 +317,24 @@ class HomeFragment : Fragment() {
                 adapter = GroupAdapter<ViewHolder>().apply {
                     transactioneSection = Section(listeCategorie)
                     add(transactioneSection)
-                    //setOnItemClickListener(onItemClick)
+                    setOnItemClickListener { item: com.xwray.groupie.Item<*>, view: View ->
+
+                        val transactionDetails = item as TransactionItem
+                        startActivity(Intent(this@HomeFragment.context, DetailsTransactonActivity::class.java).apply {
+                            putExtra("PARAM1", "NATURE: " + transactionDetails.transaction.libeleTransaction)
+                            putExtra(
+                                "PARAM2",
+                                "DATE: " + AnotherUtil.convertDate(
+                                    transactionDetails.transaction.dateTransaction,
+                                    "dd/MM/yyyy hh:mm:ss"
+                                )
+                            )
+                            putExtra("PARAM3", "RESPONSABLE: " + transactionDetails.transaction.destinataire)
+                            putExtra("PARAM4", "MONTANT: " + transactionDetails.transaction.montanttransaction+"FCFA")
+                            putExtra("PARAM5", "NOUVEAU SOLDE: " + transactionDetails.transaction.nouveauSolde+"FCFA")
+
+                        })
+                    }
                 }
             }
             shouldInitrecycleViewTransaction = false
@@ -282,8 +362,10 @@ class HomeFragment : Fragment() {
         val cateorie2 = CategorieEntite("Achat de credit", "urlImg", CategorieNature.NATURE_ACHAT_CREDIT)
         val cateorie3 = CategorieEntite("factures Eneo", "urlImg", CategorieNature.NATURE_FACTURE_ENEO)
         val cateorie4 = CategorieEntite("Achat de connexion", "urlImg", CategorieNature.NATURE_ACHAT_CONNEXION)
+        val cateorie5 = CategorieEntite("Dépos d'argent", "urlImg", CategorieNature.NATURE_DEPOS_ARGENT)
 
         listcategorieTransaction.add(CategorieItem(cateorie1, this@HomeFragment.context!!))
+        listcategorieTransaction.add(CategorieItem(cateorie5, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie2, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie3, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie4, this@HomeFragment.context!!))

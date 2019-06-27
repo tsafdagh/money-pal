@@ -1,7 +1,6 @@
 package com.kola.moneypal.mes_exemple
 
 import android.Manifest
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -10,9 +9,7 @@ import androidx.core.app.ActivityCompat
 import com.kola.moneypal.R
 import kotlinx.android.synthetic.main.activity_read_message.*
 import org.jetbrains.anko.toast
-import java.util.*
 import kotlin.collections.ArrayList
-import android.content.ContentResolver
 import com.kola.moneypal.utils.SmsUtils
 
 

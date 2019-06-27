@@ -13,6 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -48,8 +49,27 @@ dependencies {
     implementation 'com.xwray:groupie:2.0.3'
     implementation 'com.xwray:groupie-kotlin-android-extensions:2.0.3'
 
+    //firebase
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-firestore:19.0.2'
+    implementation 'com.google.firebase:firebase-auth:18.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
+    implementation 'com.google.firebase:firebase-storage:17.0.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+
+
+    // pour la vue facebook
+    implementation 'com.facebook.fresco:fresco:1.9.0'
+    implementation 'com.karumi:dexter:4.2.0'
+
+    //afin d'éviter le crash de l'application sur telephones inferieurs à l'api 21
+    implementation 'com.android.support:multidex:1.0.2'
 
     androidExtensions {
         experimental = true
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

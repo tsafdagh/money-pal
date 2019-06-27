@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/id_vue_creer_groupe"
+        tools:context=".authentification.UserprofileActivitu">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="60dp"
+                android:backgroundTint="@color/colorPrimary"
+                app:cardElevation="10dp">
+
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/d_tails_de_la_transaction"
+                        android:textSize="25sp"
+                        android:gravity="center"
+                        android:id="@+id/titre_page"
+                        android:textColor="@color/colorwhite"/>
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorwhite"
+                        android:layout_marginTop="13dp"/>
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Détails de la transaction"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:id="@+id/id_detail1"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/colorwhite"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Détails de la transaction"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:id="@+id/id_detail2"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/colorwhite"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Détails de la transaction"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:id="@+id/id_detail3"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/colorwhite"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Détails de la transaction"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:id="@+id/id_detail4"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/colorwhite"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Détails de la transaction"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:id="@+id/id_detail5"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:textColor="@color/colorwhite"/>
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorwhite"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="13dp"/>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

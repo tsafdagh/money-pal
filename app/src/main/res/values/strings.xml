@@ -12,11 +12,26 @@
     <string name="add_member">+ ADD MEMBER</string>
     <string name="payMember">PAY MEMBER</string>
     <string name="statistiques_des_d_penses">statistiques des dépenses</string>
-    <string name="mes_objectifs">Mes objectifs</string>
-    <string name="mon_compte">Mon compte</string>
+    <string name="mes_objectifs">Objectifs de groupe</string>
+    <string name="mon_compte">Mon profils</string>
     <string name="selection_inconu">Element sélectionnée inconnus</string>
     <string name="derniere_transaction">Derniere Transaction</string>
     <string name="vacance_a_kribi">Vacance A Kribi</string>
     <string name="chargement_des_transactions">Chargement des transactions...</string>
+    <string name="cliquez_dessus_pour_definir_une_photo_de_profils">Cliquez dessus pour definir une photo de profils
+    </string>
+    <string name="nom">nom</string>
+    <string name="my_phone">telephone</string>
+    <string name="mise_jours_du_profils">Mise à jours du profils</string>
+    <string name="se_d_conneccter">Se déconneccter</string>
+    <string name="supprimer_mon_compte">Supprimer mon compte</string>
+    <string name="alert_entrez_nom_utilisateur">Entrez votre nom d\'utilisateur</string>
+    <string name="alert_configurer_votre_profils_utilisateur">Configurer votre profils utilisateur?</string>
+    <string name="snackbar_erreur_connexion">Erreur de connexion</string>
+    <string name="snack_bar_erreur_reseau">Pas de réseau</string>
+    <string name="snackbar_erreur_inkonu">Erreur inconnue</string>
+    <string name="string_transaction_item_par">par </string>
+    <string name="d_tails_de_la_transaction">Détails de la transaction</string>
+    <string name="user_profil_nom_requis">Nom Requis!!</string>
 
 </resources>

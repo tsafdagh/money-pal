@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kola.moneypal.DetailsTransactonActivity
 
 import com.kola.moneypal.R
@@ -63,17 +64,34 @@ class HomeFragment : Fragment() {
         }
 
         id_tw_last_transaction.setOnClickListener {
-            setLastTransaction("MTN")
+           val lastTransction =  findLastTransaction("ORANGE")
+            setLasTTransaction(lastTransction)
         }
 
         loadData()
+        val lastTransction =  findLastTransaction("ORANGE")
+        setLasTTransaction(lastTransction)
         findSpecificOrAllTransaction(null, true)
     }
 
-    private fun setLastTransaction(operator: String) {
+    private fun setLasTTransaction(lastTransction: TransactionEntitie) {
+        if (lastTransction.montanttransaction > 0 && lastTransction.dateTransaction != "" && (lastTransction.libeleTransaction != "") && lastTransction.destinataire != "") {
+            // on nétoie d'abord toutes les transactions
+            listTransactions.clear()
+            listTransactions.add(TransactionItem(lastTransction, this@HomeFragment.context!!))
+            updateRecycleViewTransactions(listTransactions)
+            val msgDate = getString(R.string.text_view_date)+" "+AnotherUtil.convertDate(lastTransction.dateTransaction, "dd/MM/yyyy")
+            id_text_solde_date.text = msgDate
+            val msgSolde = lastTransction.nouveauSolde.toString()+" FCFA"
+            id_text_montnt.text = msgSolde
+        } else {
+            Snackbar.make(id_home_fragment, getString(R.string.snack_bar_aucune_transaction), Snackbar.LENGTH_LONG)
+                .show()
+        }
+    }
 
-        // on nétoie d'abord toutes les transactions
-        listTransactions.clear()
+    private fun findLastTransaction(operator: String):TransactionEntitie {
+
         // on recupère les messages provenant d'orange money  ou de MTN Money
         var listTransactionsSMS = ArrayList<smsObjet>()
 
@@ -88,19 +106,8 @@ class HomeFragment : Fragment() {
             )
         }
 
-        var transactionType =
-            SmsUtils.findSpecificSpending(
-                listTransactionsSMS,
-                CategorieNature.NATURE_LAST_TRANSACTION
-            )
-        for (element in transactionType)
-            listTransactions.add(
-                TransactionItem(
-                    element,
-                    this@HomeFragment.context!!
-                )
-            )
-        updateRecycleViewTransactions(listTransactions)
+        return SmsUtils.findLastTransaction(listTransactionsSMS)
+
 
     }
 
@@ -330,8 +337,8 @@ class HomeFragment : Fragment() {
                                 )
                             )
                             putExtra("PARAM3", "RESPONSABLE: " + transactionDetails.transaction.destinataire)
-                            putExtra("PARAM4", "MONTANT: " + transactionDetails.transaction.montanttransaction+"FCFA")
-                            putExtra("PARAM5", "NOUVEAU SOLDE: " + transactionDetails.transaction.nouveauSolde+"FCFA")
+                            putExtra("PARAM4", "MONTANT: " + transactionDetails.transaction.montanttransaction + "FCFA")
+                            putExtra("PARAM5", "NOUVEAU SOLDE: " + transactionDetails.transaction.nouveauSolde + "FCFA")
 
                         })
                     }

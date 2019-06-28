@@ -6,8 +6,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_groupe">groupes</string>
     <string name="phone_number">691621708</string>
-    <string name="text_view_date">solde du compte à la date du 14 May</string>
-    <string name="montant_total">35000 FCFA</string>
+    <string name="text_view_date">Solde du compte à la date du </string>
+    <string name="montant_total">0.0 FCFA</string>
     <string name="btn_tout_voir">Tout voir</string>
     <string name="add_member">+ ADD MEMBER</string>
     <string name="payMember">PAY MEMBER</string>
@@ -33,5 +33,6 @@
     <string name="string_transaction_item_par">par </string>
     <string name="d_tails_de_la_transaction">Détails de la transaction</string>
     <string name="user_profil_nom_requis">Nom Requis!!</string>
+    <string name="snack_bar_aucune_transaction">Aucune transaction orange détectée</string>
 
 </resources>

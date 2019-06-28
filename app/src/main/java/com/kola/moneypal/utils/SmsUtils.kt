@@ -106,51 +106,50 @@ object SmsUtils {
         val motClefFin = "Frais:"
     }
 
+    fun isTransfertArgentOrange(smsMessage: String): Boolean {
+        return smsMessage.contains(modelTransfertArgentOrange.motClefEntree, false) &&
+                smsMessage.contains(modelTransfertArgentOrange.motClefMilieu, false) &&
+                smsMessage.contains(modelTransfertArgentOrange.motClefFin, false)
+
+    }
+
+    fun isAchatDeCreditOrange(smsMessage: String): Boolean {
+        return smsMessage.contains(modelAchatDeCreditOrange.motClefEntre, false) &&
+                smsMessage.contains(modelAchatDeCreditOrange.motClefMilieu, false) &&
+                smsMessage.contains(modelAchatDeCreditOrange.motClefFin, false)
+    }
+
+    fun isAchatDeConnexionOrange(smsMessage: String): Boolean {
+        return smsMessage.contains(modelAchatDeConnexionOrange.motClefEntree, false) &&
+                smsMessage.contains(modelAchatDeConnexionOrange.motClefMilieu, false) &&
+                smsMessage.contains(modelAchatDeConnexionOrange.motClefFin, false)
+
+    }
+
+    fun isFacturecreditmtn(smsMessage: String): Boolean {
+        return smsMessage.contains(modelFactureMtnCredit.motClefEntree, true) &&
+                smsMessage.contains(modelFactureMtnCredit.motClefMilieu1, true) &&
+                smsMessage.contains(modelFactureMtnCredit.motClefMilieu2, true) &&
+                smsMessage.contains(modelFactureMtnCredit.motClefMilieu3, true) &&
+                smsMessage.contains(modelFactureMtnCredit.motClefFin, true)
+    }
+
+    fun isAchatFactureMtnEneo(smsMessage: String): Boolean {
+        return smsMessage.contains(modelFactureMtnEneo.motClefEntree, false) &&
+                smsMessage.contains(modelFactureMtnEneo.motClefMilieu1, false) &&
+                smsMessage.contains(modelFactureMtnEneo.motClefFin, false) &&
+                smsMessage.contains(modelFactureMtnEneo.motClefMilieu2, false)
+    }
+
+    fun isModelDeposArgentOrange(smsMessage: String): Boolean {
+        return smsMessage.contains(modelDepostArgentOrange.motClefEntree, false) &&
+                smsMessage.contains(modelDepostArgentOrange.motClefMilieu, false) &&
+                smsMessage.contains(modelDepostArgentOrange.motClefMilieu2, false) &&
+                smsMessage.contains(modelDepostArgentOrange.motClefFin, false)
+    }
 
     /**ette fonction a pour but d'identifier le type d'un message et de le formater pour le retourner**/
     fun findSpecificSpending(lisMySms: ArrayList<smsObjet>, natureRecherche: Int): ArrayList<TransactionEntitie> {
-
-        fun isTransfertArgentOrange(smsMessage: String): Boolean {
-            return smsMessage.contains(modelTransfertArgentOrange.motClefEntree, false) &&
-                    smsMessage.contains(modelTransfertArgentOrange.motClefMilieu, false) &&
-                    smsMessage.contains(modelTransfertArgentOrange.motClefFin, false)
-
-        }
-
-        fun isAchatDeCreditOrange(smsMessage: String): Boolean {
-            return smsMessage.contains(modelAchatDeCreditOrange.motClefEntre, false) &&
-                    smsMessage.contains(modelAchatDeCreditOrange.motClefMilieu, false) &&
-                    smsMessage.contains(modelAchatDeCreditOrange.motClefFin, false)
-        }
-
-        fun isAchatDeConnexionOrange(smsMessage: String): Boolean {
-            return smsMessage.contains(modelAchatDeConnexionOrange.motClefEntree, false) &&
-                    smsMessage.contains(modelAchatDeConnexionOrange.motClefMilieu, false) &&
-                    smsMessage.contains(modelAchatDeConnexionOrange.motClefFin, false)
-
-        }
-
-        fun isFacturecreditmtn(smsMessage: String): Boolean {
-            return smsMessage.contains(modelFactureMtnCredit.motClefEntree, true) &&
-                    smsMessage.contains(modelFactureMtnCredit.motClefMilieu1, true) &&
-                    smsMessage.contains(modelFactureMtnCredit.motClefMilieu2, true) &&
-                    smsMessage.contains(modelFactureMtnCredit.motClefMilieu3, true) &&
-                    smsMessage.contains(modelFactureMtnCredit.motClefFin, true)
-        }
-
-        fun isAchatFactureMtnEneo(smsMessage: String): Boolean {
-            return smsMessage.contains(modelFactureMtnEneo.motClefEntree, false) &&
-                    smsMessage.contains(modelFactureMtnEneo.motClefMilieu1, false) &&
-                    smsMessage.contains(modelFactureMtnEneo.motClefFin, false) &&
-                    smsMessage.contains(modelFactureMtnEneo.motClefMilieu2, false)
-        }
-
-        fun isModelDeposArgentOrange(smsMessage: String): Boolean {
-            return smsMessage.contains(modelDepostArgentOrange.motClefEntree, false) &&
-                    smsMessage.contains(modelDepostArgentOrange.motClefMilieu, false) &&
-                    smsMessage.contains(modelDepostArgentOrange.motClefMilieu2, false) &&
-                    smsMessage.contains(modelDepostArgentOrange.motClefFin, false)
-        }
 
         val listeRetour = ArrayList<TransactionEntitie>()
 
@@ -317,7 +316,6 @@ object SmsUtils {
                 return listeRetour
             }
 
-
             // On détecte automatiquement le type du dernier message et on rappelle la fonction courante avec le type détecté
             CategorieNature.NATURE_LAST_TRANSACTION -> {
 
@@ -352,6 +350,143 @@ object SmsUtils {
 
         }
         return listeRetour
+    }
+
+
+    /** Cette fonction a pour but de recupérer la dernière transaction  **/
+    fun findLastTransaction(lisMySms: ArrayList<smsObjet>): TransactionEntitie {
+        // les premiers messages dans la liste sont lest derniers à être arrivé
+        // à chaque fois qu'on détecte le type de la dernière transaction on le retourne pour stoper l'exécution
+
+        var lastTransationEntitie = TransactionEntitie("", "", 0.0, "", 0, "", 0)
+        for (mySms in lisMySms) {
+            if (isTransfertArgentOrange(mySms.msg)) {
+                // on recupere le nom de celui qui envoie :
+                var newStrinForSender = mySms.msg.split(Regex("vers |reussi"))
+                val destinataire = newStrinForSender[1] // le nom du destinataire est à l'indexe numéro 1
+
+                // on reecupere le montant net envoyé
+                var newStrinForMontant = mySms.msg.split(Regex("Montant Net: | FCFA,"))
+
+
+                val montantNentEnvoye =
+                    newStrinForMontant[newStrinForMontant.size - 2] // le montant net se trouve à la position numéro 3
+
+                // on recupère le nouveau solde
+                var newStrinForNewSolde = mySms.msg.split(Regex("Nouveau Solde: | FCFA."))
+                val nouveauSolde = newStrinForNewSolde[newStrinForNewSolde.size - 2]
+
+                // on retourne un nouvel objet de type transaction
+                lastTransationEntitie = TransactionEntitie(
+                    "Transfert",
+                    mySms.time,
+                    montantNentEnvoye.toDouble(),
+                    "",
+                    CategorieNature.NATURE_TRANSFERT_ARGENT,
+                    destinataire,
+                    nouveauSolde.toDouble()
+                )
+
+                return lastTransationEntitie
+
+            }
+            if (isModelDeposArgentOrange(mySms.msg)) {
+
+                val newListForMontantDepos = mySms.msg.split(Regex("Montant de transaction : | FCFA,"))
+                var montant = newListForMontantDepos[1]
+
+                val newListForSender = mySms.msg.split(Regex("Depot effectue par | to "))
+                var sender = newListForSender[1]
+
+
+                val newListForNouveauSolde = mySms.msg.split(Regex("Nouveau Solde : | FCFA."))
+                var newSolde = newListForNouveauSolde[newListForNouveauSolde.size - 2]
+
+                // on recupère le nouveau solde
+                var newStrinForNewSolde = mySms.msg.split(Regex("Nouveau Solde: | FCFA."))
+
+                // on retourne un nouvel orjet de type transaction
+                lastTransationEntitie = TransactionEntitie(
+                    "Dépos ",
+                    mySms.time,
+                    montant.toDouble(),
+                    "",
+                    CategorieNature.NATURE_DEPOS_ARGENT,
+                    sender,
+                    newSolde.toDouble()
+                )
+                return lastTransationEntitie
+            }
+            // traitement des sms du type achat de credit orange
+            if (isAchatDeCreditOrange(mySms.msg)) {
+                val newListForMontantCredit = mySms.msg.split(Regex("Montant de la transaction : |FCFA, ID"))
+                var valMontantCrdit = newListForMontantCredit[1]  // on recupere le montant du credit acheté
+                val newListForDestinateur = mySms.msg.split(Regex("Other msisdn"))
+                var destinataire = newListForDestinateur[1] // on recupère le numero du destinataire du credit
+                val newListForNewSolde = mySms.msg.split(Regex("Nouveau Solde :|FCFA Other"))
+                var nouveauSolde = newListForNewSolde[1]
+
+                // on retourne un nouvel orjet de type transaction
+                lastTransationEntitie = TransactionEntitie(
+                    "Achat crédit",
+                    mySms.time,
+                    valMontantCrdit.toDouble(),
+                    "",
+                    CategorieNature.NATURE_ACHAT_CREDIT,
+                    destinataire,
+                    nouveauSolde.toDouble()
+                )
+                return lastTransationEntitie
+
+            }
+            // traitement des sms du type facture eneo MTN
+            if (isAchatFactureMtnEneo(mySms.msg)) {
+                val newListForMontantFacture = mySms.msg.split(Regex("paiement de | FCFA pour"))
+                var valMontantFacture = newListForMontantFacture[1]  // on recupere le montant de la facture
+
+                val newListForMontantNewSolde = mySms.msg.split(Regex("Votre nouveau solde: |FCFA. Frais"))
+                var nouveauSolde = newListForMontantNewSolde[1]
+
+                // on retourne un nouvel orjet de type transaction
+
+                lastTransationEntitie = TransactionEntitie(
+                    "Facture Eneo",
+                    mySms.time,
+                    valMontantFacture.toDouble(),
+                    "",
+                    CategorieNature.NATURE_FACTURE_ENEO,
+                    "Eneo",
+                    nouveauSolde.toDouble()
+                )
+                return lastTransationEntitie
+
+            }
+            // traitement des sms du type achat de connexion orange
+            if (isAchatDeConnexionOrange(mySms.msg)) {
+                val newListForMontantPaiementInternet = mySms.msg.split(Regex(", Montant:| FCFA."))
+                var valMontantPaiement =
+                    newListForMontantPaiementInternet[1]  // on recupere le montant du paiement
+
+                val newListForMontantNewSolde = mySms.msg.split(Regex("Solde: | FCFA."))
+                var nouveauSolde = newListForMontantNewSolde[2]
+
+                // on retourne un nouvel orjet de type transaction
+
+                lastTransationEntitie = TransactionEntitie(
+                    "Paiement Internet",
+                    mySms.time,
+                    valMontantPaiement.toDouble(),
+                    "",
+                    CategorieNature.NATURE_ACHAT_CONNEXION,
+                    "",
+                    nouveauSolde.toDouble()
+                )
+                return lastTransationEntitie
+
+            }
+        }
+
+        return lastTransationEntitie
     }
 
 }

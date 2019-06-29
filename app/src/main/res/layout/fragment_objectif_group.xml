@@ -37,7 +37,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_marginLeft="25dp"
-                        android:id="@+id/progressBar"
+                        android:id="@+id/progressBar_p_objectif"
                         android:layout_marginRight="25dp"/>
                 <TextView
                         android:text="50000"

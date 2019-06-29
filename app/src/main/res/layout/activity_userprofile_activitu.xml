@@ -55,18 +55,14 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/id_imageGroupe"
                                 android:src="@drawable/icon_groupe_image"/>-->
-                    <com.facebook.drawee.view.SimpleDraweeView
-                            xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    <ImageView
                             android:id="@+id/imageView_profile_picture"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_gravity="center_horizontal"
-                            fresco:roundAsCircle="true"
-                            fresco:roundingBorderColor="@android:color/darker_gray"
-                            fresco:roundingBorderWidth="2dp"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
-                            app:srcCompat="@drawable/icon_user_male_circle"
+                            android:src="@drawable/icon_user_male_circle"
                             tools:ignore="VectorDrawableCompat"/>
                     <TextView
                             android:layout_width="match_parent"
@@ -111,6 +107,24 @@
                             android:textColor="@color/colorPrimary"
                             android:inputType="text"
                             android:id="@+id/id_editText_name"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/id_input_layout_emailadresse"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp">
+
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/addresse_email"
+                            android:textColor="@color/colorPrimary"
+                            android:inputType="textEmailAddress"
+                            android:id="@+id/id_editText_email"
                             android:maxLines="1"
                             android:ellipsize="end"/>
                 </com.google.android.material.textfield.TextInputLayout>

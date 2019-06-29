@@ -1,6 +1,7 @@
 package com.kola.moneypal.fragments
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -35,6 +36,11 @@ class ObjectifGroupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        progressBar_p_objectif.apply {
+            max = 1000
+            progress = 600
+        }
         loadData()
     }
 
@@ -76,7 +82,6 @@ class ObjectifGroupFragment : Fragment() {
             }
         } else
             updateItems()
-
     }
 
 }

@@ -1,6 +1,10 @@
 package com.kola.moneypal.fragments
 
+import android.Manifest
+import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kola.moneypal.DetailsTransactonActivity
@@ -28,6 +33,8 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_home.*
 import com.kola.moneypal.utils.SmsUtils
+import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.toast
 
 
 class HomeFragment : Fragment() {
@@ -37,6 +44,7 @@ class HomeFragment : Fragment() {
     private lateinit var categorieSection: Section
     private lateinit var transactioneSection: Section
     private val listTransactions = arrayListOf<Item>()
+    private val requestReadSms: Int = 2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,29 +57,72 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        id_btn_tout_voir.setOnClickListener {
+
+        if (this@HomeFragment.context?.let {
+                ActivityCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.READ_SMS
+                )
+            } != PackageManager.PERMISSION_GRANTED
+        ) {
+            this.activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.READ_SMS), requestReadSms) }
+        } else {
+            id_btn_tout_voir.setOnClickListener {
+
+                findSpecificOrAllTransaction(null, true)
+            }
+            id_image_user_account.setOnClickListener {
+
+                startActivity(Intent(this@HomeFragment.context, UserprofileActivitu::class.java).apply {
+                    /*        putExtra("extra_1", value1)
+                            putExtra("extra_2", value2)
+                            putExtra("extra_3", value3) */
+                })
+
+            }
+
+            id_tw_last_transaction.setOnClickListener {
+                val lastTransction =  findLastTransaction("ORANGE")
+                setLasTTransaction(lastTransction)
+            }
+
+            loadData()
+            val lastTransction =  findLastTransaction("ORANGE")
+            setLasTTransaction(lastTransction)
+            findSpecificOrAllTransaction(null, true)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == requestReadSms) {
+            id_btn_tout_voir.setOnClickListener {
+
+                findSpecificOrAllTransaction(null, true)
+            }
+            id_image_user_account.setOnClickListener {
+
+                startActivity(Intent(this@HomeFragment.context, UserprofileActivitu::class.java).apply {
+                    /*        putExtra("extra_1", value1)
+                            putExtra("extra_2", value2)
+                            putExtra("extra_3", value3) */
+                })
+
+            }
+
+            id_tw_last_transaction.setOnClickListener {
+                val lastTransction =  findLastTransaction("ORANGE")
+                setLasTTransaction(lastTransction)
+            }
+
+            loadData()
+            val lastTransction =  findLastTransaction("ORANGE")
+            setLasTTransaction(lastTransction)
+
+            //progressdialog = this@HomeFragment.context!!.indeterminateProgressDialog(getString(R.string.pdialog_recherche_transactions))
 
             findSpecificOrAllTransaction(null, true)
         }
-        id_image_user_account.setOnClickListener {
 
-            startActivity(Intent(this@HomeFragment.context, UserprofileActivitu::class.java).apply {
-                /*        putExtra("extra_1", value1)
-                        putExtra("extra_2", value2)
-                        putExtra("extra_3", value3) */
-            })
-
-        }
-
-        id_tw_last_transaction.setOnClickListener {
-           val lastTransction =  findLastTransaction("ORANGE")
-            setLasTTransaction(lastTransction)
-        }
-
-        loadData()
-        val lastTransction =  findLastTransaction("ORANGE")
-        setLasTTransaction(lastTransction)
-        findSpecificOrAllTransaction(null, true)
     }
 
     private fun setLasTTransaction(lastTransction: TransactionEntitie) {

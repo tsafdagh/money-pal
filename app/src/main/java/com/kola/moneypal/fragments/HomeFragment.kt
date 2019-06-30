@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.kola.moneypal.DetailsTransactonActivity
@@ -26,6 +26,7 @@ import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.entities.CategorieEntite
 import com.kola.moneypal.entities.CategorieNature
 import com.kola.moneypal.entities.TransactionEntitie
+import com.kola.moneypal.glide.GlideApp
 import com.kola.moneypal.mes_exemple.smsObjet
 import com.kola.moneypal.utils.AnotherUtil
 import com.xwray.groupie.GroupAdapter
@@ -101,8 +102,10 @@ class HomeFragment : Fragment() {
             findSpecificOrAllTransaction(null, true)
         }
 
-        Glide.with(this)
-            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl?:R.drawable.nom_user)
+        GlideApp.with(this)
+            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
+            .transform(CircleCrop())
+            .placeholder(R.drawable.nom_user)
             .into(id_image_user_account)
     }
 

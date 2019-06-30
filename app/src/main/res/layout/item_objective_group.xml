@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/cardView_item_person"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_margin="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp">
+
+    <RelativeLayout
+            android:layout_width="284dp"
+            android:id="@+id/id_relativeYaout"
+            android:layout_height="match_parent">
+
+        <ImageView
+                android:id="@+id/id_imag_group_item"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/noun_user_group_"/>
+
+        <TextView
+                android:id="@+id/id_text_view_name_groupe_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/id_imag_group_item"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="14sp"
+                android:maxWidth="190dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat"
+                tools:text="Nom du ddfdsdjfdtregroupe"/>
+
+        <TextView
+                android:id="@+id/id_textview_description_group_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/id_text_view_name_groupe_item"
+                android:layout_below="@+id/id_text_view_name_groupe_item"
+                android:layout_marginStart="3dp"
+                android:ellipsize="end"
+                android:maxWidth="160dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                tools:text="Description du groupe"
+                android:layout_marginTop="17dp"/>
+    </RelativeLayout>
+    <LinearLayout android:layout_width="117dp"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="right"
+                  android:orientation="vertical"
+                  android:gravity="center"
+                  android:layout_toEndOf="@+id/id_relativeYaout">
+        <TextView
+                android:text="-35 400"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/id_tv_montant_cotiser"
+                android:textSize="15sp"
+                android:textColor="#708D23"/>
+        <TextView
+                android:text="35 400"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/id_tv_objective_amount"
+                android:textSize="20sp"
+                android:textColor="#FF5722"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

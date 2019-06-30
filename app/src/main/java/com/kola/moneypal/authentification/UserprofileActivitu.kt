@@ -11,13 +11,14 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.kola.moneypal.MainActivity
 import com.kola.moneypal.R
+import com.kola.moneypal.glide.GlideApp
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
 import com.kola.moneypal.utils.StorageUtil
@@ -163,9 +164,12 @@ class UserprofileActivitu : AppCompatActivity() {
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outPutStream)
             //selectedImageBytes = outPutStream.toByteArray()
 
-            Glide.with(this)
+            GlideApp.with(this)
                 .load(selectedImagePathUri)
+                .placeholder(R.drawable.nom_user)
+                .transform(CircleCrop())
                 .into(imageView_profile_picture)
+
 
             pictureJustChanged = true
 
@@ -184,8 +188,10 @@ class UserprofileActivitu : AppCompatActivity() {
                 .into(imageView_profile_picture)
         }*/
 
-        Glide.with(this)
-            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl?:R.drawable.nom_user)
+        GlideApp.with(this)
+            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
+            .placeholder(R.drawable.nom_user)
+            .transform(CircleCrop())
             .into(imageView_profile_picture)
       /*  FireStoreUtil.getCurrentUserFromFireStore {
 

@@ -6,109 +6,14 @@
         android:layout_height="match_parent"
         android:id="@+id/id_user_profil"
         tools:context=".fragments.ObjectifGroupFragment">
-
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/colorPrimary"
-    >
+            android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:background="#42C4D3">
-                <TextView
-                        android:text="@string/vacance_a_kribi"
-                        android:layout_width="wrap_content"
-                        android:textSize="25sp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/id_text_objectif"
-                        android:textColor="@android:color/background_light"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="7dp"/>
-                <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="25dp"
-                        android:id="@+id/progressBar_p_objectif"
-                        android:layout_marginRight="25dp"/>
-                <TextView
-                        android:text="50000"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/id_val_solde_total"
-                        android:textColor="@android:color/background_light"
-                        android:layout_gravity="end"
-                        android:layout_marginRight="25dp"/>
-                <TextView
-                        android:text="@string/text_view_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/id_text_solde_date"
-                        android:layout_margin="5dp"
-                        android:textColor="@android:color/background_light"/>
-                <TextView
-                        android:text="@string/montant_total"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/id_text_montnt"
-                        android:textSize="25sp"
-                        android:textColor="@android:color/background_light" android:layout_marginBottom="20dp"
-                        android:layout_marginTop="5dp"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp">
-                <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="272dp"
-                        android:id="@+id/id_recycleview_groupe_item">
-
-                </androidx.recyclerview.widget.RecyclerView>
-                <RelativeLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                    <TextView
-                            android:text="@string/add_member"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/id_add_member"
-                            android:layout_marginLeft="25dp"
-                            android:textSize="17sp"
-                            android:textColor="@android:color/holo_blue_light"
-                            android:layout_alignParentStart="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginTop="10dp"/>
-                    <TextView
-                            android:text="@string/payMember"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/id_pay_member"
-                            android:textSize="17sp"
-                            android:textColor="@android:color/holo_blue_light"
-                            android:gravity="end"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="29dp" android:layout_marginBottom="10dp"
-                            android:layout_marginTop="10dp"/>
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
+                android:id="@+id/recycle_view_objective_groupe"
+                android:layout_height="match_parent"/>
 
     </FrameLayout>
 </androidx.core.widget.NestedScrollView>

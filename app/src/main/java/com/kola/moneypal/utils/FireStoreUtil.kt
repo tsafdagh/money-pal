@@ -1,5 +1,6 @@
 package com.kola.moneypal.utils
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
@@ -8,11 +9,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.User
+import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
 
 
@@ -162,4 +165,67 @@ object FireStoreUtil {
                 )
             }
     }
+
+
+    /** cette méthode permet de recupérer la liste des Groupe en temps réel
+    * et aussi selon un critere de recherche bien defini **/
+   /* fun addSearchGroupeListener(
+        searchingcriterion: String,
+        context: Context,
+        onListen: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "Groupes listener error?", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val items = mutableListOf<Item>()
+                querySnapshot?.documents?.forEach {
+                    // on convertie a chaque fois le groupe courant en objet
+                    val curentGroup = it.toObject(ObjectiveGroup::class.java)!!
+
+                    if (!searchingcriterion.isEmpty()) {
+                        if (it["groupeName"].toString().toUpperCase().contains(searchingcriterion.toUpperCase())
+                            || it["groupeDescription"].toString().toUpperCase().contains(searchingcriterion.toUpperCase())
+                            || it["objectiveamount"].toString().toUpperCase().contains(searchingcriterion.toUpperCase())
+                        ) {
+                            // on parcour les membres du groupe un par un
+                            for (itm in curentGroup.members!!) {
+
+                                *//* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
+                                 du groupe on affiche le groupe dans son telephone
+                                 *//*
+                                if (itm == FirebaseAuth.getInstance().currentUser?.phoneNumber
+                                    || curentGroup.AdminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
+                                ) {
+
+
+                                    items.add(GroupeItem(it.toObject(ObjectiveGroup::class.java)!!, it.id, context))
+                                    break
+                                }
+                            }
+                        }
+                    } else {
+                        // on parcour les membres du groupe un par un
+                        for (itm in curentGroup.members!!) {
+                            *//* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
+                             du groupe on affiche le groupe dans son telephone
+                             *//*
+                            if (itm == FirebaseAuth.getInstance().currentUser?.uid
+                                || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
+                            ) {
+                                items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
+                                break
+                            }
+                        }
+
+                    }
+
+                }
+
+                onListen(items)
+            }
+    }*/
 }

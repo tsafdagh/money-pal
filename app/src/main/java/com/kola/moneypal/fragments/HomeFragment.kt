@@ -14,7 +14,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.kola.moneypal.DetailsTransactonActivity
 
 import com.kola.moneypal.R
@@ -33,6 +35,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_home.*
 import com.kola.moneypal.utils.SmsUtils
+import kotlinx.android.synthetic.main.activity_userprofile_activitu.*
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
 
@@ -65,7 +68,13 @@ class HomeFragment : Fragment() {
                 )
             } != PackageManager.PERMISSION_GRANTED
         ) {
-            this.activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.READ_SMS), requestReadSms) }
+            this.activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.READ_SMS),
+                    requestReadSms
+                )
+            }
         } else {
             id_btn_tout_voir.setOnClickListener {
 
@@ -82,15 +91,19 @@ class HomeFragment : Fragment() {
             }
 
             id_tw_last_transaction.setOnClickListener {
-                val lastTransction =  findLastTransaction("ORANGE")
+                val lastTransction = findLastTransaction("ORANGE")
                 setLasTTransaction(lastTransction)
             }
 
             loadData()
-            val lastTransction =  findLastTransaction("ORANGE")
+            val lastTransction = findLastTransaction("ORANGE")
             setLasTTransaction(lastTransction)
             findSpecificOrAllTransaction(null, true)
         }
+
+        Glide.with(this)
+            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl?:R.drawable.nom_user)
+            .into(id_image_user_account)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -110,12 +123,12 @@ class HomeFragment : Fragment() {
             }
 
             id_tw_last_transaction.setOnClickListener {
-                val lastTransction =  findLastTransaction("ORANGE")
+                val lastTransction = findLastTransaction("ORANGE")
                 setLasTTransaction(lastTransction)
             }
 
             loadData()
-            val lastTransction =  findLastTransaction("ORANGE")
+            val lastTransction = findLastTransaction("ORANGE")
             setLasTTransaction(lastTransction)
 
             //progressdialog = this@HomeFragment.context!!.indeterminateProgressDialog(getString(R.string.pdialog_recherche_transactions))
@@ -131,9 +144,12 @@ class HomeFragment : Fragment() {
             listTransactions.clear()
             listTransactions.add(TransactionItem(lastTransction, this@HomeFragment.context!!))
             updateRecycleViewTransactions(listTransactions)
-            val msgDate = getString(R.string.text_view_date)+" "+AnotherUtil.convertDate(lastTransction.dateTransaction, "dd/MM/yyyy")
+            val msgDate = getString(R.string.text_view_date) + " " + AnotherUtil.convertDate(
+                lastTransction.dateTransaction,
+                "dd/MM/yyyy"
+            )
             id_text_solde_date.text = msgDate
-            val msgSolde = lastTransction.nouveauSolde.toString()+" FCFA"
+            val msgSolde = lastTransction.nouveauSolde.toString() + " FCFA"
             id_text_montnt.text = msgSolde
         } else {
             Snackbar.make(id_home_fragment, getString(R.string.snack_bar_aucune_transaction), Snackbar.LENGTH_LONG)
@@ -141,7 +157,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun findLastTransaction(operator: String):TransactionEntitie {
+    private fun findLastTransaction(operator: String): TransactionEntitie {
 
         // on recupère les messages provenant d'orange money  ou de MTN Money
         var listTransactionsSMS = ArrayList<smsObjet>()
@@ -274,6 +290,21 @@ class HomeFragment : Fragment() {
                         this@HomeFragment.context!!
                     )
                 )
+
+            // les retraits d'argent
+            transactionType =
+                SmsUtils.findSpecificSpending(
+                    listorangeTransactions,
+                    CategorieNature.NATURE_RETRAIT_ARGENT
+                )
+            for (element in transactionType)
+                listTransactions.add(
+                    TransactionItem(
+                        element,
+                        this@HomeFragment.context!!
+                    )
+                )
+
             listTransactions.shuffle()
             // on fait le mélange avant d'afficher
             updateRecycleViewTransactions(listTransactions)
@@ -362,6 +393,24 @@ class HomeFragment : Fragment() {
                         updateRecycleViewTransactions(listTransactions)
 
                     }
+
+                    CategorieNature.NATURE_RETRAIT_ARGENT -> {
+
+                        val transactionType =
+                            SmsUtils.findSpecificSpending(
+                                listorangeTransactions,
+                                CategorieNature.NATURE_RETRAIT_ARGENT
+                            )
+                        for (element in transactionType)
+                            listTransactions.add(
+                                TransactionItem(
+                                    element,
+                                    this@HomeFragment.context!!
+                                )
+                            )
+                        updateRecycleViewTransactions(listTransactions)
+
+                    }
                 }
 
             }
@@ -421,12 +470,16 @@ class HomeFragment : Fragment() {
         val cateorie3 = CategorieEntite("factures Eneo", "urlImg", CategorieNature.NATURE_FACTURE_ENEO)
         val cateorie4 = CategorieEntite("Achat de connexion", "urlImg", CategorieNature.NATURE_ACHAT_CONNEXION)
         val cateorie5 = CategorieEntite("Dépos d'argent", "urlImg", CategorieNature.NATURE_DEPOS_ARGENT)
+        val cateorie6 = CategorieEntite("Retrait d'argent", "urlImg", CategorieNature.NATURE_RETRAIT_ARGENT)
 
-        listcategorieTransaction.add(CategorieItem(cateorie1, this@HomeFragment.context!!))
+
+        listcategorieTransaction.add(CategorieItem(cateorie6, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie5, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie2, this@HomeFragment.context!!))
+        listcategorieTransaction.add(CategorieItem(cateorie1, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie3, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie4, this@HomeFragment.context!!))
+        listcategorieTransaction.add(CategorieItem(cateorie6, this@HomeFragment.context!!))
 
         //initialisation des transactions
         /* val transaction1 = TransactionEntitie("Transfert à", "Samedi 9", (35400).toDouble(), "imageUrl")

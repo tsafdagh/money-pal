@@ -25,9 +25,9 @@
                 android:orientation="vertical"
                 android:background="@color/colorPrimary">
             <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/icon_user_male_circle"
+                    android:layout_width="102dp"
+                    android:layout_height="101dp"
+                    android:src="@drawable/nom_user"
                     android:id="@+id/id_image_user_account"
                     android:layout_margin="5dp"/>
             <TextView
@@ -50,8 +50,7 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@android:color/black">
+                android:orientation="vertical">
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycle_view_categorie_transactions"
                     android:orientation="horizontal"

@@ -58,7 +58,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
-                            android:src="@drawable/icon_groupe"
+                            android:src="@drawable/noun_user_group_"
                             tools:ignore="VectorDrawableCompat"/>
                     <TextView
                             android:layout_width="match_parent"

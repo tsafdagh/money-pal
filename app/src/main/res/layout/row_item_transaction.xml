@@ -51,19 +51,20 @@
                 android:layout_marginTop="5dp"/>
         <TextView
                 android:text="-35 400"
-                android:layout_width="119dp"
-                android:layout_height="20dp"
+                android:layout_width="146dp"
+                android:layout_height="38dp"
                 android:id="@+id/id_tv_montant"
                 android:textSize="20sp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="11dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="14dp"
+                android:gravity="right"
+                android:layout_marginBottom="6dp"
                 android:layout_marginTop="36dp"
                 android:layout_alignParentTop="true"
                 android:textColor="#FF5722"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="273dp"/>
+                android:layout_marginStart="246dp"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

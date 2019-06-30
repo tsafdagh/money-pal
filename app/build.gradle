@@ -57,8 +57,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:17.0.0'
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
 
+    //firebase dynamic links
+    //implementation 'com.google.firebase:firebase-dynamic-links:18.0.0'
+
+    //remote config
+    implementation 'com.google.firebase:firebase-config:18.0.0'
 
     // pour la vue facebook
     implementation 'com.facebook.fresco:fresco:1.9.0'

@@ -106,6 +106,12 @@ object SmsUtils {
         val motClefFin = "Frais:"
     }
 
+    object modelRetraitArgentOrange {
+        val motClefEntre = "Retrait d'argent reussi par"
+        val motclefMilieu1 = "Informations detaillees"
+        val motClefSortie = "montant net debit"
+    }
+
     fun isTransfertArgentOrange(smsMessage: String): Boolean {
         return smsMessage.contains(modelTransfertArgentOrange.motClefEntree, false) &&
                 smsMessage.contains(modelTransfertArgentOrange.motClefMilieu, false) &&
@@ -146,6 +152,12 @@ object SmsUtils {
                 smsMessage.contains(modelDepostArgentOrange.motClefMilieu, false) &&
                 smsMessage.contains(modelDepostArgentOrange.motClefMilieu2, false) &&
                 smsMessage.contains(modelDepostArgentOrange.motClefFin, false)
+    }
+
+    fun isModelRetraitArgentOrange(smsMessage: String): Boolean {
+        return smsMessage.contains(modelRetraitArgentOrange.motClefEntre, false) &&
+                smsMessage.contains(modelRetraitArgentOrange.motclefMilieu1, false) &&
+                smsMessage.contains(modelRetraitArgentOrange.motClefSortie, false)
     }
 
     /**ette fonction a pour but d'identifier le type d'un message et de le formater pour le retourner**/
@@ -316,7 +328,46 @@ object SmsUtils {
                 return listeRetour
             }
 
+            CategorieNature.NATURE_RETRAIT_ARGENT -> {
+                for (mySms in lisMySms) {
+                    // traitement des sms du type achat de connexion orange
+                    if (isModelRetraitArgentOrange(mySms.msg)) {
+                        val newListForRespoRetrait = mySms.msg.split(Regex("reussi par le |. Informations detaillees"))
+                        val resposretrait = newListForRespoRetrait[1]
+
+                        val newListForMontantRetrait = mySms.msg.split(Regex(": Montant:|FCFA,"))
+                        val montantRetrait = newListForMontantRetrait[1]
+
+                        val newListForFraitRetrait = mySms.msg.split(Regex(", Frais: | FCFA, commission:"))
+                        val fraisRetrait = newListForFraitRetrait[1]
+
+                        val newListForNumeroTransaction = mySms.msg.split(Regex("No de transaction |, montant net"))
+                        val numerotransaction = newListForNumeroTransaction[1]
+
+                        val newListForNouveauSolde = mySms.msg.split(Regex("Nouveau solde: | FCFA."))
+                        val nouveauSolde = newListForNouveauSolde[5]
+
+                        // on retourne un nouvel orjet de type transaction
+                        listeRetour.add(
+                            TransactionEntitie(
+                                "Retrait d'argent",
+                                mySms.time,
+                                montantRetrait.toDouble().plus(fraisRetrait.toDouble()),
+                                "",
+                                CategorieNature.NATURE_RETRAIT_ARGENT,
+                                resposretrait,
+                                nouveauSolde.toDouble()
+                            )
+                        )
+
+                    }
+
+                }
+                return listeRetour
+            }
+
             // On détecte automatiquement le type du dernier message et on rappelle la fonction courante avec le type détecté
+            //TODO ce code est à supprimer car il n'a pas fonctionné il a donc été remplacé par la fonction findLastTransaction ci-dessous
             CategorieNature.NATURE_LAST_TRANSACTION -> {
 
                 if (lisMySms.size > 0) {
@@ -344,9 +395,14 @@ object SmsUtils {
                         lisMySms.add(lastSMS)
                         findSpecificSpending(lisMySms, CategorieNature.NATURE_TRANSFERT_ARGENT)
                     }
+                    if (isModelRetraitArgentOrange(lastSMS.msg)) {
+                        lisMySms.add(lastSMS)
+                        findSpecificSpending(lisMySms, CategorieNature.NATURE_RETRAIT_ARGENT)
+                    }
 
                 }
             }
+
 
         }
         return listeRetour
@@ -479,6 +535,37 @@ object SmsUtils {
                     "",
                     CategorieNature.NATURE_ACHAT_CONNEXION,
                     "",
+                    nouveauSolde.toDouble()
+                )
+                return lastTransationEntitie
+
+            }
+
+            // traitement des sms du type achat de connexion orange
+            if (isModelRetraitArgentOrange(mySms.msg)) {
+                val newListForRespoRetrait = mySms.msg.split(Regex("reussi par le |. Informations detaillees"))
+                val resposretrait = newListForRespoRetrait[1]
+
+                val newListForMontantRetrait = mySms.msg.split(Regex(": Montant:|FCFA,"))
+                val montantRetrait = newListForMontantRetrait[1]
+
+                val newListForFraitRetrait = mySms.msg.split(Regex(", Frais: | FCFA, commission:"))
+                val fraisRetrait = newListForFraitRetrait[1]
+
+                val newListForNumeroTransaction = mySms.msg.split(Regex("No de transaction |, montant net"))
+                val numerotransaction = newListForNumeroTransaction[1]
+
+                val newListForNouveauSolde = mySms.msg.split(Regex("Nouveau solde: | FCFA."))
+                val nouveauSolde = newListForNouveauSolde[5]
+
+                // on retourne un nouvel orjet de type transaction
+                lastTransationEntitie = TransactionEntitie(
+                    "Retrait d'argent",
+                    mySms.time,
+                    montantRetrait.toDouble().plus(fraisRetrait.toDouble()),
+                    "",
+                    CategorieNature.NATURE_RETRAIT_ARGENT,
+                    resposretrait,
                     nouveauSolde.toDouble()
                 )
                 return lastTransationEntitie

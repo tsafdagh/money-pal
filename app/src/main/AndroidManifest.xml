@@ -16,9 +16,14 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".mes_exemple.TestRemoteConfig">
+        </activity>
         <activity android:name=".DetailsTransactonActivity">
         </activity>
         <activity android:name=".authentification.UserprofileActivitu">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
         </activity>
         <activity
                 android:name=".authentification.SplashActivity"

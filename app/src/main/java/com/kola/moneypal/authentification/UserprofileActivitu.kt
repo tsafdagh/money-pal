@@ -41,6 +41,7 @@ class UserprofileActivitu : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Fresco.initialize(this)
         setContentView(R.layout.activity_userprofile_activitu)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         id_btn_sign_out.setOnClickListener {
             AuthUI.getInstance()
@@ -87,7 +88,7 @@ class UserprofileActivitu : AppCompatActivity() {
                         FireStoreUtil.updateCurrentUser(
                             myName,
                             emailAddresse,
-                            "",
+                            url,
                             selectedImagePathUri,
                             onComplete = { user, isOk ->
                                 if (isOk) {
@@ -184,7 +185,7 @@ class UserprofileActivitu : AppCompatActivity() {
         }*/
 
         Glide.with(this)
-            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
+            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl?:R.drawable.nom_user)
             .into(imageView_profile_picture)
       /*  FireStoreUtil.getCurrentUserFromFireStore {
 

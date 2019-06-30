@@ -7,7 +7,8 @@ object CategorieNature {
     const val NATURE_FACTURE_ENEO = 4
     const val NATURE_DEPOS_ARGENT = 5
     const val NATURE_LAST_TRANSACTION = 6
-    const val NATURE_ALL = 7
+    const val NATURE_RETRAIT_ARGENT= 7
+    const val NATURE_ALL = 8
 }
 
 data class CategorieEntite(

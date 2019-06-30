@@ -21,30 +21,49 @@ class TransactionItem(
     override fun bind(viewHolder: ViewHolder, position: Int) {
         val convertedDate = AnotherUtil.convertDate(transaction.dateTransaction,"dd/MM/yyyy hh:mm:ss")
         viewHolder.id_textview_date.text = convertedDate
-        viewHolder.id_tv_montant.text = transaction.montanttransaction.toString()
 
         when(transaction.categorie){
             CategorieNature.NATURE_ACHAT_CREDIT->{
                 viewHolder.id_tv_montant.textColor = Color.RED
                 viewHolder.id_text_view_name.text = transaction.libeleTransaction+" à "+transaction.destinataire
+                viewHolder.id_tv_montant.text = "-"+transaction.montanttransaction.toString()
+
             }
             CategorieNature.NATURE_TRANSFERT_ARGENT->{
                 viewHolder.id_tv_montant.textColor = Color.GREEN
                 viewHolder.id_text_view_name.text = transaction.libeleTransaction+" à "+transaction.destinataire
+                viewHolder.id_tv_montant.text = "+/-"+transaction.montanttransaction.toString()
+
             }
             CategorieNature.NATURE_FACTURE_ENEO->{
                 viewHolder.id_tv_montant.textColor = Color.RED
                 viewHolder.id_text_view_name.text = transaction.libeleTransaction
+                viewHolder.id_tv_montant.text = "-"+transaction.montanttransaction.toString()
+
             }
 
             CategorieNature.NATURE_ACHAT_CONNEXION->{
                 viewHolder.id_tv_montant.textColor = Color.RED
                 viewHolder.id_text_view_name.text = transaction.libeleTransaction
+                viewHolder.id_tv_montant.text = "-"+transaction.montanttransaction.toString()
+
             }
 
             CategorieNature.NATURE_DEPOS_ARGENT->{
                 viewHolder.id_tv_montant.textColor = Color.GREEN
                 viewHolder.id_text_view_name.text = transaction.libeleTransaction+context.getString(R.string.string_transaction_item_par)+" "+transaction.destinataire
+                viewHolder.id_tv_montant.text = "+"+transaction.montanttransaction.toString()
+
+            }
+            CategorieNature.NATURE_RETRAIT_ARGENT->{
+                viewHolder.id_tv_montant.textColor = Color.RED
+                viewHolder.id_text_view_name.text = transaction.libeleTransaction+" "+context.getString(R.string.transaction_item_par)+" "+transaction.destinataire
+                viewHolder.id_tv_montant.text = "-"+transaction.montanttransaction.toString()
+
+            }
+            else->{
+                viewHolder.id_text_view_name.text = transaction.libeleTransaction
+                viewHolder.id_tv_montant.text = transaction.montanttransaction.toString()
             }
         }
 

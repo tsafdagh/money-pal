@@ -47,5 +47,7 @@
     <string name="creation_group_champ_requis">Champ requis !!</string>
     <string name="pdialog_progression_en_cour">Création du groupe en cours...</string>
     <string name="transaction_item_par">par</string>
+    <string name="date_echeance">date d\'échéance</string>
+    <string name="text_fcfa">FCFA</string>
 
 </resources>

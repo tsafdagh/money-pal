@@ -13,10 +13,12 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.User
 import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 object FireStoreUtil {
@@ -118,10 +120,11 @@ object FireStoreUtil {
 
 
     fun createObjectivegroupe(
-        members: MutableList<String>? = null,
+        members: ArrayList<String>,
         groupeName: String,
         groupeDescription: String,
         objectiveAmount: Double,
+        dateEcheance: String,
         onComplete: (groupeId: String) -> Unit
     ) {
 
@@ -131,8 +134,9 @@ object FireStoreUtil {
                 groupeName,
                 groupeDescription,
                 objectiveAmount,
+                0.0,
                 Date(0),
-                "",
+                dateEcheance, "",
                 members
             )
         val newObjectiveGroup = groupeChatCollectionRef.document()
@@ -168,8 +172,8 @@ object FireStoreUtil {
 
 
     /** cette méthode permet de recupérer la liste des Groupe en temps réel
-    * et aussi selon un critere de recherche bien defini **/
-   /* fun addSearchGroupeListener(
+     * et aussi selon un critere de recherche bien defini **/
+    fun addSearchGroupeListener(
         searchingcriterion: String,
         context: Context,
         onListen: (List<Item>) -> Unit
@@ -194,15 +198,21 @@ object FireStoreUtil {
                             // on parcour les membres du groupe un par un
                             for (itm in curentGroup.members!!) {
 
-                                *//* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
+                                /* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
                                  du groupe on affiche le groupe dans son telephone
-                                 *//*
+                                 */
                                 if (itm == FirebaseAuth.getInstance().currentUser?.phoneNumber
                                     || curentGroup.AdminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
                                 ) {
 
 
-                                    items.add(GroupeItem(it.toObject(ObjectiveGroup::class.java)!!, it.id, context))
+                                    items.add(
+                                        ObjectivegroupItem(
+                                            it.toObject(ObjectiveGroup::class.java)!!,
+                                            it.id,
+                                            context
+                                        )
+                                    )
                                     break
                                 }
                             }
@@ -210,13 +220,13 @@ object FireStoreUtil {
                     } else {
                         // on parcour les membres du groupe un par un
                         for (itm in curentGroup.members!!) {
-                            *//* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
-                             du groupe on affiche le groupe dans son telephone
-                             *//*
-                            if (itm == FirebaseAuth.getInstance().currentUser?.uid
-                                || curentGroup.adminId == FirebaseAuth.getInstance().currentUser?.uid
+                            /* si l'utilisateur fait partir des membres du groupe oubien s'il est l'administrateur
+                             du groupe on affiche le groupe dans son telephone */
+
+                            if (itm == FirebaseAuth.getInstance().currentUser?.phoneNumber
+                                || curentGroup.AdminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
                             ) {
-                                items.add(GroupeItem(it.toObject(ChatGroup::class.java)!!, it.id, context))
+                                items.add(ObjectivegroupItem(it.toObject(ObjectiveGroup::class.java)!!, it.id, context))
                                 break
                             }
                         }
@@ -227,5 +237,8 @@ object FireStoreUtil {
 
                 onListen(items)
             }
-    }*/
+    }
+
+    fun removeListener(registration: ListenerRegistration) = registration.remove()
+
 }

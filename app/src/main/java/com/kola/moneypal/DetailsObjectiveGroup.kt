@@ -1,16 +1,25 @@
 package com.kola.moneypal
 
+import android.annotation.TargetApi
+import android.icu.text.SimpleDateFormat
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
+import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
+import com.kola.moneypal.utils.GobalConfig
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_details_objective_group.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DetailsObjectiveGroup : AppCompatActivity() {
 
@@ -22,10 +31,26 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details_objective_group)
 
+
+        val objGroupe: ObjectiveGroup? = intent.getParcelableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING)
+        val groupId: String? = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)
+
         progressBar_p_objectif.apply {
-            max = 1000
-            progress = 600
+            max = objGroupe!!.objectiveamount.toInt()
+            progress = objGroupe.courentAmount.toInt()
         }
+
+        id_text_objectif.text = objGroupe!!.groupeName
+        id_val_solde_total.text = objGroupe.objectiveamount.toString()
+
+        val date = getCurrentDateTime()
+        val dateInString = date.toString("yyyy/MM/dd")
+
+        val soldeCompteDate = getString(R.string.text_view_date) + " " + dateInString
+        id_text_solde_date.text = soldeCompteDate
+        val curenSold = objGroupe.courentAmount.toString() +getString(R.string.text_fcfa)
+        id_text_montnt.text = curenSold
+
         loadData()
     }
 
@@ -67,5 +92,17 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             }
         } else
             updateItems()
+    }
+
+
+    //TODO gerer la recuperation de la date actuelle pour les APIs < l'API 24
+    @TargetApi(Build.VERSION_CODES.N)
+    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
+
+    fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
     }
 }

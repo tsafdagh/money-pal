@@ -20,11 +20,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.kola.moneypal.authentification.UserprofileActivitu
+import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.fragments.HomeFragment
 import com.kola.moneypal.fragments.ObjectifGroupFragment
+import com.kola.moneypal.glide.GlideApp
 import com.kola.moneypal.mes_exemple.ReadMessageActivity
 import com.kola.moneypal.utils.FireStoreUtil
+import com.kola.moneypal.utils.GobalConfig
 import com.kola.moneypal.utils.StorageUtil
 import kotlinx.android.synthetic.main.create_group_dialog.*
 import kotlinx.android.synthetic.main.create_group_dialog.view.*
@@ -32,10 +36,12 @@ import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.io.ByteArrayOutputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
-
+    val listIdUserForGroup = ArrayList<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //supportActionBar?.hide()
@@ -148,12 +154,15 @@ class MainActivity : AppCompatActivity() {
                 && mDialogView!!.id_editText_objectif_amount.text.toString() != ""
             ) {
                 mAlertDialog.dismiss()
-
+                listIdUserForGroup.add(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
                 // on démare la création du groupe
                 val progressdialog = indeterminateProgressDialog(getString(R.string.pdialog_progression_en_cour))
-                FireStoreUtil.createObjectivegroupe(null, mDialogView!!.id_edit_nom_groupe.text.toString(),
+                FireStoreUtil.createObjectivegroupe(listIdUserForGroup,
+                    mDialogView!!.id_edit_nom_groupe.text.toString(),
                     mDialogView!!.id_editText_description_objectif.text.toString(),
-                    mDialogView!!.id_editText_objectif_amount.text.toString().toDouble(), onComplete = { groupeId ->
+                    mDialogView!!.id_editText_objectif_amount.text.toString().toDouble(),
+                    mDialogView!!.id_editText_dateEcheance.text.toString(),
+                    onComplete = { groupeId ->
 
                         // si l'image est sélectionée on l'upload
                         if (selectedImagePathUri != null) {
@@ -165,6 +174,21 @@ class MainActivity : AppCompatActivity() {
                                     FireStoreUtil.updateurlImageGroup(urlImage, groupeId, onComplete = {
                                         toast("Groupe créer avec success")
                                         progressdialog.dismiss()
+                                        val intent = Intent(this, DetailsObjectiveGroup::class.java)
+                                        val objGroup = ObjectiveGroup(
+                                            FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+                                            mDialogView!!.id_edit_nom_groupe.text.toString(),
+                                            mDialogView!!.id_editText_description_objectif.text.toString(),
+                                            mDialogView!!.id_editText_objectif_amount.text.toString().toDouble(),
+                                            0.0,
+                                            Date(0),
+                                            mDialogView!!.id_editText_dateEcheance.text.toString(),
+                                            urlImage,
+                                            listIdUserForGroup
+                                        )
+                                        intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroup)
+                                        intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupeId)
+                                        startActivity(intent)
                                     })
                                 })
                         } else {
@@ -210,8 +234,8 @@ class MainActivity : AppCompatActivity() {
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outPutStream)
             //selectedImageBytes = outPutStream.toByteArray()
 
-            Glide.with(this)
-                .load(selectedImagePathUri)
+            GlideApp.with(this)
+                .load(selectedImagePathUri).circleCrop()
                 .into(mDialogView!!.imageView_profile_groupe_picture)
         }
     }

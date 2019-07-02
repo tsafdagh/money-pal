@@ -7,4 +7,8 @@ object GobalConfig {
     val REFFERENCE_USERS = "users"
     val REFERENCE_GROUPE_OF_ONE_USER = "groupes"
     val REFERENCE_ID_GROUPE_OF_ONE = "objectiveGroupeId"
+
+    val EXTRAT_REFERENCE_OBJ_GROUP_STRING = "objective_group"
+    val EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING = "objective_group_id"
+
 }

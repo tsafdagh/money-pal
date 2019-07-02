@@ -3,9 +3,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cardView_item_person"
+        android:id="@+id/cardView_item_objectiveGroupe"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@android:color/white"
@@ -15,7 +15,7 @@
         app:cardElevation="4dp">
 
     <RelativeLayout
-            android:layout_width="284dp"
+            android:layout_width="wrap_content"
             android:id="@+id/id_relativeYaout"
             android:layout_height="match_parent">
 
@@ -35,7 +35,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
-                android:maxWidth="190dp"
+                android:maxWidth="180dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat"
                 tools:text="Nom du ddfdsdjfdtregroupe"/>
 
@@ -47,26 +47,26 @@
                 android:layout_below="@+id/id_text_view_name_groupe_item"
                 android:layout_marginStart="3dp"
                 android:ellipsize="end"
-                android:maxWidth="160dp"
+                android:maxWidth="180dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 tools:text="Description du groupe"
                 android:layout_marginTop="17dp"/>
     </RelativeLayout>
-    <LinearLayout android:layout_width="117dp"
+    <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="match_parent"
                   android:layout_gravity="right"
                   android:orientation="vertical"
                   android:gravity="center"
                   android:layout_toEndOf="@+id/id_relativeYaout">
         <TextView
-                android:text="-35 400"
+                android:text="-35 400 FCFA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/id_tv_montant_cotiser"
                 android:textSize="15sp"
                 android:textColor="#708D23"/>
         <TextView
-                android:text="35 400"
+                android:text="35 400 FCFA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/id_tv_objective_amount"

@@ -123,6 +123,24 @@
                             android:maxLines="1"
                             android:ellipsize="end"/>
                 </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/id_input_layout_date_echeance"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="15dp">
+
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/date_echeance"
+                            android:textColor="@color/colorPrimary"
+                            android:inputType="date"
+                            android:id="@+id/id_editText_dateEcheance"
+                            android:maxLines="1"
+                            android:ellipsize="end"/>
+                </com.google.android.material.textfield.TextInputLayout>
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
                               android:orientation="vertical"

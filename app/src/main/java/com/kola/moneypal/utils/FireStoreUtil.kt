@@ -14,8 +14,10 @@ import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
+import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.User
+import com.kola.moneypal.entities.UserGroupeEntitie
 import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
 import kotlin.collections.ArrayList
@@ -87,7 +89,7 @@ object FireStoreUtil {
 
 
     /** Met à jours le profils fireStoreAuth de l'utilisateur couran**/
-    fun upDateFireAuthProfile(
+    private fun upDateFireAuthProfile(
         name: String,
         selectedImageURi: Uri?,
         onComplete: (isSuccess: Boolean) -> Unit
@@ -141,9 +143,24 @@ object FireStoreUtil {
             )
         val newObjectiveGroup = groupeChatCollectionRef.document()
         newObjectiveGroup.set(newgroupe).addOnSuccessListener {
+
+            //val defaulftUserGroupConfig = mutableListOf<Map<String, String>>()
+
             //ajoutons l'id du groupe à l'utilisateur courant
-            currentUserDocRef.collection(GobalConfig.REFERENCE_GROUPE_OF_ONE_USER)
-                .add(mapOf(GobalConfig.REFERENCE_ID_GROUPE_OF_ONE to newObjectiveGroup.id))
+            // on initialise la contribution de l'utilisateur qui creè le groupe à 0FCFA
+            // on initie la date de contribution de l'utilisateur à la date actuelle
+            //defaulftUserGroupConfig.add(mapOf(GobalConfig.REFERENCE_ID_GROUPE_OF_ONE to newObjectiveGroup.id))
+            //defaulftUserGroupConfig.add(mapOf(GobalConfig.CONTRIBUTED_USER_AMOUNT to (0.0).toString()))
+            //defaulftUserGroupConfig.add(mapOf(GobalConfig.DATE_CONTRIBUTED_ON_GROUP to AnotherUtil.getdateNow()))
+            //currentUserDocRef.collection(GobalConfig.REFERENCE_GROUPE_OF_ONE_USER)
+            //    .add(defaulftUserGroupConfig)
+
+            val defaulftUserGroupConfig = mutableMapOf<String, Any>()
+            defaulftUserGroupConfig[GobalConfig.REFERENCE_ID_GROUPE_OF_ONE] = newObjectiveGroup.id
+            defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
+            defaulftUserGroupConfig[GobalConfig.DATE_CONTRIBUTED_ON_GROUP] = AnotherUtil.getdateNow()
+
+            currentUserDocRef.collection(newObjectiveGroup.id).add(defaulftUserGroupConfig)
 
             /*         // ajout de l'id du groupe à tous les autres membres sélectionnés pour ke groupe
                      for (itemuserId in members) {
@@ -237,6 +254,66 @@ object FireStoreUtil {
 
                 onListen(items)
             }
+    }
+
+
+    /** Cette fonction a pour but de creer et d'afficher la liste des membres d'un groupe d'objectif
+     * dans la page DetailsobjectiveGroupe**/
+   /* fun createObjectiveGroupMembersList(listOfMember: ArrayList<String>, context:Context) {
+        val items = mutableListOf<Item>()
+        for (itemPhonenumber in listOfMember) {
+            getUsersByPhoneNumber(itemPhonenumber, onComplete = {
+                var curentUserEntitie = UserGroupeEntitie(it.userName, )
+                items.add(
+                    UserGroupeitem(it, context)
+                )
+            })
+        }
+    }*/
+
+    /** cette méthode permet de recupérer un utilisateur àpartir de son Numero de télephone**/
+    private fun getUsersByPhoneNumber(userPhoneNumber: String, onComplete: (User) -> Unit) {
+        userCollection.document(userPhoneNumber).get()
+            .addOnSuccessListener { onComplete(it.toObject(User::class.java)!!) }
+    }
+
+    /** Cette fonction a pour but d'ajouter les informations de l'utilisateur dans
+     * un groupe d'objectif après qu'il ai valider son addésion par un lient dynamique **/
+    fun addUserToObjectiveGroup(objectivegroupId: String, onComplete: () -> Unit) {
+        val defaulftUserGroupConfig = mutableMapOf<String, Any>()
+        defaulftUserGroupConfig[GobalConfig.REFERENCE_ID_GROUPE_OF_ONE] = objectivegroupId
+        defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
+        defaulftUserGroupConfig[GobalConfig.DATE_CONTRIBUTED_ON_GROUP] = AnotherUtil.getdateNow()
+        currentUserDocRef.collection(objectivegroupId).add(defaulftUserGroupConfig)
+            .addOnSuccessListener {
+                onComplete()
+            }
+    }
+
+    /**  lorsqu'un membre du groupe décide de faire un payement dans le groupe,
+     * cette fonction est appélée dans le but d'accroite la contribution de l'utilisateur
+     * pour le groupe d'objectif**/
+    fun updateContributedAmountOnobjectiveGroup(
+        objectivegroupId: String,
+        newContributedAmount: Double,
+        onComplete: (status: Boolean) -> Unit
+    ) {
+        // on recupère d'abord la dernière contribution de l'utilisateur
+        currentUserDocRef.collection(objectivegroupId).document().get().addOnSuccessListener {
+            var oldContributedAmount = it[GobalConfig.CONTRIBUTED_USER_AMOUNT] as Double
+            oldContributedAmount += newContributedAmount
+            //ensuite on met à jours le nouveau solde de contribution
+            currentUserDocRef.collection(objectivegroupId).document()
+                .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, oldContributedAmount)
+                .addOnSuccessListener {
+                    Log.d("FireStoreUtil", "Solde mis à jours")
+                    onComplete(true)
+                }
+                .addOnFailureListener {
+                    Log.d("FireStoreUtil", "Solde non mis à jours")
+                    onComplete(false)
+                }
+        }
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

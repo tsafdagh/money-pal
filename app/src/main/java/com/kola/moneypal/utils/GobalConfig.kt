@@ -10,5 +10,7 @@ object GobalConfig {
 
     val EXTRAT_REFERENCE_OBJ_GROUP_STRING = "objective_group"
     val EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING = "objective_group_id"
+    val CONTRIBUTED_USER_AMOUNT = "montant_cotiser"
+    val DATE_CONTRIBUTED_ON_GROUP = "contributed_date"
 
 }

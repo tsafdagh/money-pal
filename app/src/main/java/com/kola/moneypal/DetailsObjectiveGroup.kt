@@ -1,8 +1,7 @@
 package com.kola.moneypal
 
-import android.annotation.TargetApi
-import android.icu.text.SimpleDateFormat
-import android.os.Build
+import android.annotation.SuppressLint
+import java.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,14 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
+import com.kola.moneypal.utils.AnotherUtil.getdateNow
 import com.kola.moneypal.utils.GobalConfig
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_details_objective_group.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import org.jetbrains.anko.toast
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,13 +42,20 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         id_text_objectif.text = objGroupe!!.groupeName
         id_val_solde_total.text = objGroupe.objectiveamount.toString()
 
-        val date = getCurrentDateTime()
-        val dateInString = date.toString("yyyy/MM/dd")
+        // val date = getCurrentDateTime()
+        //val dateInString = date.toString("yyyy/MM/dd")
 
-        val soldeCompteDate = getString(R.string.text_view_date) + " " + dateInString
+        val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
         id_text_solde_date.text = soldeCompteDate
-        val curenSold = objGroupe.courentAmount.toString() +getString(R.string.text_fcfa)
+        val curenSold = objGroupe.courentAmount.toString() + getString(R.string.text_fcfa)
         id_text_montnt.text = curenSold
+
+        id_add_member.setOnClickListener {
+            toast("Add member")
+        }
+        id_pay_member.setOnClickListener {
+            toast("Pay member")
+        }
 
         loadData()
     }
@@ -95,14 +101,15 @@ class DetailsObjectiveGroup : AppCompatActivity() {
     }
 
 
-    //TODO gerer la recuperation de la date actuelle pour les APIs < l'API 24
-    @TargetApi(Build.VERSION_CODES.N)
-    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
-        return formatter.format(this)
-    }
+    /* fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+         val formatter = SimpleDateFormat(format, locale)
+         return formatter.format(this)
 
-    fun getCurrentDateTime(): Date {
-        return Calendar.getInstance().time
-    }
+
+     }*/
+
+
+    /* fun getCurrentDateTime(): Date {
+         return Calendar.getInstance().time
+     }*/
 }

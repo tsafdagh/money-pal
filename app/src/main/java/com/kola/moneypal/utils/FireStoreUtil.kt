@@ -260,7 +260,6 @@ object FireStoreUtil {
 
     /** Cette fonction a pour but de creer et d'afficher la liste des membres d'un groupe d'objectif
      * dans la page DetailsobjectiveGroupe**/
-    //TODO cette fonction est à optimiser car elle ne fonctionne que pour un seul
     fun createObjectiveGroupMembersList(
         listOfMember: ArrayList<String>,
         context: Context,
@@ -268,8 +267,6 @@ object FireStoreUtil {
         onListen: (List<Item>) -> Unit
     ) {
         val items = mutableListOf<Item>()
-
-        var count = 1
 
         for (itemPhonenumber in listOfMember) {
             getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
@@ -289,7 +286,6 @@ object FireStoreUtil {
                             UserGroupeitem(curentUserGroupEntitie, context)
                         )
                         onListen(items)
-                        count++
                     }.addOnFailureListener {
                         Log.e("FireStorutil", it.printStackTrace().toString())
                     }

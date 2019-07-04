@@ -17,6 +17,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".mes_exemple.PieadCardActivity">
+
+        </activity>
         <activity android:name=".DetailsObjectiveGroup">
         </activity>
         <activity android:name=".mes_exemple.TestRemoteConfig">

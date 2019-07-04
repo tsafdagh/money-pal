@@ -25,7 +25,9 @@ import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.fragments.HomeFragment
 import com.kola.moneypal.fragments.ObjectifGroupFragment
+import com.kola.moneypal.fragments.StatistiquesFragment
 import com.kola.moneypal.glide.GlideApp
+import com.kola.moneypal.mes_exemple.PieadCardActivity
 import com.kola.moneypal.mes_exemple.ReadMessageActivity
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
@@ -55,13 +57,18 @@ class MainActivity : AppCompatActivity() {
         navView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_home -> {
-                    isWillHomeFragment =true
+                    isWillHomeFragment = true
                     replaceFragment(HomeFragment())
                     true
                 }
                 R.id.navigation_groupe -> {
-                    isWillHomeFragment =true
+                    isWillHomeFragment = true
                     replaceFragment(ObjectifGroupFragment())
+                    true
+                }
+                R.id.navigation_statistiques -> {
+                    isWillHomeFragment = true
+                    replaceFragment(StatistiquesFragment())
                     true
                 }
 
@@ -109,6 +116,8 @@ class MainActivity : AppCompatActivity() {
 
             R.id.id_menu_stat -> {
                 toast("statistiques")
+                startActivity<PieadCardActivity>()
+
             }
 
             R.id.id_menu_mon_compte -> {

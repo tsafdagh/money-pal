@@ -4,12 +4,17 @@
     <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/ic_home_black_24dp"
-    android:title="Home"/>
+    android:title="@string/Home"/>
 
     <item
             android:id="@+id/navigation_groupe"
             android:icon="@drawable/icon_groupe"
-            android:title="Objectifs"/>
+            android:title="@string/objectifs"/>
+
+    <item
+            android:id="@+id/navigation_statistiques"
+            android:icon="@drawable/icon_statistiques"
+            android:title="@string/statistiques"/>
 
 
 </menu>

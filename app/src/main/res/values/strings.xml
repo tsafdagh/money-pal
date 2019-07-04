@@ -18,7 +18,7 @@
     <string name="derniere_transaction">Derniere Transaction</string>
     <string name="vacance_a_kribi">Vacance A Kribi</string>
     <string name="chargement_des_transactions">Chargement des transactions...</string>
-    <string name="cliquez_dessus_pour_definir_une_photo_de_profils">Cliquez dessus pour definir une photo de profils
+    <string name="cliquez_dessus_pour_definir_une_photo_de_profils">Cliquez dessus pour definir/modifier une photo de profils
     </string>
     <string name="nom">nom</string>
     <string name="my_phone">telephone</string>
@@ -49,5 +49,7 @@
     <string name="transaction_item_par">par</string>
     <string name="date_echeance">date d\'échéance</string>
     <string name="text_fcfa">FCFA</string>
+    <string name="item_alert_dialog_lis_appelr">Appeller</string>
+    <string name="item_alert_dialog_transfert_argen">Transferer de l\'argent à</string>
 
 </resources>

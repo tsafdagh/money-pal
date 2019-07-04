@@ -10,6 +10,9 @@ class DetailsTransactonActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details_transacton)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
         var detai11 = intent.getStringExtra("PARAM1")
         var detai12 = intent.getStringExtra("PARAM2")
         var detai13 = intent.getStringExtra("PARAM3")

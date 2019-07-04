@@ -41,6 +41,10 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
+    companion object DEFAULT_FRAGMENT_CONFIG {
+        var isWillHomeFragment = true
+    }
+
     val listIdUserForGroup = ArrayList<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +55,12 @@ class MainActivity : AppCompatActivity() {
         navView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_home -> {
+                    isWillHomeFragment =true
                     replaceFragment(HomeFragment())
                     true
                 }
                 R.id.navigation_groupe -> {
+                    isWillHomeFragment =true
                     replaceFragment(ObjectifGroupFragment())
                     true
                 }
@@ -69,7 +75,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        replaceFragment(HomeFragment())
+        if (isWillHomeFragment)
+            replaceFragment(HomeFragment())
+        else {
+            replaceFragment(ObjectifGroupFragment())
+        }
 
     }
 
@@ -194,6 +204,20 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             progressdialog.dismiss()
                             toast("Groupe créer avec success")
+                            val objGroup = ObjectiveGroup(
+                                FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,
+                                mDialogView!!.id_edit_nom_groupe.text.toString(),
+                                mDialogView!!.id_editText_description_objectif.text.toString(),
+                                mDialogView!!.id_editText_objectif_amount.text.toString().toDouble(),
+                                0.0,
+                                Date(0),
+                                mDialogView!!.id_editText_dateEcheance.text.toString(),
+                                "",
+                                listIdUserForGroup
+                            )
+                            intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroup)
+                            intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupeId)
+                            startActivity(intent)
                         }
                     })
             } else {

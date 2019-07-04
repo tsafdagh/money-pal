@@ -18,6 +18,7 @@ import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.User
 import com.kola.moneypal.entities.UserGroupeEntitie
+import com.kola.moneypal.entities.UserInfoForGroup
 import com.xwray.groupie.kotlinandroidextensions.Item
 import java.util.*
 import kotlin.collections.ArrayList
@@ -155,6 +156,7 @@ object FireStoreUtil {
             //currentUserDocRef.collection(GobalConfig.REFERENCE_GROUPE_OF_ONE_USER)
             //    .add(defaulftUserGroupConfig)
 
+            //ajout de la reference du croupe céer armis les propriétés de l'utilisareur
             val defaulftUserGroupConfig = mutableMapOf<String, Any>()
             defaulftUserGroupConfig[GobalConfig.REFERENCE_ID_GROUPE_OF_ONE] = newObjectiveGroup.id
             defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
@@ -256,20 +258,89 @@ object FireStoreUtil {
             }
     }
 
-
     /** Cette fonction a pour but de creer et d'afficher la liste des membres d'un groupe d'objectif
      * dans la page DetailsobjectiveGroupe**/
-   /* fun createObjectiveGroupMembersList(listOfMember: ArrayList<String>, context:Context) {
+    //TODO cette fonction est à optimiser car elle ne fonctionne que pour un seul
+    fun createObjectiveGroupMembersList(
+        listOfMember: ArrayList<String>,
+        context: Context,
+        groupeId: String,
+        onListen: (List<Item>) -> Unit
+    ) {
         val items = mutableListOf<Item>()
+
+        var count = 1
+
         for (itemPhonenumber in listOfMember) {
-            getUsersByPhoneNumber(itemPhonenumber, onComplete = {
-                var curentUserEntitie = UserGroupeEntitie(it.userName, )
-                items.add(
-                    UserGroupeitem(it, context)
-                )
+            getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
+                // on recupère les informations de l'utilisateur pour le roupe courent
+                firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
+                    .addOnSuccessListener {
+                        val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
+                        val curentUserGroupEntitie = UserGroupeEntitie(
+                            user.userName,
+                            tmpinfo[0].contributed_date,
+                            tmpinfo[0].montant_cotiser,
+                            user.profilePicturePath!!,
+                            user.phoneNumber
+                        )
+
+                        items.add(
+                            UserGroupeitem(curentUserGroupEntitie, context)
+                        )
+                        onListen(items)
+                        count++
+                    }.addOnFailureListener {
+                        Log.e("FireStorutil", it.printStackTrace().toString())
+                    }
             })
         }
-    }*/
+
+        //onListen(items)
+    }
+
+    /**Joue le même rôle que la précedente mais uniquement pour un seul utilisateur du groupe**/
+    fun addCreateObjectiveGroupMembersList(
+        phoneNumber: String,
+        context: Context,
+        groupeId: String,
+        onListen: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return firestoreInstance.collection("users").document(phoneNumber).collection(groupeId)
+            .orderBy("contributed_date")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "ChatMessageslistener error.", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+                val items = mutableListOf<Item>()
+                querySnapshot!!.documents.forEach {
+
+                    getUsersByPhoneNumber(phoneNumber, onComplete = { user ->
+                        val tmpinfo = it.toObject(UserInfoForGroup::class.java)
+                        val curentUserGroupEntitie = UserGroupeEntitie(
+                            user.userName,
+                            tmpinfo!!.contributed_date,
+                            tmpinfo.montant_cotiser,
+                            user.profilePicturePath!!,
+                            user.phoneNumber
+                        )
+
+                        items.add(
+                            UserGroupeitem(curentUserGroupEntitie, context)
+                        )
+                        onListen(items)
+
+                    })
+
+                    return@forEach
+                }
+                //onListen(items)
+
+            }
+
+    }
+
 
     /** cette méthode permet de recupérer un utilisateur àpartir de son Numero de télephone**/
     private fun getUsersByPhoneNumber(userPhoneNumber: String, onComplete: (User) -> Unit) {

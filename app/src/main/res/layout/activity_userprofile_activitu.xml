@@ -157,6 +157,7 @@
                             android:layout_alignParentBottom="true"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorwhite"
+                            android:visibility="gone"
 
                             android:backgroundTint="#ee1010"
                             android:text="@string/supprimer_mon_compte"

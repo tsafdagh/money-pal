@@ -1,7 +1,5 @@
 package com.kola.moneypal
 
-import android.annotation.SuppressLint
-import java.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +8,7 @@ import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
 import com.kola.moneypal.utils.AnotherUtil.getdateNow
+import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
@@ -17,7 +16,6 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_details_objective_group.*
 import org.jetbrains.anko.toast
-import java.util.*
 import kotlin.collections.ArrayList
 
 class DetailsObjectiveGroup : AppCompatActivity() {
@@ -57,11 +55,11 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             toast("Pay member")
         }
 
-        loadData()
+        loadData(objGroupe, groupId)
     }
 
-    private fun loadData() {
-        val listOjectivegroupeuser = arrayListOf<Item>()
+    private fun loadData(objGroupe: ObjectiveGroup, groupeId: String?) {
+        /*val listOjectivegroupeuser = arrayListOf<Item>()
         //initialisation des transactions
         val transaction1 = UserGroupeEntitie("Martine", "Samedi 9", (35400).toDouble(), "imageUrl")
         val transaction2 = UserGroupeEntitie("Maximilien", "Samedi 9", (400).toDouble(), "imageUrl")
@@ -70,9 +68,18 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         listOjectivegroupeuser.add(UserGroupeitem(transaction1, this))
         listOjectivegroupeuser.add(UserGroupeitem(transaction2, this))
         listOjectivegroupeuser.add(UserGroupeitem(transaction3, this))
-        listOjectivegroupeuser.add(UserGroupeitem(transaction4, this))
-        updateRecycleViewUserobjectiveGroupe(listOjectivegroupeuser)
+        listOjectivegroupeuser.add(UserGroupeitem(transaction4, this))*/
 
+        FireStoreUtil.createObjectiveGroupMembersList(objGroupe.members as ArrayList<String>, this,groupeId!!,onListen = {
+            updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
+        })
+
+
+/*        for(phone in objGroupe.members!!){
+            FireStoreUtil.addCreateObjectiveGroupMembersList(phone, this,groupeId!!,onListen = {
+                updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
+            })
+        }*/
     }
 
     private fun updateRecycleViewUserobjectiveGroupe(listOjectivegroupeuser: ArrayList<Item>) {

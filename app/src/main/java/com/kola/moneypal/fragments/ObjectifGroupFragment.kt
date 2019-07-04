@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.ListenerRegistration
+import com.kola.moneypal.MainActivity
 
 import com.kola.moneypal.R
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
@@ -35,6 +36,8 @@ class ObjectifGroupFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        MainActivity.isWillHomeFragment = false
 
         groupeListenerRegistration = FireStoreUtil.addSearchGroupeListener("",
             this@ObjectifGroupFragment.context!!

@@ -142,7 +142,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setLasTTransaction(lastTransction: TransactionEntitie) {
-        if (lastTransction.montanttransaction > 0 && lastTransction.dateTransaction != "" && (lastTransction.libeleTransaction != "") && lastTransction.destinataire != "") {
+        if (lastTransction.montanttransaction > 0 && lastTransction.dateTransaction != "" && (lastTransction.libeleTransaction != "")) {
             // on nétoie d'abord toutes les transactions
             listTransactions.clear()
             listTransactions.add(TransactionItem(lastTransction, this@HomeFragment.context!!))
@@ -482,7 +482,6 @@ class HomeFragment : Fragment() {
         listcategorieTransaction.add(CategorieItem(cateorie1, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie3, this@HomeFragment.context!!))
         listcategorieTransaction.add(CategorieItem(cateorie4, this@HomeFragment.context!!))
-        listcategorieTransaction.add(CategorieItem(cateorie6, this@HomeFragment.context!!))
 
         //initialisation des transactions
         /* val transaction1 = TransactionEntitie("Transfert à", "Samedi 9", (35400).toDouble(), "imageUrl")

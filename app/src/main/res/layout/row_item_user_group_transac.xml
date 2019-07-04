@@ -3,9 +3,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cardView_item_person"
+        android:id="@+id/cardView_item_person_group"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:layout_margin="4dp"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@android:color/white"
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView_profile_picture"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -49,21 +49,32 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 tools:text="date"
                 android:layout_marginTop="5dp"/>
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:text="10000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="112dp"
+                android:layout_height="47dp"
                 android:id="@+id/id_tv_member_montant"
                 android:textSize="15sp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="61dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="26dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginBottom="23dp"
+                android:layout_marginTop="10dp"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/id_textview_date"
-                android:layout_marginStart="168dp"
+                android:layout_toEndOf="@+id/imageView_profile_picture"
+                android:layout_marginStart="157dp"
                 android:textColor="#FF5722"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" app:srcCompat="@android:drawable/ic_menu_add"
+                android:id="@+id/button_translate_item" android:layout_alignParentEnd="true"
+                android:layout_marginEnd="215dp"
+                android:layout_alignParentBottom="true" android:layout_marginBottom="33dp"
+                android:layout_marginTop="23dp" android:layout_alignParentTop="true"
+                android:visibility="gone"
+                android:layout_toEndOf="@+id/imageView_profile_picture" android:layout_marginStart="90dp"
+
+        />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

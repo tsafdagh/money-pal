@@ -15,6 +15,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ListenerRegistration
+import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
@@ -40,28 +42,38 @@ class DetailsObjectiveGroup : AppCompatActivity() {
     private lateinit var objGroupe: ObjectiveGroup
     private lateinit var groupId:String
 
+    private lateinit var specificgroupeListenerRegistration: ListenerRegistration
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details_objective_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        objGroupe = intent.getParcelableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING)
-        groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)
-        progressBar_p_objectif.apply {
-            max = objGroupe!!.objectiveamount.toInt()
-            progress = objGroupe.courentAmount.toInt()
-        }
+        objGroupe = intent.getParcelableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING)!!
+        groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
 
-        id_text_objectif.text = objGroupe!!.groupeName
-        id_val_solde_total.text = objGroupe.objectiveamount.toString()
+        specificgroupeListenerRegistration = FireStoreUtil.addFindSpecificGroupListener(groupId,onListen = {
+            progressBar_p_objectif.apply {
+                max = it.objectiveamount.toInt()
+                progress = it.courentAmount.toInt()
+                id_text_objectif.text = it.groupeName
+                id_val_solde_total.text = it.objectiveamount.toString()
+
+                val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
+                id_text_solde_date.text = soldeCompteDate
+                val curenSold = it.courentAmount.toString() + getString(R.string.text_fcfa)
+                id_text_montnt.text = curenSold
+
+                // on met à jours la liste des membres du groupe
+                FireStoreUtil.createObjectiveGroupMembersList(it.members as ArrayList<String>, applicationContext,groupId,onListen = {
+                        updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
+                    })
+            }
+        })
 
         // val date = getCurrentDateTime()
         //val dateInString = date.toString("yyyy/MM/dd")
-
-        val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
-        id_text_solde_date.text = soldeCompteDate
-        val curenSold = objGroupe.courentAmount.toString() + getString(R.string.text_fcfa)
-        id_text_montnt.text = curenSold
 
         id_add_member.setOnClickListener {
             toast("Add member")
@@ -147,13 +159,13 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                         appeler(usercontribution.phoneNumber)
                     }
                     items[1] ->{
-                        context.toast("Transferer de l'argent")
+                        toast("Transferer de l'argent")
                     }
                     items[2] ->{
-                        context.toast("Contribuer pour...")
+                        toast("Contribuer pour...")
                     }
                     else ->{
-                        context.toast("Action inconnue")
+                        toast("Action inconnue")
 
                     }
                 }
@@ -202,6 +214,11 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        FireStoreUtil.removeListener(specificgroupeListenerRegistration)
+        shouldInitrecycleView = true
+    }
 
     /* fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
          val formatter = SimpleDateFormat(format, locale)
@@ -214,4 +231,6 @@ class DetailsObjectiveGroup : AppCompatActivity() {
     /* fun getCurrentDateTime(): Date {
          return Calendar.getInstance().time
      }*/
+
+
 }

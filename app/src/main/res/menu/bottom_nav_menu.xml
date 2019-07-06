@@ -11,10 +11,10 @@
             android:icon="@drawable/icon_groupe"
             android:title="@string/objectifs"/>
 
-    <item
+<!--    <item
             android:id="@+id/navigation_statistiques"
             android:icon="@drawable/icon_statistiques"
-            android:title="@string/statistiques"/>
+            android:title="@string/statistiques"/>-->
 
 
 </menu>

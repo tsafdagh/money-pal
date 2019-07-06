@@ -337,6 +337,25 @@ object FireStoreUtil {
 
     }
 
+    /**cette fonction à pour but d'écouter en temps réel le évènement du groupe courent afin de
+     * faire à chaque fois une mise à jours quand il y'a changement
+     */
+    fun addFindSpecificGroupListener(
+        idGroup: String,
+        onListen: (ObjectiveGroup) -> Unit
+    ): ListenerRegistration {
+        return firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION).document(idGroup)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "Group listener error?", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
+                            onListen (newObjGroup)
+            }
+    }
+
 
     /** cette méthode permet de recupérer un utilisateur àpartir de son Numero de télephone**/
     private fun getUsersByPhoneNumber(userPhoneNumber: String, onComplete: (User) -> Unit) {

@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(ObjectifGroupFragment())
                     true
                 }
-                R.id.navigation_statistiques -> {
+       /*         R.id.navigation_statistiques -> {
                     isWillHomeFragment = true
                     replaceFragment(StatistiquesFragment())
                     true
-                }
+                }*/
 
                 else -> {
                     false

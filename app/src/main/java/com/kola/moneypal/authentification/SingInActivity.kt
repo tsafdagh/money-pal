@@ -24,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.kola.moneypal.MainActivity
 import com.kola.moneypal.datas.SharedPreference
 import com.kola.moneypal.datas.SheredprefKeysObj
+import com.kola.moneypal.intro_slider.FirtsSplashScreen
+import com.kola.moneypal.intro_slider.MainScreen
 import com.kola.moneypal.utils.FireStoreUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.snackbar
@@ -32,12 +34,13 @@ import org.jetbrains.anko.design.snackbar
 class SingInActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 1
+    private var preferenceManager: SharedPreference? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sing_in)
-
+        preferenceManager = SharedPreference(this)
         account_sign_in.setOnClickListener {
             startActivityForResult(
                 AuthUI.getInstance()
@@ -51,6 +54,10 @@ class SingInActivity : AppCompatActivity() {
                     .build(),
                 RC_SIGN_IN
             )
+        }
+        id_revoir_intro.setOnClickListener {
+            preferenceManager?.save(SheredprefKeysObj.FIRST_INITIALISATION_OF_APP, false)
+            startActivity(intentFor<FirtsSplashScreen>().newTask().clearTask())
         }
     }
 
@@ -97,6 +104,7 @@ class SingInActivity : AppCompatActivity() {
                                 getString(R.string.snack_bar_config_init_profil_erreur),
                                 Snackbar.LENGTH_LONG
                             ).show()
+                            startActivity(intentFor<UserprofileActivitu>().newTask().clearTask())
                         }
 
 

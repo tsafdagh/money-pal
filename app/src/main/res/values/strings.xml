@@ -36,7 +36,9 @@
     <string name="user_profil_nom_requis">Nom Requis!!</string>
     <string name="snack_bar_aucune_transaction">Aucune transaction orange détectée</string>
     <string name="addresse_email">addresse email</string>
-    <string name="snack_bar_config_init_profil_erreur">Erreur de confguration initial du profil</string>
+    <string name="snack_bar_config_init_profil_erreur">Erreur de configuration initial du profil, ce compte semble déja
+        exister
+    </string>
     <string name="pdialog_recherche_transactions">ReCherche des transactions...</string>
     <string name="chiquez_image_groupe">Cliquez pour sélectionner l\'image du groupe</string>
     <string name="nom_groupe">Nom du groupe ou objectif de cotisation</string>
@@ -55,5 +57,27 @@
     <string name="Home">Acceuil</string>
     <string name="objectifs">Objectifs</string>
     <string name="statistiques">Statistiques</string>
+    <string name="title_activity_firts_splash_screen">FirtsSplashScreen</string>
+
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Hello Food!</string>
+    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+
+    <string name="slide_2_title">Movie Tickets</string>
+    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+
+    <string name="slide_3_title">Great Discounts</string>
+    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+
+    <string name="slide_4_title">World Travel</string>
+    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+    <string name="revoir_l_intro">Revoir l\'intro</string>
 
 </resources>

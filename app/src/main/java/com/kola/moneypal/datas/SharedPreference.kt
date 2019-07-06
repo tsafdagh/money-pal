@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 
 object SheredprefKeysObj{
     val CREATEDACCOUNTSTATE = "KEY_USER_HAVE_TO_CREATE_ACCOUNT"
+    val FIRST_INITIALISATION_OF_APP = "FIRST_INITIALISATION_OF_APP"
 }
 
 class SharedPreference(val context: Context) {

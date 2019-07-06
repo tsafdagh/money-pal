@@ -43,12 +43,12 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
                             .into(viewHolder.imageView_profile_picture)
                     }
 
-            cardView_item_person_group.setOnClickListener {
+/*            cardView_item_person_group.setOnClickListener {
                 if(usercontribution.phoneNumber != FirebaseAuth.getInstance().currentUser?.phoneNumber){
                     context.toast("evenement de clique")
                     withItems(usercontribution)
                 }
-            }
+            }*/
         }
 
 
@@ -61,7 +61,7 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
 
     }
 
-    fun withItems(usercontribution: UserGroupeEntitie) {
+    /*fun withItems(usercontribution: UserGroupeEntitie) {
 
         val items = arrayOf(context.getString(R.string.item_alert_dialog_lis_appelr)+" "+usercontribution.username,
             context.getString(R.string.item_alert_dialog_transfert_argen)+" "+usercontribution.username,
@@ -92,10 +92,10 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
             setNegativeButton("ANULLER", negativeButton)
             show()
         }
-    }
+    }*/
 
 
-    val MY_PERMISSIONS_REQUEST_PONE_CALL =2
+    /*val MY_PERMISSIONS_REQUEST_PONE_CALL =2
     private fun appeler(phoneNumber: String) {
         //context.makeCall(phoneNumber)
 
@@ -132,7 +132,7 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
     }
     val negativeButton = { dialog: DialogInterface, which: Int ->
 
-    }
+    }*/
 
     override fun getLayout() = R.layout.row_item_user_group_transac
 }

@@ -76,8 +76,15 @@
     <string name="slide_4_title">World Travel</string>
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
-    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear
+        data
+    </string>
     <string name="play_again">Play Again</string>
     <string name="revoir_l_intro">Revoir l\'intro</string>
+    <string name="text_anuler_le_payement">Annuler le payement</string>
+    <string name="proceder_au_payement">Proceder au payement</string>
+    <string name="text_payement">Payement</string>
+    <string name="montant_contribution">Entrez le montant de votre contribution</string>
+    <string name="text_payement_montant_a_cotiser">Montant à cotiser :</string>
 
 </resources>

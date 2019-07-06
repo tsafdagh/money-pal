@@ -17,11 +17,14 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PayementActivity">
+  <!--          <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".DetailsObjectiveGroup"/>-->
+        </activity>
         <activity android:name=".intro_slider.MainScreen">
         </activity>
-
-        <activity
-                android:name=".intro_slider.FirtsSplashScreen">
+        <activity android:name=".intro_slider.FirtsSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -31,6 +34,9 @@
         <activity android:name=".mes_exemple.PieadCardActivity">
         </activity>
         <activity android:name=".DetailsObjectiveGroup">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
         </activity>
         <activity android:name=".mes_exemple.TestRemoteConfig">
         </activity>
@@ -47,9 +53,6 @@
         <activity
                 android:name=".authentification.SplashActivity"
                 android:theme="@style/LoginTheme">
-
-
-
         </activity>
         <activity android:name=".authentification.SingInActivity">
         </activity>
@@ -59,7 +62,10 @@
                 android:name=".MainActivity"
                 android:label="@string/app_name">
         </activity>
-        <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
+
+        <meta-data
+                android:name="preloaded_fonts"
+                android:resource="@array/preloaded_fonts"/>
     </application>
 
 </manifest>

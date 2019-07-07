@@ -13,5 +13,30 @@
         <key>welcome_message</key>
         <value>Welcome to my awesome app!</value>
     </entry>
+    <entry>
+        <key>demarage_de_toutes_les_applis_via_demo</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>message_splash_sreen1</key>
+        <value>Transferez de l'argent en toutes simplicité et en toute sécurité</value>
+    </entry>
+    <entry>
+        <key>message_splash_sreen2</key>
+        <value>Comptabiliser vos entrées-sorties de votre compte mobile n'a jamais été aussi  simple</value>
+    </entry>
+    <entry>
+        <key>message_splash_sreen3</key>
+        <value>Creer des objectifs, fixéz un montant et invitez vos amis à rejointre votre objectif</value>
+    </entry>
+    <entry>
+        <key>fragment_objective_group_color_middle</key>
+        <value>#000000</value>
+    </entry>
+    <entry>
+        <key>fragment_objective_group_color_header</key>
+        <value>#42C4D3</value>
+    </entry>
+
 </defaultsMap>
         <!-- END xml_defaults -->

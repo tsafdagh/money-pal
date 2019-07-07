@@ -1,14 +1,17 @@
 package com.kola.moneypal.mes_exemple
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.kola.moneypal.BuildConfig
 import com.kola.moneypal.R
 import kotlinx.android.synthetic.main.activity_test_remote_config.*
+import org.jetbrains.anko.backgroundColor
 
 class TestRemoteConfig : AppCompatActivity() {
 
@@ -33,7 +36,7 @@ class TestRemoteConfig : AppCompatActivity() {
             .setDeveloperModeEnabled(BuildConfig.DEBUG)
             .setMinimumFetchIntervalInSeconds(4200)
             .build()
-        remoteConfig.setConfigSettings(configSettings)
+        remoteConfig.setConfigSettingsAsync(configSettings)
         // [END enable_dev_mode]
 
         // Set default Remote Config parameter values. An app uses the in-app default values, and
@@ -62,7 +65,7 @@ class TestRemoteConfig : AppCompatActivity() {
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val updated = task.getResult()
+                    val updated = task.result
                     Log.d(TAG, "Config params updated: $updated")
                     Toast.makeText(
                         this, "Fetch and activate succeeded",
@@ -90,6 +93,21 @@ class TestRemoteConfig : AppCompatActivity() {
         // [END get_config_values]
         welcomeTextView.isAllCaps = remoteConfig.getBoolean(WELCOME_MESSAGE_CAPS_KEY)
         welcomeTextView.text = welcomeMessage
+
+        val isDefaultConfigActivated =  remoteConfig.getBoolean(DEMARER_TOUTES_LES8_APPLIS_VIA_DEMO)
+        if(isDefaultConfigActivated){
+            welcomeTextView3.text = remoteConfig.getString(MESSAGE_SPLASH_SCREEN3)
+            default_config2.text = remoteConfig.getString(MESSAGE_SPLASH_SCREEN2)
+            default_config1.text = remoteConfig.getString(MESSAGE_SPLASH_SCREEN1)
+        }else{
+            Snackbar.make(test_remote_id, "mise à jours des configs désactivée",Snackbar.LENGTH_LONG).show()
+        }
+
+        val headerColor = remoteConfig.getString(COULEUR_ENTETE_OBJECTIVE_GROUP_FRAMENT)
+        val conlordMiddle = remoteConfig.getString(COULEUR_MILIEUR_OBJECTIVE_GROUP_FRAMENT)
+        test_remote_id.backgroundColor = Color.parseColor(headerColor!!)
+        fetchButton.setBackgroundColor(Color.parseColor(conlordMiddle))
+
     }
 
 
@@ -101,6 +119,13 @@ class TestRemoteConfig : AppCompatActivity() {
         private const val LOADING_PHRASE_CONFIG_KEY = "loading_phrase"
         private const val WELCOME_MESSAGE_KEY = "welcome_message"
         private const val WELCOME_MESSAGE_CAPS_KEY = "welcome_message_caps"
+        private const val MESSAGE_SPLASH_SCREEN1 = "message_splash_sreen1"
+        private const val MESSAGE_SPLASH_SCREEN2 = "message_splash_sreen2"
+        private const val MESSAGE_SPLASH_SCREEN3 = "message_splash_sreen3"
+        private const val DEMARER_TOUTES_LES8_APPLIS_VIA_DEMO = "demarage_de_toutes_les_applis_via_demo"
+
+        private const val COULEUR_MILIEUR_OBJECTIVE_GROUP_FRAMENT = "fragment_objective_group_color_middle"
+        private const val COULEUR_ENTETE_OBJECTIVE_GROUP_FRAMENT = "fragment_objective_group_color_header"
     }
 
 }

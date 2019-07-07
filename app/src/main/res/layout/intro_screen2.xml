@@ -7,32 +7,31 @@
               android:background="@color/fui_linkColor">
 
     <TextView
-            android:text="Comptabiliser vos entrées-sorties de votre compte mobile  n'a jamais été aussi simple"
+            android:text="@string/text_view_slide2"
             android:layout_width="match_parent"
             android:textSize="25dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#A5EEF7"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-
             android:fontFamily="@font/amita_bold"
             android:id="@+id/textView"
-/>
+    />
     <ImageView
             android:layout_width="327dp"
             android:layout_height="153dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ilustration_statistiques"
-            android:id="@+id/imageView"/>
+            android:id="@+id/imageViewslide2"/>
     <TextView
             android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:textAlignment="center"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/white"
+            android:textColor="#A2F3FA"
             android:textStyle="bold"
-            android:text="Statistiques de vos transactions"
+            android:text="@string/secondtext_view_slide2"
             android:textSize="30dp"
 
 

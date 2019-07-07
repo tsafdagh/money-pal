@@ -11,6 +11,7 @@ import com.kola.moneypal.utils.GobalConfig
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_objective_group.*
+import org.jetbrains.anko.toast
 
 
 class ObjectivegroupItem(
@@ -24,6 +25,7 @@ class ObjectivegroupItem(
         viewHolder.id_textview_description_group_item.text = obgroup.groupeDescription
         viewHolder.id_tv_montant_cotiser.text = obgroup.courentAmount.toString() + " F."
         viewHolder.id_tv_objective_amount.text = obgroup.objectiveamount.toString() + " F."
+        context.toast("Id admin: "+obgroup.adminPhoneNumber)
         if (obgroup.groupIcon != "") {
             GlideApp.with(context)
                 .load(obgroup.groupIcon)

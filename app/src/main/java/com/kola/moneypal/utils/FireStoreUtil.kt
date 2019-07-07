@@ -20,6 +20,7 @@ import com.kola.moneypal.entities.User
 import com.kola.moneypal.entities.UserGroupeEntitie
 import com.kola.moneypal.entities.UserInfoForGroup
 import com.xwray.groupie.kotlinandroidextensions.Item
+import org.jetbrains.anko.toast
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -221,7 +222,7 @@ object FireStoreUtil {
                                  du groupe on affiche le groupe dans son telephone
                                  */
                                 if (itm == FirebaseAuth.getInstance().currentUser?.phoneNumber
-                                    || curentGroup.AdminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
+                                    || curentGroup.adminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
                                 ) {
 
 
@@ -243,7 +244,7 @@ object FireStoreUtil {
                              du groupe on affiche le groupe dans son telephone */
 
                             if (itm == FirebaseAuth.getInstance().currentUser?.phoneNumber
-                                || curentGroup.AdminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
+                                || curentGroup.adminPhoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber
                             ) {
                                 items.add(ObjectivegroupItem(it.toObject(ObjectiveGroup::class.java)!!, it.id, context))
                                 break
@@ -267,10 +268,11 @@ object FireStoreUtil {
         onListen: (List<Item>) -> Unit
     ) {
         val items = mutableListOf<Item>()
+        GobalConfig.contributedAmountForGroup = 0.0
 
         for (itemPhonenumber in listOfMember) {
             getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
-                // on recupère les informations de l'utilisateur pour le roupe courent
+                // on recupère les informations de l'utilisateur pour le groupe courent
                 firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
                     .addOnSuccessListener {
                         val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
@@ -281,7 +283,8 @@ object FireStoreUtil {
                             user.profilePicturePath!!,
                             user.phoneNumber
                         )
-
+                       // context.toast(curentUserGroupEntitie.toString())
+                        GobalConfig.contributedAmountForGroup = GobalConfig.contributedAmountForGroup+curentUserGroupEntitie.contributionMontant
                         items.add(
                             UserGroupeitem(curentUserGroupEntitie, context)
                         )
@@ -352,10 +355,9 @@ object FireStoreUtil {
                 }
 
                 val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
-                            onListen (newObjGroup)
+                onListen(newObjGroup)
             }
     }
-
 
     /** cette méthode permet de recupérer un utilisateur àpartir de son Numero de télephone**/
     private fun getUsersByPhoneNumber(userPhoneNumber: String, onComplete: (User) -> Unit) {

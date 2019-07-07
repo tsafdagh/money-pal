@@ -13,4 +13,7 @@ object GobalConfig {
     val CONTRIBUTED_USER_AMOUNT = "montant_cotiser"
     val DATE_CONTRIBUTED_ON_GROUP = "contributed_date"
 
+
+
+    var contributedAmountForGroup :Double = 0.0
 }

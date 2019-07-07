@@ -7,12 +7,12 @@
               android:background="@color/colorPrimaryDark">
 
     <TextView
-            android:text="Transferez de l'argent en toutes simplicité et en toute sécurité"
+            android:text="@string/text_view_slide1"
             android:id="@+id/textView"
 
             android:layout_width="match_parent"
             android:textSize="25dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#A3EFF7"
             android:layout_height="wrap_content"
             android:textAlignment="center"
 
@@ -30,9 +30,9 @@
             android:textAlignment="center"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/white"
+            android:textColor="#7DEEE4"
 
-            android:text="Transfert d'argent"
+            android:text="@string/second_text_view_slide2"
             android:textSize="30dp"
             android:textStyle="bold"/>
 

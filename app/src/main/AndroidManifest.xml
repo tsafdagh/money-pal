@@ -66,6 +66,9 @@
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts"/>
+        <meta-data
+                android:name="com.hover.ApiKey"
+                android:value="fde21e57e7a350536109737e3910c57b"/>
     </application>
 
 </manifest>

@@ -15,9 +15,13 @@ import androidx.viewpager.widget.PagerAdapter
 import android.content.Intent
 import android.graphics.Color
 import android.text.Html
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.kola.moneypal.authentification.SingInActivity
 import com.kola.moneypal.datas.SharedPreference
 import com.kola.moneypal.datas.SheredprefKeysObj
+import com.kola.moneypal.glide.GlideApp
+import kotlinx.android.synthetic.main.activity_firts_splash_screen.view.*
+import kotlinx.android.synthetic.main.intro_screen2.*
 
 
 class MainScreen : AppCompatActivity() {
@@ -59,6 +63,7 @@ class MainScreen : AppCompatActivity() {
         Skip!!.setOnClickListener {
             skip(it)
         }
+
     }
 
     fun next(v: View) {
@@ -133,6 +138,7 @@ class MainScreen : AppCompatActivity() {
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             inflater = LayoutInflater.from(context)
             val view = inflater!!.inflate(screens[position], container, false)
+
             container.addView(view)
             return view
         }

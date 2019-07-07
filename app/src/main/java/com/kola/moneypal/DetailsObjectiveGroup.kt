@@ -40,7 +40,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     private lateinit var usergroupSection: Section
     private lateinit var objGroupe: ObjectiveGroup
-    private lateinit var groupId:String
+    private lateinit var groupId: String
 
     private lateinit var specificgroupeListenerRegistration: ListenerRegistration
 
@@ -50,25 +50,33 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         setContentView(R.layout.activity_details_objective_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        objGroupe = intent.getParcelableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING)!!
+        objGroupe = (intent.getSerializableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING) as ObjectiveGroup?)!!
         groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
 
-        specificgroupeListenerRegistration = FireStoreUtil.addFindSpecificGroupListener(groupId,onListen = {
+        specificgroupeListenerRegistration = FireStoreUtil.addFindSpecificGroupListener(groupId, onListen = {
             progressBar_p_objectif.apply {
                 max = it.objectiveamount.toInt()
-                progress = it.courentAmount.toInt()
+                //progress = it.courentAmount.toInt()
                 id_text_objectif.text = it.groupeName
-                id_val_solde_total.text = it.objectiveamount.toString()
-
-                val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
-                id_text_solde_date.text = soldeCompteDate
-                val curenSold = it.courentAmount.toString() + getString(R.string.text_fcfa)
-                id_text_montnt.text = curenSold
 
                 // on met à jours la liste des membres du groupe
-                FireStoreUtil.createObjectiveGroupMembersList(it.members as ArrayList<String>, applicationContext,groupId,onListen = {
-                        updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
-                    })
+                FireStoreUtil.createObjectiveGroupMembersList(
+                    it.members as ArrayList<String>,
+                    applicationContext,
+                    groupId,
+                    onListen = { item ->
+                        updateRecycleViewUserobjectiveGroupe(item as ArrayList<Item>)
+                        progress =(GobalConfig.contributedAmountForGroup /2 ).toInt()
+
+                        id_val_solde_total.text = it.objectiveamount.toString()
+                        val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
+                        id_text_solde_date.text = soldeCompteDate
+                        val curenSold = (GobalConfig.contributedAmountForGroup /2 ).toString() + getString(R.string.text_fcfa)
+                        id_text_montnt.text = curenSold
+                    }
+                )
+                GobalConfig.contributedAmountForGroup = 0.0
+
             }
         })
 
@@ -101,9 +109,13 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         listOjectivegroupeuser.add(UserGroupeitem(transaction3, this))
         listOjectivegroupeuser.add(UserGroupeitem(transaction4, this))*/
 
-        FireStoreUtil.createObjectiveGroupMembersList(objGroupe.members as ArrayList<String>, this,groupeId!!,onListen = {
-            updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
-        })
+        FireStoreUtil.createObjectiveGroupMembersList(
+            objGroupe.members as ArrayList<String>,
+            this,
+            groupeId!!,
+            onListen = {
+                updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
+            })
 
 /*        for(phone in objGroupe.members!!){
             FireStoreUtil.addCreateObjectiveGroupMembersList(phone, this,groupeId!!,onListen = {
@@ -119,10 +131,10 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                 adapter = GroupAdapter<ViewHolder>().apply {
                     usergroupSection = Section(listOjectivegroupeuser)
                     add(usergroupSection)
-                    setOnItemClickListener{item: com.xwray.groupie.Item<*>, view: View ->
+                    setOnItemClickListener { item: com.xwray.groupie.Item<*>, view: View ->
                         val curentItem = item as UserGroupeitem
                         view.cardView_item_person_group.setOnClickListener {
-                            if(curentItem.usercontribution.phoneNumber != FirebaseAuth.getInstance().currentUser?.phoneNumber){
+                            if (curentItem.usercontribution.phoneNumber != FirebaseAuth.getInstance().currentUser?.phoneNumber) {
                                 withItems(curentItem.usercontribution)
                             }
                         }
@@ -146,25 +158,27 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     fun withItems(usercontribution: UserGroupeEntitie) {
 
-        val items = arrayOf(getString(R.string.item_alert_dialog_lis_appelr)+" "+usercontribution.username,
-            getString(R.string.item_alert_dialog_transfert_argen)+" "+usercontribution.username,
-            "Contribuer pour "+usercontribution.username)
+        val items = arrayOf(
+            getString(R.string.item_alert_dialog_lis_appelr) + " " + usercontribution.username,
+            getString(R.string.item_alert_dialog_transfert_argen) + " " + usercontribution.username,
+            "Contribuer pour " + usercontribution.username
+        )
         val builder = AlertDialog.Builder(this)
         with(builder)
         {
             setTitle("Choisir une action")
             setItems(items) { dialog, which ->
-                when(items[which]){
-                    items[0] ->{
+                when (items[which]) {
+                    items[0] -> {
                         appeler(usercontribution.phoneNumber)
                     }
-                    items[1] ->{
+                    items[1] -> {
                         toast("Transferer de l'argent")
                     }
-                    items[2] ->{
+                    items[2] -> {
                         toast("Contribuer pour...")
                     }
-                    else ->{
+                    else -> {
                         toast("Action inconnue")
 
                     }
@@ -177,38 +191,45 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         }
     }
 
-    val MY_PERMISSIONS_REQUEST_PONE_CALL =2
+    val MY_PERMISSIONS_REQUEST_PONE_CALL = 2
     private fun appeler(phoneNumber: String) {
         //context.makeCall(phoneNumber)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             // Permission is not granted
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this as Activity,
-                    Manifest.permission.CALL_PHONE)) {
+                    Manifest.permission.CALL_PHONE
+                )
+            ) {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(
+                    this,
                     arrayOf(Manifest.permission.CALL_PHONE),
-                    MY_PERMISSIONS_REQUEST_PONE_CALL)
+                    MY_PERMISSIONS_REQUEST_PONE_CALL
+                )
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
-        }else{
+        } else {
             makeCall(phoneNumber)
         }
 
     }
 
     val positiveButtonClick = { dialog: DialogInterface, which: Int ->
-        Toast.makeText(this,
-            android.R.string.no, Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this,
+            android.R.string.no, Toast.LENGTH_SHORT
+        ).show()
     }
     val negativeButton = { dialog: DialogInterface, which: Int ->
 

@@ -64,7 +64,7 @@
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
-    <string name="slide_1_title">Hello Food!</string>
+<!--    <string name="slide_1_title">Hello Food!</string>
     <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
 
     <string name="slide_2_title">Movie Tickets</string>
@@ -79,12 +79,26 @@
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear
         data
     </string>
-    <string name="play_again">Play Again</string>
+    <string name="play_again">Play Again</string>-->
     <string name="revoir_l_intro">Revoir l\'intro</string>
     <string name="text_anuler_le_payement">Annuler le payement</string>
     <string name="proceder_au_payement">Proceder au payement</string>
     <string name="text_payement">Payement</string>
     <string name="montant_contribution">Entrez le montant de votre contribution</string>
     <string name="text_payement_montant_a_cotiser">Montant à cotiser :</string>
+    <string name="text_view_slide1">Transferez de l\'argent en toutes simplicité et en toute sécurité</string>
+    <string name="second_text_view_slide2">Transfert d\'argent</string>
+    <string name="text_view_slide2">Comptabiliser vos entrées-sorties de votre compte mobile n\'a jamais été aussi
+        simple
+    </string>
+    <string name="secondtext_view_slide2">Statistiques de vos transactions</string>
+    <string name="text_view_slide3">Creer des objectifs, fixéz un montant et invitez vos amis à rejointre votre
+        objectif
+    </string>
+    <string name="secondtext_view_slide3">Groupe d\'objectif</string>
+    <string name="ms_entre_mnt_correct">Entrez un montant non vide!!</string>
+    <string name="snack_bar_erreur_action_payement_sim">Désoler nous n\'avons pas pu détecter une carte SIM compatible
+        pour ce payement dans votre telephone
+    </string>
 
 </resources>

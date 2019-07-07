@@ -23,6 +23,7 @@ import com.kola.moneypal.entities.UserGroupeEntitie
 import com.kola.moneypal.utils.AnotherUtil.getdateNow
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
+import com.kola.moneypal.utils.LocalPhoneUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -38,6 +39,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     private var shouldInitrecycleView = true
 
+    val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1
     private lateinit var usergroupSection: Section
     private lateinit var objGroupe: ObjectiveGroup
     private lateinit var groupId: String
@@ -66,12 +68,13 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                     groupId,
                     onListen = { item ->
                         updateRecycleViewUserobjectiveGroupe(item as ArrayList<Item>)
-                        progress =(GobalConfig.contributedAmountForGroup /2 ).toInt()
+                        progress = (GobalConfig.contributedAmountForGroup / 2).toInt()
 
                         id_val_solde_total.text = it.objectiveamount.toString()
                         val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
                         id_text_solde_date.text = soldeCompteDate
-                        val curenSold = (GobalConfig.contributedAmountForGroup /2 ).toString() + getString(R.string.text_fcfa)
+                        val curenSold =
+                            (GobalConfig.contributedAmountForGroup / 2).toString() + getString(R.string.text_fcfa)
                         id_text_montnt.text = curenSold
                     }
                 )
@@ -85,6 +88,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
         id_add_member.setOnClickListener {
             toast("Add member")
+            getContactList()
         }
         id_pay_member.setOnClickListener {
             toast("Payer votre contribution")
@@ -122,6 +126,40 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                 updateRecycleViewUserobjectiveGroupe(it as ArrayList<Item>)
             })
         }*/
+    }
+
+    private fun getContactList() {
+
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_CONTACTS
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.READ_CONTACTS
+                )
+            ) {
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_CONTACTS),
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS
+                )
+
+            }
+        } else {
+            for (item in LocalPhoneUtil.getAllContacts(this))
+                toast(item.toString())
+        }
+
     }
 
     private fun updateRecycleViewUserobjectiveGroupe(listOjectivegroupeuser: ArrayList<Item>) {
@@ -253,5 +291,25 @@ class DetailsObjectiveGroup : AppCompatActivity() {
          return Calendar.getInstance().time
      }*/
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_READ_CONTACTS -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    for (item in LocalPhoneUtil.getAllContacts(this))
+                        toast(item.toString())
+                } else {
+                    toast("Vous devez accepter la permission")
 
+                }
+                return
+            }
+            else -> {
+
+            }
+        }
+    }
 }

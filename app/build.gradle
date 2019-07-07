@@ -43,7 +43,7 @@ dependencies {
     implementation('com.hover:android-sdk:1.2.2') { transitive = true; }
 
 
-
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -89,7 +89,7 @@ dependencies {
     //histogrammes pour les statistiques
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-
+    implementation 'com.google.firebase:firebase-dynamic-links:18.0.0'
     androidExtensions {
         experimental = true
     }

@@ -15,10 +15,12 @@ import com.kola.moneypal.utils.PayementConfiguration
 import kotlinx.android.synthetic.main.activity_payement.*
 import org.jetbrains.anko.toast
 import com.hover.sdk.permissions.PermissionActivity
+import com.kola.moneypal.utils.FireStoreUtil
 import java.util.ArrayList
 
 
 class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
+    var montantRestant = 0.0
     override fun onError(p0: String?) {
         toast("erreur de télécharger de l'action " + p0)
 
@@ -37,13 +39,20 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
         setContentView(R.layout.activity_payement)
         // supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // initialisation de l'api de payement
-        Hover.initialize(applicationContext, this)
-        //on demande d'abord toutes les permissions
-        //startActivityForResult(Intent(this, PermissionActivity::class.java), 0)
 
         objGroupe = (intent.getSerializableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING) as ObjectiveGroup?)!!
         groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
+
+        GobalConfig.contributedAmountForGroup = 0.0
+        FireStoreUtil.evaluateCurrentAmountOfObjectiveGroup(this, groupId, onListen = {
+            val currentAmount = GobalConfig.contributedAmountForGroup
+            montantRestant = objGroupe.objectiveamount - currentAmount
+            val montantRestantString =
+                getString(R.string.montant_restant_text) + (montantRestant).toString() + " FCFA"
+            id_montant_restant_group_payement.text = montantRestantString
+            GobalConfig.contributedAmountForGroup = 0.0
+
+        })
 
         id_edit_nom_groupe_payement.text = objGroupe.groupeName
         id_description_group_payement.text = objGroupe.groupeDescription
@@ -54,7 +63,11 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             montantAPayer = id_editText_montant_payement.text.toString()
             if (montantAPayer == "") {
                 id_editText_montant_payement.error = getString(R.string.ms_entre_mnt_correct)
-            } else payementProcess(montantAPayer)
+            } else {
+                if(montantAPayer.toDouble() <= montantRestant){
+                    payementProcess(montantAPayer)
+                }else  id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
+            }
         }
 
         btn_annuler_payement.setOnClickListener {
@@ -67,6 +80,11 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             .load(objGroupe.groupIcon)
             .placeholder(R.drawable.noun_user_group_)
             .into(imageView_profile_groupe_picture)
+
+        // initialisation de l'api de payement
+        Hover.initialize(applicationContext, this)
+        //on demande d'abord toutes les permissions
+        //startActivityForResult(Intent(this, PermissionActivity::class.java), 0)
     }
 
     private fun payementProcess(montant: String) {

@@ -97,16 +97,36 @@
                     android:paddingTop="13dp"
                     android:paddingRight="15dp">
 
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/montant_objectif"
+                    android:id="@+id/id_montant_a_cotiser_group_payement"
+                    android:maxLines="3"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorPrimaryDark"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/id_input_layout_montant_restant"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="13dp"
+                    android:paddingRight="15dp">
+
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/montant_objectif"
-                        android:id="@+id/id_montant_a_cotiser_group_payement"
+                        android:text="@string/montant_restant_text"
+                        android:id="@+id/id_montant_restant_group_payement"
                         android:maxLines="3"
                         android:textAlignment="center"
                         android:textSize="20sp"
                         android:textColor="@color/colorPrimaryDark"/>
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

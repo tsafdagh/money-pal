@@ -15,12 +15,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.ListenerRegistration
-import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
+import com.kola.moneypal.fragments.SelectUserListDialogFragment
 import com.kola.moneypal.utils.AnotherUtil.getdateNow
+import com.kola.moneypal.utils.DynamicLinkUtil
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
 import com.kola.moneypal.utils.LocalPhoneUtil
@@ -29,7 +31,6 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_details_objective_group.*
-import kotlinx.android.synthetic.main.row_item_user_group_transac.*
 import kotlinx.android.synthetic.main.row_item_user_group_transac.view.*
 import org.jetbrains.anko.makeCall
 import org.jetbrains.anko.toast
@@ -38,20 +39,38 @@ import kotlin.collections.ArrayList
 class DetailsObjectiveGroup : AppCompatActivity() {
 
     private var shouldInitrecycleView = true
-
     val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1
     private lateinit var usergroupSection: Section
     private lateinit var objGroupe: ObjectiveGroup
     private lateinit var groupId: String
+    private var contributedCurentAmount: Double = 0.0
 
     private lateinit var specificgroupeListenerRegistration: ListenerRegistration
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details_objective_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+/*        // si l'activité s'ouvre via le clique sur un lien dynamique
+        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
+            .addOnSuccessListener {
+                if(it!=null){
+                    var deepLink=it.link
+                    toast(deepLink.toString())
+                }
+            }
+            .addOnFailureListener {
+                // initialisation par défaut de la vue
+                defaultInitView()
+            }.addOnCompleteListener {
+                toast("oncomplete${it.result}")
+            }*/
+
+        defaultInitView()
+    }
+
+    private fun defaultInitView() {
         objGroupe = (intent.getSerializableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING) as ObjectiveGroup?)!!
         groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
 
@@ -62,23 +81,25 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                 id_text_objectif.text = it.groupeName
 
                 // on met à jours la liste des membres du groupe
+                GobalConfig.contributedAmountForGroup = 0.0
                 FireStoreUtil.createObjectiveGroupMembersList(
                     it.members as ArrayList<String>,
                     applicationContext,
                     groupId,
                     onListen = { item ->
+                        contributedCurentAmount = GobalConfig.contributedAmountForGroup / 2
                         updateRecycleViewUserobjectiveGroupe(item as ArrayList<Item>)
-                        progress = (GobalConfig.contributedAmountForGroup / 2).toInt()
+                        progress = (contributedCurentAmount).toInt()
 
                         id_val_solde_total.text = it.objectiveamount.toString()
                         val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
                         id_text_solde_date.text = soldeCompteDate
                         val curenSold =
-                            (GobalConfig.contributedAmountForGroup / 2).toString() + getString(R.string.text_fcfa)
+                            (contributedCurentAmount).toString() + getString(R.string.text_fcfa)
                         id_text_montnt.text = curenSold
+                        GobalConfig.contributedAmountForGroup = 0.0
                     }
                 )
-                GobalConfig.contributedAmountForGroup = 0.0
 
             }
         })
@@ -88,13 +109,14 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
         id_add_member.setOnClickListener {
             toast("Add member")
-            getContactList()
+            shareLink()
         }
         id_pay_member.setOnClickListener {
             toast("Payer votre contribution")
             val intent = Intent(this, PayementActivity::class.java)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroupe)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupId)
+            //intent.putExtra(GobalConfig.COUREN_AMOUNT_OF_CURENT_CONTRIBUTED_AMOUNT, contributedCurentAmount)
             startActivity(intent)
         }
 
@@ -156,8 +178,11 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
             }
         } else {
-            for (item in LocalPhoneUtil.getAllContacts(this))
-                toast(item.toString())
+            val myModal = SelectUserListDialogFragment()
+            myModal.show(supportFragmentManager, "Selectionnez les personnes à inviter")
+
+            //for (item in LocalPhoneUtil.getAllContacts(this))
+                //toast(item.toString())
         }
 
     }
@@ -312,4 +337,15 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             }
         }
     }
+
+    fun shareLink(){
+        val intent =Intent()
+        val message = "Veuillez vous joindre à notre objectif via le lien suivant: "+DynamicLinkUtil.generateContentLink(groupId)
+        intent.action = Intent.ACTION_SEND
+        intent.putExtra(Intent.EXTRA_TEXT, message)
+        intent.type = "text/plain"
+        startActivity(intent)
+
+    }
+
 }

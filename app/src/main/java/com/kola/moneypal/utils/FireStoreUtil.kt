@@ -14,6 +14,7 @@ import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
+import com.kola.moneypal.RecycleView.item.SimpleuserItem
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.User
@@ -298,6 +299,61 @@ object FireStoreUtil {
         //onListen(items)
     }
 
+
+
+    /**Cette fonction a pour but d'évaluer le montant courrent d'un group dobjectif donner*
+     * NB: elle est simpilaire à fonction précedente à la difference qu'elle ne prend pas en
+     * entrée la liste des membres mais elle se charge de la créer toute seule
+     * */
+    fun evaluateCurrentAmountOfObjectiveGroup(
+        context: Context,
+        groupeId: String,
+        onListen: (List<Item>) -> Unit
+    ) {
+
+        val items = mutableListOf<Item>()
+        // on commence par recuperer le groupe à partir de son ID et on parcout les soldes conntribués de ses membres
+        findSpecificGroupByID(groupeId, onComplete = {objectiveGroup ->
+            for (itemPhonenumber in objectiveGroup.members!!) {
+                getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
+                    // on recupère les informations de l'utilisateur pour le groupe courent
+                    firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
+                        .addOnSuccessListener {
+                            val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
+                            val curentUserGroupEntitie = UserGroupeEntitie(
+                                user.userName,
+                                tmpinfo[0].contributed_date,
+                                tmpinfo[0].montant_cotiser,
+                                user.profilePicturePath!!,
+                                user.phoneNumber
+                            )
+                            // context.toast(curentUserGroupEntitie.toString())
+                            GobalConfig.contributedAmountForGroup = GobalConfig.contributedAmountForGroup+curentUserGroupEntitie.contributionMontant
+                            items.add(
+                                UserGroupeitem(curentUserGroupEntitie, context)
+                            )
+                            onListen(items)
+                        }.addOnFailureListener {
+                            Log.e("FireStorutil", it.printStackTrace().toString())
+                        }
+                })
+            }
+        })
+    }
+
+    /**Cette fonction a pour but de retourner un groupe donnée à partir de son ID**/
+    private fun findSpecificGroupByID(
+        idGroup: String,
+        onComplete: (ObjectiveGroup) -> Unit
+    ){
+         firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION).document(idGroup)
+            .get().addOnSuccessListener{
+
+                val newObjGroup = it?.toObject(ObjectiveGroup::class.java)!!
+                onComplete(newObjGroup)
+            }
+    }
+
     /**Joue le même rôle que la précedente mais uniquement pour un seul utilisateur du groupe**/
     fun addCreateObjectiveGroupMembersList(
         phoneNumber: String,
@@ -402,6 +458,40 @@ object FireStoreUtil {
                     onComplete(false)
                 }
         }
+    }
+
+
+    fun addSearchUserListenerForcreatingGroupe(
+        valeurRecherche: String,
+        context: Context,
+        onListen: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return firestoreInstance.collection(GobalConfig.REFFERENCE_USERS)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "Users listener error?", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val items = mutableListOf<Item>()
+                querySnapshot?.documents?.forEach {
+                    if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+
+                        if (!valeurRecherche.isEmpty()) {
+                            if (it["userName"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())
+                                || it["phoneNumber"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())
+                                || it["email"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())
+                            ) {
+                                items.add(SimpleuserItem(it.toObject(User::class.java)!!, context))
+                                Log.d("FIRESTOREUTIL", "NOUVELLE VALEURE AJOUTTEE !!!")
+                            }
+                        } else {
+                            items.add(SimpleuserItem(it.toObject(User::class.java)!!, context))
+                        }
+                    }
+                }
+                onListen(items)
+            }
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

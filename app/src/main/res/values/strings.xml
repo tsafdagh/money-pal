@@ -84,8 +84,8 @@
     <string name="text_anuler_le_payement">Annuler le payement</string>
     <string name="proceder_au_payement">Proceder au payement</string>
     <string name="text_payement">Payement</string>
-    <string name="montant_contribution">Entrez le montant de votre contribution</string>
-    <string name="text_payement_montant_a_cotiser">Montant à cotiser :</string>
+    <string name="montant_contribution">Entrez le montant de votre part de contribution</string>
+    <string name="text_payement_montant_a_cotiser">Montant à Atteindre :</string>
     <string name="text_view_slide1">Transferez de l\'argent en toutes simplicité et en toute sécurité</string>
     <string name="second_text_view_slide2">Transfert d\'argent</string>
     <string name="text_view_slide2">Comptabiliser vos entrées-sorties de votre compte mobile n\'a jamais été aussi
@@ -100,5 +100,7 @@
     <string name="snack_bar_erreur_action_payement_sim">Désoler nous n\'avons pas pu détecter une carte SIM compatible
         pour ce payement dans votre telephone
     </string>
+    <string name="montant_restant_text">Montant restant: </string>
+    <string name="ms_montant_tres_grand">Entrez un montant inferieur ou égale au montant restant SVP</string>
 
 </resources>

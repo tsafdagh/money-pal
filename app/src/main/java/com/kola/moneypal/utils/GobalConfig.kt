@@ -1,6 +1,9 @@
 package com.kola.moneypal.utils
 
+import com.kola.moneypal.entities.User
+
 object GobalConfig {
+    val COUREN_AMOUNT_OF_CURENT_CONTRIBUTED_AMOUNT = "COUREN_AMOUNT_OF_CURENT_CONTRIBUTED_AMOUNT"
     val REFERENCE_OBJECTIVE_GROUPE_STORAGE ="objectiveGroupes_images"
     val REFERENCE_USER_IMAGE_PROFIL = "user_profils_images/"
     val REFERENCE_OBJECTIVE_GROUPE_COLLECTION = "objectiveGroupes"
@@ -16,4 +19,5 @@ object GobalConfig {
 
 
     var contributedAmountForGroup :Double = 0.0
+    val listIdUserForDynimicLinks = arrayListOf<User>()
 }

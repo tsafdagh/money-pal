@@ -14,7 +14,7 @@
             android:layout_height="195dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/icon_logo"
+            android:src="@drawable/logo_money_pal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -36,9 +36,10 @@ object FireStoreUtil {
         )
 
     private val userCollection = firestoreInstance.collection(GobalConfig.REFFERENCE_USERS)
-    private val groupeChatCollectionRef =
+    private val objectiveGroupeCollectionRef =
         firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION)
 
+    private val TAG = "FireStoreUtil"
 
     /**Fait une initialisation par défaut de l'utilisateur apres la creation de son compte*/
     fun initCurrentUserIfFirstTime(onComplete: (isOk: Boolean) -> Unit) {
@@ -144,36 +145,31 @@ object FireStoreUtil {
                 dateEcheance, "",
                 members
             )
-        val newObjectiveGroup = groupeChatCollectionRef.document()
+        val newObjectiveGroup = objectiveGroupeCollectionRef.document()
         newObjectiveGroup.set(newgroupe).addOnSuccessListener {
 
-            //val defaulftUserGroupConfig = mutableListOf<Map<String, String>>()
+            //ajout de la reference du croupe céer parmis les propriétés de l'utilisareur
+            addObjectiveGroupInfoToUser(newObjectiveGroup.id, FirebaseAuth.getInstance().currentUser?.phoneNumber!!, onComplete = {
+                onComplete(newObjectiveGroup.id)
+            })
 
-            //ajoutons l'id du groupe à l'utilisateur courant
-            // on initialise la contribution de l'utilisateur qui creè le groupe à 0FCFA
-            // on initie la date de contribution de l'utilisateur à la date actuelle
-            //defaulftUserGroupConfig.add(mapOf(GobalConfig.REFERENCE_ID_GROUPE_OF_ONE to newObjectiveGroup.id))
-            //defaulftUserGroupConfig.add(mapOf(GobalConfig.CONTRIBUTED_USER_AMOUNT to (0.0).toString()))
-            //defaulftUserGroupConfig.add(mapOf(GobalConfig.DATE_CONTRIBUTED_ON_GROUP to AnotherUtil.getdateNow()))
-            //currentUserDocRef.collection(GobalConfig.REFERENCE_GROUPE_OF_ONE_USER)
-            //    .add(defaulftUserGroupConfig)
+/*            val defaulftUserGroupConfig = mutableMapOf<String, Any>()
 
-            //ajout de la reference du croupe céer armis les propriétés de l'utilisareur
-            val defaulftUserGroupConfig = mutableMapOf<String, Any>()
+
             defaulftUserGroupConfig[GobalConfig.REFERENCE_ID_GROUPE_OF_ONE] = newObjectiveGroup.id
             defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
             defaulftUserGroupConfig[GobalConfig.DATE_CONTRIBUTED_ON_GROUP] = AnotherUtil.getdateNow()
 
-            currentUserDocRef.collection(newObjectiveGroup.id).add(defaulftUserGroupConfig)
+            currentUserDocRef.collection(newObjectiveGroup.id).add(defaulftUserGroupConfig) zjez
 
-            /*         // ajout de l'id du groupe à tous les autres membres sélectionnés pour ke groupe
-                     for (itemuserId in members) {
-                         val refCurentuser = firestoreInstance.document(
-                             "users/${itemuserId}"
-                         )
-                         refCurentuser.collection("groupes").add(mapOf("groupeId" to newObjectiveGroup.id))
-                     }*/
-            onComplete(newObjectiveGroup.id)
+                    *//*         // ajout de l'id du groupe à tous les autres membres sélectionnés pour ke groupe
+                             for (itemuserId in members) {
+                                 val refCurentuser = firestoreInstance.document(
+                                     "users/${itemuserId}"
+                                 )
+                                 refCurentuser.collection("groupes").add(mapOf("groupeId" to newObjectiveGroup.id))
+                             }*//*
+                    onComplete(newObjectiveGroup.id)*/
         }
     }
 
@@ -284,8 +280,9 @@ object FireStoreUtil {
                             user.profilePicturePath!!,
                             user.phoneNumber
                         )
-                       // context.toast(curentUserGroupEntitie.toString())
-                        GobalConfig.contributedAmountForGroup = GobalConfig.contributedAmountForGroup+curentUserGroupEntitie.contributionMontant
+                        // context.toast(curentUserGroupEntitie.toString())
+                        GobalConfig.contributedAmountForGroup =
+                            GobalConfig.contributedAmountForGroup + curentUserGroupEntitie.contributionMontant
                         items.add(
                             UserGroupeitem(curentUserGroupEntitie, context)
                         )
@@ -299,62 +296,7 @@ object FireStoreUtil {
         //onListen(items)
     }
 
-
-
-    /**Cette fonction a pour but d'évaluer le montant courrent d'un group dobjectif donner*
-     * NB: elle est simpilaire à fonction précedente à la difference qu'elle ne prend pas en
-     * entrée la liste des membres mais elle se charge de la créer toute seule
-     * */
-    fun evaluateCurrentAmountOfObjectiveGroup(
-        context: Context,
-        groupeId: String,
-        onListen: (List<Item>) -> Unit
-    ) {
-
-        val items = mutableListOf<Item>()
-        // on commence par recuperer le groupe à partir de son ID et on parcout les soldes conntribués de ses membres
-        findSpecificGroupByID(groupeId, onComplete = {objectiveGroup ->
-            for (itemPhonenumber in objectiveGroup.members!!) {
-                getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
-                    // on recupère les informations de l'utilisateur pour le groupe courent
-                    firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
-                        .addOnSuccessListener {
-                            val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
-                            val curentUserGroupEntitie = UserGroupeEntitie(
-                                user.userName,
-                                tmpinfo[0].contributed_date,
-                                tmpinfo[0].montant_cotiser,
-                                user.profilePicturePath!!,
-                                user.phoneNumber
-                            )
-                            // context.toast(curentUserGroupEntitie.toString())
-                            GobalConfig.contributedAmountForGroup = GobalConfig.contributedAmountForGroup+curentUserGroupEntitie.contributionMontant
-                            items.add(
-                                UserGroupeitem(curentUserGroupEntitie, context)
-                            )
-                            onListen(items)
-                        }.addOnFailureListener {
-                            Log.e("FireStorutil", it.printStackTrace().toString())
-                        }
-                })
-            }
-        })
-    }
-
-    /**Cette fonction a pour but de retourner un groupe donnée à partir de son ID**/
-    private fun findSpecificGroupByID(
-        idGroup: String,
-        onComplete: (ObjectiveGroup) -> Unit
-    ){
-         firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION).document(idGroup)
-            .get().addOnSuccessListener{
-
-                val newObjGroup = it?.toObject(ObjectiveGroup::class.java)!!
-                onComplete(newObjGroup)
-            }
-    }
-
-    /**Joue le même rôle que la précedente mais uniquement pour un seul utilisateur du groupe**/
+    /**Joue le même rôle que la fonction createObjectiveGroupMembersList() mais uniquement pour un seul utilisateur du groupe**/
     fun addCreateObjectiveGroupMembersList(
         phoneNumber: String,
         context: Context,
@@ -396,6 +338,61 @@ object FireStoreUtil {
 
     }
 
+
+    /**Cette fonction a pour but d'évaluer le montant courrent d'un group dobjectif donner*
+     * NB: elle est simpilaire à fonction createObjectiveGroupMembersList() à la difference qu'elle ne prend pas en
+     * entrée la liste des membres mais elle se charge de la créer toute seule
+     * */
+    fun evaluateCurrentAmountOfObjectiveGroup(
+        context: Context,
+        groupeId: String,
+        onListen: (List<Item>) -> Unit
+    ) {
+
+        val items = mutableListOf<Item>()
+        // on commence par recuperer le groupe à partir de son ID et on parcout les soldes conntribués de ses membres
+        findSpecificGroupByID(groupeId, onComplete = { objectiveGroup ->
+            for (itemPhonenumber in objectiveGroup.members!!) {
+                getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
+                    // on recupère les informations de l'utilisateur pour le groupe courent
+                    firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
+                        .addOnSuccessListener {
+                            val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
+                            val curentUserGroupEntitie = UserGroupeEntitie(
+                                user.userName,
+                                tmpinfo[0].contributed_date,
+                                tmpinfo[0].montant_cotiser,
+                                user.profilePicturePath!!,
+                                user.phoneNumber
+                            )
+                            // context.toast(curentUserGroupEntitie.toString())
+                            GobalConfig.contributedAmountForGroup =
+                                GobalConfig.contributedAmountForGroup + curentUserGroupEntitie.contributionMontant
+                            items.add(
+                                UserGroupeitem(curentUserGroupEntitie, context)
+                            )
+                            onListen(items)
+                        }.addOnFailureListener {
+                            Log.e("FireStorutil", it.printStackTrace().toString())
+                        }
+                })
+            }
+        })
+    }
+
+    /**Cette fonction a pour but de retourner un groupe donnée à partir de son ID**/
+    private fun findSpecificGroupByID(
+        idGroup: String,
+        onComplete: (ObjectiveGroup) -> Unit
+    ) {
+        firestoreInstance.collection(GobalConfig.REFERENCE_OBJECTIVE_GROUPE_COLLECTION).document(idGroup)
+            .get().addOnSuccessListener {
+
+                val newObjGroup = it?.toObject(ObjectiveGroup::class.java)!!
+                onComplete(newObjGroup)
+            }
+    }
+
     /**cette fonction à pour but d'écouter en temps réel le évènement du groupe courent afin de
      * faire à chaque fois une mise à jours quand il y'a changement
      */
@@ -421,16 +418,65 @@ object FireStoreUtil {
             .addOnSuccessListener { onComplete(it.toObject(User::class.java)!!) }
     }
 
+    /**cette méthode a pour but de mettre à jour la liste des membres
+     * d'un groupe d'objectif donné**/
+    fun addMemberToObjectiveGroup(
+        groupeid: String,
+        listOfUsers: ArrayList<User>,
+        onComplete: (isOk: Boolean) -> Unit
+    ) {
+        // on commence par recuperer les membres du groupe couran
+        findSpecificGroupByID(groupeid, onComplete = {
+            val members = it.members
+            // on ajoute l'utilisateur dans le groupe que s'il n'y était pas déja
+            for (user in listOfUsers) {
+                if (!(members?.contains(user.phoneNumber)!!)) {
+                    members.add(user.phoneNumber)
+                }
+            }
+            //on met à jour la  liste des membres dans le referenciel du groupe
+            objectiveGroupeCollectionRef.document(groupeid).update("members", members)
+                .addOnSuccessListener {
+
+                    Log.i(TAG, "Ajout du groupe au profils de chaque utilisateur ")
+                    // parcourir la réference de chaque utilisateur et y ajouter l'id du groupe
+                    for (phoneuser in members!!){
+                        addObjectiveGroupInfoToUser(groupeid,phoneuser,onComplete={
+                        })
+                    }
+
+                    onComplete(true)
+                }.addOnFailureListener {
+                    Log.e(TAG, "Erreur de mis à jour des membres du groupe "+it.stackTrace.toString())
+
+                    onComplete(false)
+                }
+        })
+    }
+
     /** Cette fonction a pour but d'ajouter les informations de l'utilisateur dans
-     * un groupe d'objectif après qu'il ai valider son addésion par un lient dynamique **/
-    fun addUserToObjectiveGroup(objectivegroupId: String, onComplete: () -> Unit) {
+     * un groupe d'objectif après qu'il ai valider son adhésion par un lient dynamique
+     * ou que le créateur du groupe l'ai sélectionner**/
+
+    fun addObjectiveGroupInfoToUser(
+        objectivegroupId: String,
+        userPhoneNumber: String,
+        onComplete: (isOk: Boolean) -> Unit
+    ) {
         val defaulftUserGroupConfig = mutableMapOf<String, Any>()
         defaulftUserGroupConfig[GobalConfig.REFERENCE_ID_GROUPE_OF_ONE] = objectivegroupId
         defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
         defaulftUserGroupConfig[GobalConfig.DATE_CONTRIBUTED_ON_GROUP] = AnotherUtil.getdateNow()
-        currentUserDocRef.collection(objectivegroupId).add(defaulftUserGroupConfig)
+
+        userCollection.document(userPhoneNumber).collection(objectivegroupId).add(defaulftUserGroupConfig)
             .addOnSuccessListener {
-                onComplete()
+                Log.i(TAG, "Ajout du groupe au profils de l'utilisateur effectuer avec success")
+                onComplete(true)
+
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Erreur d'ajout des infos du groupe au profil de l'utilisateur")
+                onComplete(false)
             }
     }
 
@@ -475,7 +521,7 @@ object FireStoreUtil {
 
                 val items = mutableListOf<Item>()
                 querySnapshot?.documents?.forEach {
-                    if (it.id != FirebaseAuth.getInstance().currentUser?.uid) {
+                    if (it["phoneNumber"] != FirebaseAuth.getInstance().currentUser?.phoneNumber) {
 
                         if (!valeurRecherche.isEmpty()) {
                             if (it["userName"].toString().toUpperCase().contains(valeurRecherche.toUpperCase())

@@ -102,5 +102,7 @@
     </string>
     <string name="montant_restant_text">Montant restant: </string>
     <string name="ms_montant_tres_grand">Entrez un montant inferieur ou égale au montant restant SVP</string>
+    <string name="text_partager_lien">Partager un lien d\'invitation</string>
+    <string name="ajouter_graup">Ajouter les membres sélectionnés</string>
 
 </resources>

@@ -1,13 +1,14 @@
 package com.kola.moneypal.utils
 
 import android.net.Uri
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 
 
 object DynamicLinkUtil {
 
-    fun generateContentLink(groupId: String): Uri {
+    fun generateLongLink(groupId: String): Uri {
         val baseUrl = Uri.parse("https://kola.moneypal.com/idGroup=$groupId")
         val domain = "https://workstation.page.link"
 
@@ -17,10 +18,17 @@ object DynamicLinkUtil {
             .setDomainUriPrefix(domain)
             .setIosParameters(DynamicLink.IosParameters.Builder("com.kola.monepal.moneypal").build())
             .setAndroidParameters(DynamicLink.AndroidParameters.Builder("com.kola.moneypal.").build())
+            .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
+                .setTitle("MoneyPal")
+                .setDescription("Le numero 1 dans la gestion de vos transactions mobile. Nous vous" +
+                        " prions de suivre ce lien")
+                .setImageUrl(Uri.parse("https://firebasestorage.googleapis.com/v0/b/moneypal-7d622.appspot.com/o/logo_money_pal.jpg?alt=media&token=524d5921-057e-4e67-971f-d8bf6d896600"))
+                .build())
             .buildDynamicLink()
 
         return link.uri
     }
+
 
     private fun ManualiGenerateContentLink(groupId: String): String {
         return "https://workstation.page.link/?" +

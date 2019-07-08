@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.ListenerRegistration
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
@@ -32,6 +31,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_details_objective_group.*
 import kotlinx.android.synthetic.main.row_item_user_group_transac.view.*
+import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.makeCall
 import org.jetbrains.anko.toast
 import kotlin.collections.ArrayList
@@ -74,6 +74,8 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         objGroupe = (intent.getSerializableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING) as ObjectiveGroup?)!!
         groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
 
+        val progressdialog = indeterminateProgressDialog("Chargement des membres...")
+
         specificgroupeListenerRegistration = FireStoreUtil.addFindSpecificGroupListener(groupId, onListen = {
             progressBar_p_objectif.apply {
                 max = it.objectiveamount.toInt()
@@ -102,17 +104,25 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                 )
 
             }
+            progressdialog.dismiss()
         })
 
         // val date = getCurrentDateTime()
         //val dateInString = date.toString("yyyy/MM/dd")
 
         id_add_member.setOnClickListener {
-            toast("Add member")
-            shareLink()
+
+            GobalConfig.listIdUserForDynimicLinks.clear()
+            val myModal = SelectUserListDialogFragment(groupId)
+            myModal.show(supportFragmentManager, "Selectionnez les personnes à inviter")
+
+            //buildShortDynamicLink()
+
         }
         id_pay_member.setOnClickListener {
             toast("Payer votre contribution")
+
+
             val intent = Intent(this, PayementActivity::class.java)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroupe)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupId)
@@ -120,20 +130,13 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             startActivity(intent)
         }
 
+
+
         loadData(objGroupe, groupId)
     }
 
+
     private fun loadData(objGroupe: ObjectiveGroup, groupeId: String?) {
-        /*val listOjectivegroupeuser = arrayListOf<Item>()
-        //initialisation des transactions
-        val transaction1 = UserGroupeEntitie("Martine", "Samedi 9", (35400).toDouble(), "imageUrl")
-        val transaction2 = UserGroupeEntitie("Maximilien", "Samedi 9", (400).toDouble(), "imageUrl")
-        val transaction3 = UserGroupeEntitie("Ange", "Samedi 9", (500).toDouble(), "imageUrl")
-        val transaction4 = UserGroupeEntitie("Patrick", "samedi 9", (500).toDouble(), "imageUrl")
-        listOjectivegroupeuser.add(UserGroupeitem(transaction1, this))
-        listOjectivegroupeuser.add(UserGroupeitem(transaction2, this))
-        listOjectivegroupeuser.add(UserGroupeitem(transaction3, this))
-        listOjectivegroupeuser.add(UserGroupeitem(transaction4, this))*/
 
         FireStoreUtil.createObjectiveGroupMembersList(
             objGroupe.members as ArrayList<String>,
@@ -178,7 +181,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
             }
         } else {
-            val myModal = SelectUserListDialogFragment()
+            val myModal = SelectUserListDialogFragment(groupId)
             myModal.show(supportFragmentManager, "Selectionnez les personnes à inviter")
 
             //for (item in LocalPhoneUtil.getAllContacts(this))
@@ -338,9 +341,31 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         }
     }
 
-    fun shareLink(){
+    fun buildShortDynamicLink(){
+
+        /*val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLongLink(DynamicLinkUtil.generateLongLink(groupId))
+            .buildShortDynamicLink()
+            .addOnSuccessListener { result ->
+                // Short link created
+                val shortLink = result.shortLink
+                val flowchartLink = result.previewLink
+                shareLink(shortLink.toString())
+            }
+            .addOnFailureListener {
+                toast("Erreur de generation de lien court")
+            }.addOnCompleteListener {
+                toast("Complete lister de la generation de lien court")
+
+            }*/
+        shareLink(DynamicLinkUtil.generateLongLink(groupId).toString())
+
+    }
+
+
+    fun shareLink(link: String){
         val intent =Intent()
-        val message = "Veuillez vous joindre à notre objectif via le lien suivant: "+DynamicLinkUtil.generateContentLink(groupId)
+        val message = "Veuillez vous joindre à notre objectif via le lien suivant: $link"
         intent.action = Intent.ACTION_SEND
         intent.putExtra(Intent.EXTRA_TEXT, message)
         intent.type = "text/plain"

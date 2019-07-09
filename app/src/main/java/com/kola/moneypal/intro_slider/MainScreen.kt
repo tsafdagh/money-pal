@@ -58,6 +58,7 @@ class MainScreen : AppCompatActivity() {
             launchMain()
             finish()
         }
+
         ColoredBars(0)
 
         Skip!!.setOnClickListener {

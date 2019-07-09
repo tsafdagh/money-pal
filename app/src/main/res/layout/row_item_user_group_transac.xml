@@ -3,7 +3,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cardView_item_person_group"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_margin="4dp"
@@ -12,7 +11,8 @@
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="4dp"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        android:id="@+id/contributed_user_cardView">
 
     <RelativeLayout
             android:layout_width="match_parent"

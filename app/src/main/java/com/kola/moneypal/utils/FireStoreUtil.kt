@@ -2,6 +2,7 @@ package com.kola.moneypal.utils
 
 import android.content.Context
 import android.net.Uri
+import android.nfc.Tag
 import android.util.Log
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -268,7 +269,6 @@ object FireStoreUtil {
         onListen: (List<Item>) -> Unit
     ) {
         val items = mutableListOf<Item>()
-        GobalConfig.contributedAmountForGroup = 0.0
 
         for (itemPhonenumber in listOfMember) {
             getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
@@ -284,8 +284,7 @@ object FireStoreUtil {
                             user.phoneNumber
                         )
                         // context.toast(curentUserGroupEntitie.toString())
-                        GobalConfig.contributedAmountForGroup =
-                            GobalConfig.contributedAmountForGroup + curentUserGroupEntitie.contributionMontant
+
                         items.add(
                             UserGroupeitem(curentUserGroupEntitie, context)
                         )
@@ -412,8 +411,14 @@ object FireStoreUtil {
                     return@addSnapshotListener
                 }
 
-                val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
-                onListen(newObjGroup)
+                // on met dans un try cach car io peut arriver que le groupe ai été supprimer entre-temps
+                try {
+                    val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
+                    onListen(newObjGroup)
+                }catch (ex :Exception){
+                    Log.e(TAG, "Erreur "+ex.stackTrace.toString())
+                }
+
             }
     }
 

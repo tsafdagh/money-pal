@@ -83,22 +83,20 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                 progress = it.courentAmount.toInt()
                 id_text_objectif.text = it.groupeName
 
+                id_val_solde_total.text = objGroupe.objectiveamount.toString()
+                val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
+                id_text_solde_date.text = soldeCompteDate
+                val curenSold =
+                    (it.courentAmount).toString() + getString(R.string.text_fcfa)
+                id_text_montnt.text = curenSold
+
                 // on met à jours la liste des membres du groupe
                 FireStoreUtil.createObjectiveGroupMembersList(
                     it.members as ArrayList<String>,
                     applicationContext,
                     groupId,
                     onListen = { item ->
-                        contributedCurentAmount = GobalConfig.contributedAmountForGroup
                         updateRecycleViewUserobjectiveGroupe(item as ArrayList<Item>)
-                        progress = (contributedCurentAmount).toInt()
-
-                        id_val_solde_total.text = it.objectiveamount.toString()
-                        val soldeCompteDate = getString(R.string.text_view_date) + " " + getdateNow()
-                        id_text_solde_date.text = soldeCompteDate
-                        val curenSold =
-                            (contributedCurentAmount).toString() + getString(R.string.text_fcfa)
-                        id_text_montnt.text = curenSold
                     }
                 )
 
@@ -181,7 +179,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             myModal.show(supportFragmentManager, "Selectionnez les personnes à inviter")
 
             //for (item in LocalPhoneUtil.getAllContacts(this))
-                //toast(item.toString())
+            //toast(item.toString())
         }
 
     }
@@ -195,7 +193,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                     add(usergroupSection)
                     setOnItemClickListener { item: com.xwray.groupie.Item<*>, view: View ->
                         val curentItem = item as UserGroupeitem
-                        view.cardView_item_person_group.setOnClickListener {
+                        view.contributed_user_cardView.setOnClickListener {
                             if (curentItem.usercontribution.phoneNumber != FirebaseAuth.getInstance().currentUser?.phoneNumber) {
                                 withItems(curentItem.usercontribution)
                             }
@@ -337,7 +335,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         }
     }
 
-    fun buildShortDynamicLink(){
+    fun buildShortDynamicLink() {
 
         /*val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLongLink(DynamicLinkUtil.generateLongLink(groupId))
@@ -359,8 +357,8 @@ class DetailsObjectiveGroup : AppCompatActivity() {
     }
 
 
-    fun shareLink(link: String){
-        val intent =Intent()
+    fun shareLink(link: String) {
+        val intent = Intent()
         val message = "Veuillez vous joindre à notre objectif via le lien suivant: $link"
         intent.action = Intent.ACTION_SEND
         intent.putExtra(Intent.EXTRA_TEXT, message)

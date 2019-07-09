@@ -17,6 +17,7 @@
             android:roundIcon="@drawable/logo_money_pal"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
+            android:name=".MoneyPalApplication"
             tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".PayementActivity">
   <!--          <meta-data
@@ -26,10 +27,10 @@
         <activity android:name=".intro_slider.MainScreen">
         </activity>
         <activity android:name=".intro_slider.FirtsSplashScreen">
-            <intent-filter>
+      <!--      <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".mes_exemple.PieadCardActivity">
         </activity>
@@ -48,10 +49,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".mes_exemple.TestRemoteConfig">
-         <!--   <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>-
         </activity>
         <activity android:name=".DetailsTransactonActivity">
             <meta-data

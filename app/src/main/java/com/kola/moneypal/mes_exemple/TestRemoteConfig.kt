@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
@@ -23,6 +24,7 @@ class TestRemoteConfig : AppCompatActivity() {
 
         fetchButton.setOnClickListener { fetchWelcome() }
 
+        //Crashlytics.getInstance().crash()
         // Get Remote Config instance.
         // [START get_remote_config_instance]
         remoteConfig = FirebaseRemoteConfig.getInstance()

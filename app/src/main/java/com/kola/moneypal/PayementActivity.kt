@@ -91,8 +91,6 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
         btn_annuler_payement.setOnClickListener {
             onBackPressed()
         }
-        toast("admin number $objGroupe")
-
 
         GlideApp.with(this)
             .load(objGroupe.groupIcon)

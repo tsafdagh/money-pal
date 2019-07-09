@@ -58,6 +58,8 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
         }else
             viewHolder.id_tv_member_montant.textColor = Color.GREEN
 
+if(usercontribution.phoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber)
+    viewHolder.contributed_user_cardView.setCardBackgroundColor(Color.parseColor("#ff4901"))
 
     }
 

@@ -105,5 +105,6 @@
     <string name="text_partager_lien">Partager un lien d\'invitation</string>
     <string name="ajouter_graup">Ajouter les membres sélectionnés</string>
     <string name="text_creation_lient_en_cours">Création du lient en cours...</string>
+    <string name="snackbar_ajout_group_succes">Vous avez été ajouter dans le groupe avec succes</string>
 
 </resources>

@@ -415,8 +415,8 @@ object FireStoreUtil {
                 try {
                     val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
                     onListen(newObjGroup)
-                }catch (ex :Exception){
-                    Log.e(TAG, "Erreur "+ex.stackTrace.toString())
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Erreur " + ex.stackTrace.toString())
                 }
 
             }
@@ -509,11 +509,14 @@ object FireStoreUtil {
                 val documentId = it.documents[0].id
                 currentUserDocRef.collection(objectivegroupId).document(documentId)
                     .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, newAmount).addOnSuccessListener {
-                    Log.d("FireStoreUtil", "Solde mis à jours")
-                    notifyGroupeAndUpdateCurrentContributedAmount(objectivegroupId, newContributedAmount, onComplete = {
-                        onComplete(it)
-                    })
-                }
+                        Log.d("FireStoreUtil", "Solde mis à jours")
+                        notifyGroupeAndUpdateCurrentContributedAmount(
+                            objectivegroupId,
+                            newContributedAmount,
+                            onComplete = {
+                                onComplete(it)
+                            })
+                    }
                     .addOnFailureListener {
                         Log.e("FireStoreUtil", "Solde non mis à jours" + it.stackTrace.toString())
                         onComplete(false)
@@ -539,9 +542,9 @@ object FireStoreUtil {
                     onComplete(true)
 
                 }.addOnFailureListener {
-                Log.e(TAG, "Erreur de mise à jours du montant déja contribué du groupe")
-                onComplete(false)
-            }
+                    Log.e(TAG, "Erreur de mise à jours du montant déja contribué du groupe")
+                    onComplete(false)
+                }
         }
     }
 
@@ -580,6 +583,27 @@ object FireStoreUtil {
                 }
                 onListen(items)
             }
+    }
+
+
+    fun addUserOnGroupViaDynamicLink(groupeId: String, onComplete: (isOk: Boolean) -> Unit) {
+
+        //on ajoute le groupe dans la reference de l'utilisateur
+        addObjectiveGroupInfoToUser(
+            groupeId,
+            FirebaseAuth.getInstance().currentUser?.phoneNumber!!,
+            onComplete = {
+                if (it) {
+                    val curentUser = User(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,"","","")
+                    val listSingleUser= ArrayList<User>()
+                    listSingleUser.add(curentUser)
+                    // on ajoute le numéro de téléphone de l'utilisateur dans la liste des numéro du groupe
+                    addMemberToObjectiveGroup(groupeId,  listSingleUser, onComplete = {
+                        onComplete(it)
+                    } )
+                } else
+                    onComplete(false)
+            })
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

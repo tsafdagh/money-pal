@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Half
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,11 +17,14 @@ import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.fragments.HomeFragment
@@ -32,6 +36,7 @@ import com.kola.moneypal.mes_exemple.ReadMessageActivity
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
 import com.kola.moneypal.utils.StorageUtil
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.create_group_dialog.*
 import kotlinx.android.synthetic.main.create_group_dialog.view.*
 import org.jetbrains.anko.indeterminateProgressDialog
@@ -66,11 +71,11 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(ObjectifGroupFragment())
                     true
                 }
-       /*         R.id.navigation_statistiques -> {
-                    isWillHomeFragment = true
-                    replaceFragment(StatistiquesFragment())
-                    true
-                }*/
+                /*         R.id.navigation_statistiques -> {
+                             isWillHomeFragment = true
+                             replaceFragment(StatistiquesFragment())
+                             true
+                         }*/
 
                 else -> {
                     false
@@ -78,6 +83,37 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+
+        // Si l'utilisateur a au préalable recus un lien dynamique venant d'un groupe, il est ajouter dans le groupe
+        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
+            .addOnSuccessListener {
+                if (it != null) {
+                    var deepLink = it.link.toString()
+
+                    val idGroup = deepLink.substring(34)
+                    toast(idGroup).duration = Toast.LENGTH_LONG
+
+                    val progress = indeterminateProgressDialog("Ajout dans le groupe en cours")
+                    FireStoreUtil.addUserOnGroupViaDynamicLink(idGroup, onComplete = {
+
+                        if (it) {
+                            progress.dismiss()
+                            Snackbar.make(
+                                container,
+                                getString(R.string.snackbar_ajout_group_succes),
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            isWillHomeFragment = true
+                            replaceFragment(ObjectifGroupFragment())
+                        } else progress.dismiss()
+
+                    })
+                }
+            }
+            .addOnFailureListener {
+                // initialisation par défaut de la vue
+            }.addOnCompleteListener {
+            }
     }
 
     override fun onStart() {

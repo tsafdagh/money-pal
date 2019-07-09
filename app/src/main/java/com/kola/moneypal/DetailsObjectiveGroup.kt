@@ -54,21 +54,6 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         setContentView(R.layout.activity_details_objective_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-/*        // si l'activité s'ouvre via le clique sur un lien dynamique
-        FirebaseDynamicLinks.getInstance().getDynamicLink(intent)
-            .addOnSuccessListener {
-                if(it!=null){
-                    var deepLink=it.link
-                    toast(deepLink.toString())
-                }
-            }
-            .addOnFailureListener {
-                // initialisation par défaut de la vue
-                defaultInitView()
-            }.addOnCompleteListener {
-                toast("oncomplete${it.result}")
-            }*/
-
         defaultInitView()
     }
 
@@ -298,8 +283,14 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        FireStoreUtil.removeListener(specificgroupeListenerRegistration)
-        shouldInitrecycleView = true
+
+        try {
+            FireStoreUtil.removeListener(specificgroupeListenerRegistration)
+            shouldInitrecycleView = true
+        }catch (e: Exception){
+            Log.e("DetailsObjectiveGroup", e.toString())
+        }
+
     }
 
     /* fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {

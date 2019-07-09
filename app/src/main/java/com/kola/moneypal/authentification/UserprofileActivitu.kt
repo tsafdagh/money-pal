@@ -31,7 +31,6 @@ class UserprofileActivitu : AppCompatActivity() {
 
     private val RC_SELECT_IMAGE = 2
     private val REQUESTrEADiMAGE = 1
-
     private var isImageSelected = false
     private var pictureJustChanged = false
     private var selectedImagePathUri: Uri? = null

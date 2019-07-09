@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.ListenerRegistration
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
@@ -337,7 +338,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     fun buildShortDynamicLink() {
 
-        /*val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+        val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLongLink(DynamicLinkUtil.generateLongLink(groupId))
             .buildShortDynamicLink()
             .addOnSuccessListener { result ->
@@ -351,8 +352,8 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             }.addOnCompleteListener {
                 toast("Complete lister de la generation de lien court")
 
-            }*/
-        shareLink(DynamicLinkUtil.generateLongLink(groupId).toString())
+            }
+        //shareLink(DynamicLinkUtil.generateLongLink(groupId).toString())
 
     }
 

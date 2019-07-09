@@ -10,14 +10,14 @@ object DynamicLinkUtil {
 
     fun generateLongLink(groupId: String): Uri {
         val baseUrl = Uri.parse("https://kola.moneypal.com/idGroup=$groupId")
-        val domain = "https://workstation.page.link"
+        val domain = "https://tsafixpc.page.link"
 
         val link = FirebaseDynamicLinks.getInstance()
             .createDynamicLink()
             .setLink(baseUrl)
             .setDomainUriPrefix(domain)
             .setIosParameters(DynamicLink.IosParameters.Builder("com.kola.monepal.moneypal").build())
-            .setAndroidParameters(DynamicLink.AndroidParameters.Builder("com.kola.moneypal.").build())
+            .setAndroidParameters(DynamicLink.AndroidParameters.Builder("com.kola.moneypal").build())
             .setSocialMetaTagParameters(DynamicLink.SocialMetaTagParameters.Builder()
                 .setTitle("MoneyPal")
                 .setDescription("Le numero 1 dans la gestion de vos transactions mobile. Nous vous" +

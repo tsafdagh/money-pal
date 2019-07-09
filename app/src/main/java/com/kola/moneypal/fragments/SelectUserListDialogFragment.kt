@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.ListenerRegistration
 import com.kola.moneypal.R;
 import com.kola.moneypal.RecycleView.item.SimpleuserItem
@@ -82,22 +83,24 @@ class SelectUserListDialogFragment(val groupId: String) : BottomSheetDialogFragm
 
     fun buildShortDynamicLink() {
 
-        /*val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+        val progressdialog = context!!.indeterminateProgressDialog(getString(R.string.text_creation_lient_en_cours))
+        val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLongLink(DynamicLinkUtil.generateLongLink(groupId))
             .buildShortDynamicLink()
             .addOnSuccessListener { result ->
                 // Short link created
                 val shortLink = result.shortLink
                 val flowchartLink = result.previewLink
+                progressdialog.dismiss()
                 shareLink(shortLink.toString())
             }
             .addOnFailureListener {
-                toast("Erreur de generation de lien court")
+                context!!.toast("Erreur de generation de lien court")
+                progressdialog.dismiss()
             }.addOnCompleteListener {
-                toast("Complete lister de la generation de lien court")
-
-            }*/
-        shareLink(DynamicLinkUtil.generateLongLink(groupId).toString())
+                context!!.toast("Complete lister de la generation de lien court")
+                progressdialog.dismiss()
+            }
 
     }
 

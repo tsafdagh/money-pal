@@ -25,7 +25,7 @@ class ObjectivegroupItem(
         viewHolder.id_textview_description_group_item.text = obgroup.groupeDescription
         viewHolder.id_tv_montant_cotiser.text = obgroup.courentAmount.toString() + " F."
         viewHolder.id_tv_objective_amount.text = obgroup.objectiveamount.toString() + " F."
-        context.toast("Id admin: "+obgroup.adminPhoneNumber)
+
         if (obgroup.groupIcon != "") {
             GlideApp.with(context)
                 .load(obgroup.groupIcon)

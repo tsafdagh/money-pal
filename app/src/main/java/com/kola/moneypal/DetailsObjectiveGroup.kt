@@ -43,6 +43,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
     private lateinit var usergroupSection: Section
     private lateinit var objGroupe: ObjectiveGroup
     private lateinit var groupId: String
+
     private var contributedCurentAmount: Double = 0.0
 
     private lateinit var specificgroupeListenerRegistration: ListenerRegistration
@@ -79,17 +80,16 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         specificgroupeListenerRegistration = FireStoreUtil.addFindSpecificGroupListener(groupId, onListen = {
             progressBar_p_objectif.apply {
                 max = it.objectiveamount.toInt()
-                //progress = it.courentAmount.toInt()
+                progress = it.courentAmount.toInt()
                 id_text_objectif.text = it.groupeName
 
                 // on met à jours la liste des membres du groupe
-                GobalConfig.contributedAmountForGroup = 0.0
                 FireStoreUtil.createObjectiveGroupMembersList(
                     it.members as ArrayList<String>,
                     applicationContext,
                     groupId,
                     onListen = { item ->
-                        contributedCurentAmount = GobalConfig.contributedAmountForGroup / 2
+                        contributedCurentAmount = GobalConfig.contributedAmountForGroup
                         updateRecycleViewUserobjectiveGroupe(item as ArrayList<Item>)
                         progress = (contributedCurentAmount).toInt()
 
@@ -99,7 +99,6 @@ class DetailsObjectiveGroup : AppCompatActivity() {
                         val curenSold =
                             (contributedCurentAmount).toString() + getString(R.string.text_fcfa)
                         id_text_montnt.text = curenSold
-                        GobalConfig.contributedAmountForGroup = 0.0
                     }
                 )
 
@@ -120,9 +119,6 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
         }
         id_pay_member.setOnClickListener {
-            toast("Payer votre contribution")
-
-
             val intent = Intent(this, PayementActivity::class.java)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroupe)
             intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupId)

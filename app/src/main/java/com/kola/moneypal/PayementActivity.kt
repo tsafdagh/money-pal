@@ -16,18 +16,19 @@ import kotlinx.android.synthetic.main.activity_payement.*
 import org.jetbrains.anko.toast
 import com.hover.sdk.permissions.PermissionActivity
 import com.kola.moneypal.utils.FireStoreUtil
+import org.jetbrains.anko.indeterminateProgressDialog
 import java.util.ArrayList
 
 
 class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
     var montantRestant = 0.0
     override fun onError(p0: String?) {
-        toast("erreur de télécharger de l'action " + p0)
+       // toast("erreur de télécharger de l'action " + p0)
 
     }
 
     override fun onSuccess(p0: ArrayList<HoverAction>?) {
-        toast("Action télécharger avec succes ${p0.toString()}")
+       // toast("Action télécharger avec succes ${p0.toString()}")
     }
 
     private lateinit var objGroupe: ObjectiveGroup
@@ -43,14 +44,12 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
         objGroupe = (intent.getSerializableExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING) as ObjectiveGroup?)!!
         groupId = intent.getStringExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING)!!
 
-        GobalConfig.contributedAmountForGroup = 0.0
         FireStoreUtil.evaluateCurrentAmountOfObjectiveGroup(this, groupId, onListen = {
             val currentAmount = GobalConfig.contributedAmountForGroup
             montantRestant = objGroupe.objectiveamount - currentAmount
             val montantRestantString =
                 getString(R.string.montant_restant_text) + (montantRestant).toString() + " FCFA"
             id_montant_restant_group_payement.text = montantRestantString
-            GobalConfig.contributedAmountForGroup = 0.0
 
         })
 
@@ -65,7 +64,26 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                 id_editText_montant_payement.error = getString(R.string.ms_entre_mnt_correct)
             } else {
                 if(montantAPayer.toDouble() <= montantRestant){
-                    payementProcess(montantAPayer)
+
+                   // payementProcess(montantAPayer)
+                    val progressdialog = indeterminateProgressDialog("Mise à jours du solde dans le groupe...")
+                    FireStoreUtil.updateContributedAmountOnobjectiveGroupForCurentuser(groupId, montantAPayer.toDouble(), onComplete = {
+                        if (it){
+                            toast("Payement mis à jours avec succes")
+                            progressdialog.dismiss()
+                            this.onBackPressed()
+                        }else{
+                            toast("Erreur de mis à jour du payement")
+                            progressdialog.dismiss()
+                            Snackbar.make(
+                                id_payement_activity,
+                                "Erreur de mis à jour du payement",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            this.onBackPressed()
+                        }
+                    })
+
                 }else  id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
             }
         }
@@ -98,8 +116,8 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             .request(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY)
             .extra(
                 PayementConfiguration.ETAPE_1_PAYEMENT_ORANGE_MONEY,
-                objGroupe.adminPhoneNumber.substring(4)
-            )// on enlève le 237
+                objGroupe.adminPhoneNumber.substring(4)// on enlève le +237
+            )
             .extra(PayementConfiguration.ETAPE_2_PAYEMENT_ORANGE_MONEY, montant)
             .buildIntent()
         // pour les payement de orange money vers MTN money
@@ -135,6 +153,27 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                 message,
                 Snackbar.LENGTH_LONG
             ).show()
+
+
+            //quand tout est ok on met ç jours le payement dans firebase
+/*            val progressdialog = indeterminateProgressDialog("Mise à jours du solde dans le groupe...")
+
+            FireStoreUtil.updateContributedAmountOnobjectiveGroupForCurentuser(groupId, montantAPayer.toDouble(), onComplete = {
+                if (it){
+                    toast("Payement mis à jours avec succes")
+                    progressdialog.dismiss()
+                    this.onBackPressed()
+                }else{
+                    toast("Erreur de mis à jour du payement")
+                    progressdialog.dismiss()
+                    Snackbar.make(
+                        id_payement_activity,
+                        "Erreur de mis à jour du payement",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    this.onBackPressed()
+                }
+            })*/
 
         } else {
             // en cas d'érreur de l'initialisation de la transaction

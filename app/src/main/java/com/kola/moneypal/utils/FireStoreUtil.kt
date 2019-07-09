@@ -149,9 +149,12 @@ object FireStoreUtil {
         newObjectiveGroup.set(newgroupe).addOnSuccessListener {
 
             //ajout de la reference du croupe céer parmis les propriétés de l'utilisareur
-            addObjectiveGroupInfoToUser(newObjectiveGroup.id, FirebaseAuth.getInstance().currentUser?.phoneNumber!!, onComplete = {
-                onComplete(newObjectiveGroup.id)
-            })
+            addObjectiveGroupInfoToUser(
+                newObjectiveGroup.id,
+                FirebaseAuth.getInstance().currentUser?.phoneNumber!!,
+                onComplete = {
+                    onComplete(newObjectiveGroup.id)
+                })
 
 /*            val defaulftUserGroupConfig = mutableMapOf<String, Any>()
 
@@ -288,7 +291,7 @@ object FireStoreUtil {
                         )
                         onListen(items)
                     }.addOnFailureListener {
-                        Log.e("FireStorutil", it.printStackTrace().toString())
+                        Log.e(TAG, it.printStackTrace().toString())
                     }
             })
         }
@@ -350,6 +353,8 @@ object FireStoreUtil {
     ) {
 
         val items = mutableListOf<Item>()
+        GobalConfig.contributedAmountForGroup = 0.0
+
         // on commence par recuperer le groupe à partir de son ID et on parcout les soldes conntribués de ses membres
         findSpecificGroupByID(groupeId, onComplete = { objectiveGroup ->
             for (itemPhonenumber in objectiveGroup.members!!) {
@@ -440,14 +445,14 @@ object FireStoreUtil {
 
                     Log.i(TAG, "Ajout du groupe au profils de chaque utilisateur ")
                     // parcourir la réference de chaque utilisateur et y ajouter l'id du groupe
-                    for (phoneuser in members!!){
-                        addObjectiveGroupInfoToUser(groupeid,phoneuser,onComplete={
+                    for (phoneuser in members!!) {
+                        addObjectiveGroupInfoToUser(groupeid, phoneuser, onComplete = {
                         })
                     }
 
                     onComplete(true)
                 }.addOnFailureListener {
-                    Log.e(TAG, "Erreur de mis à jour des membres du groupe "+it.stackTrace.toString())
+                    Log.e(TAG, "Erreur de mis à jour des membres du groupe " + it.stackTrace.toString())
 
                     onComplete(false)
                 }
@@ -483,30 +488,62 @@ object FireStoreUtil {
     /**  lorsqu'un membre du groupe décide de faire un payement dans le groupe,
      * cette fonction est appélée dans le but d'accroite la contribution de l'utilisateur
      * pour le groupe d'objectif**/
-    fun updateContributedAmountOnobjectiveGroup(
+    fun updateContributedAmountOnobjectiveGroupForCurentuser(
         objectivegroupId: String,
         newContributedAmount: Double,
         onComplete: (status: Boolean) -> Unit
     ) {
         // on recupère d'abord la dernière contribution de l'utilisateur
-        currentUserDocRef.collection(objectivegroupId).document().get().addOnSuccessListener {
-            var oldContributedAmount = it[GobalConfig.CONTRIBUTED_USER_AMOUNT] as Double
-            oldContributedAmount += newContributedAmount
-            //ensuite on met à jours le nouveau solde de contribution
-            currentUserDocRef.collection(objectivegroupId).document()
-                .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, oldContributedAmount)
-                .addOnSuccessListener {
+        currentUserDocRef.collection(objectivegroupId).get()
+            .addOnSuccessListener {
+                var oldContributedAmount = it.documents[0][GobalConfig.CONTRIBUTED_USER_AMOUNT] as Number
+
+                val newAmount = oldContributedAmount.toDouble() + newContributedAmount
+
+                //ensuite on met à jours le nouveau solde de contribution
+                val documentId = it.documents[0].id
+                currentUserDocRef.collection(objectivegroupId).document(documentId)
+                    .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, newAmount).addOnSuccessListener {
                     Log.d("FireStoreUtil", "Solde mis à jours")
+                    notifyGroupeAndUpdateCurrentContributedAmount(objectivegroupId, newContributedAmount, onComplete = {
+                        onComplete(it)
+                    })
+                }
+                    .addOnFailureListener {
+                        Log.e("FireStoreUtil", "Solde non mis à jours" + it.stackTrace.toString())
+                        onComplete(false)
+                    }
+            }
+    }
+
+    fun notifyGroupeAndUpdateCurrentContributedAmount(
+        objectivegroupId: String,
+        newUserContributedAmount: Double,
+        onComplete: (isOk: Boolean) -> Unit
+    ) {
+
+        // on recupère le montant courent du groupe, on additionne au nouveau de l'utilisateur
+        objectiveGroupeCollectionRef.document(objectivegroupId).get().addOnSuccessListener {
+            var curronContributedAmount = it["courentAmount"] as Double
+            curronContributedAmount += newUserContributedAmount
+
+            //Et on le met à jours
+            objectiveGroupeCollectionRef.document(objectivegroupId).update("courentAmount", curronContributedAmount)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Contant contribué du group mis à jours")
                     onComplete(true)
-                }
-                .addOnFailureListener {
-                    Log.d("FireStoreUtil", "Solde non mis à jours")
-                    onComplete(false)
-                }
+
+                }.addOnFailureListener {
+                Log.e(TAG, "Erreur de mise à jours du montant déja contribué du groupe")
+                onComplete(false)
+            }
         }
     }
 
-
+    /**
+     * Cette fonction a pour nut de lister les utilisateur
+     * qu'on poura sélection pour les ajouter à un groupe d'objectif
+     * **/
     fun addSearchUserListenerForcreatingGroupe(
         valeurRecherche: String,
         context: Context,

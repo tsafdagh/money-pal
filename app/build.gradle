@@ -93,6 +93,7 @@ dependencies {
     //histogrammes pour les statistiques
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+
     implementation 'com.google.firebase:firebase-dynamic-links:18.0.0'
     androidExtensions {
         experimental = true

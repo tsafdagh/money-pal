@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/cardDepenses"/>
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/cardDepenses"
+            android:layout_alignParentBottom="true"
+            app:cardBackgroundColor="#d6EEF7"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="7dp">
+        <TextView
+                android:id="@+id/id_tv_depenses_totales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="17sp"
+                android:text="Dépenses totales 100000 FCFA"/>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

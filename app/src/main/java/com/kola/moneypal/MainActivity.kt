@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Half
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,12 +15,10 @@ import android.view.MenuItem
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -29,16 +26,12 @@ import com.kola.moneypal.authentification.UserprofileActivitu
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.fragments.HomeFragment
 import com.kola.moneypal.fragments.ObjectifGroupFragment
-import com.kola.moneypal.fragments.StatistiquesFragment
 import com.kola.moneypal.glide.GlideApp
-import com.kola.moneypal.mes_exemple.PieadCardActivity
-import com.kola.moneypal.mes_exemple.ReadMessageActivity
+import com.kola.moneypal.mes_exemple.PieCart2Activity
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
-import com.kola.moneypal.utils.RemoteConfigutils
 import com.kola.moneypal.utils.StorageUtil
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.create_group_dialog.*
 import kotlinx.android.synthetic.main.create_group_dialog.view.*
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
@@ -167,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
             R.id.id_menu_stat -> {
                 toast("statistiques")
-                startActivity<PieadCardActivity>()
+                startActivity<PieCart2Activity>()
 
             }
 

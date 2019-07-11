@@ -8,7 +8,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 
 object DynamicLinkUtil {
 
-    private val urlApk = "https://drive.google.com/file/d/1l_BsMWnAXgRW0Jrj76yK8FwAoBw2LTaT/view?usp=sharing"
+    private val urlApk = "https://drive.google.com/file/d/1J3g6Ikz3ykpv4NqEi2PoxCCMGANm3y_y/view?usp=sharing"
 
     fun generateLongLink(groupId: String): Uri {
         val baseUrl = Uri.parse("https://kola.moneypal.com/idGroup=$groupId")

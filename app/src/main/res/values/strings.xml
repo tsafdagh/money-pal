@@ -64,7 +64,7 @@
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
-<!--    <string name="slide_1_title">Hello Food!</string>
+    <!--    <string name="slide_1_title">Hello Food!</string>
     <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
 
     <string name="slide_2_title">Movie Tickets</string>
@@ -100,7 +100,7 @@
     <string name="snack_bar_erreur_action_payement_sim">Désoler nous n\'avons pas pu détecter une carte SIM compatible
         pour ce payement dans votre telephone
     </string>
-    <string name="montant_restant_text">Montant restant: </string>
+    <string name="montant_restant_text">Montant restant:</string>
     <string name="ms_montant_tres_grand">Entrez un montant inferieur ou égale au montant restant SVP</string>
     <string name="text_partager_lien">Partager un lien d\'invitation</string>
     <string name="ajouter_graup">Ajouter les membres sélectionnés</string>

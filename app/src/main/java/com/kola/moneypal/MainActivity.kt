@@ -35,6 +35,7 @@ import com.kola.moneypal.mes_exemple.PieadCardActivity
 import com.kola.moneypal.mes_exemple.ReadMessageActivity
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
+import com.kola.moneypal.utils.RemoteConfigutils
 import com.kola.moneypal.utils.StorageUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.create_group_dialog.*
@@ -114,7 +115,21 @@ class MainActivity : AppCompatActivity() {
                 // initialisation par défaut de la vue
             }.addOnCompleteListener {
             }
+
+        //setUpRemoteConfig()
     }
+/*
+    private fun setUpRemoteConfig() {
+        RemoteConfigutils.fetchRemoteConfigFromServer(this, onComplete = {
+
+            val isRemoteConfigActivateColor = RemoteConfigutils.isRemoteConfigSecondThemeAcived()
+            if(isRemoteConfigActivateColor){
+                this.setTheme(R.style.AppThemeSecond)
+                toast("Nouveau theme !!!")
+            }
+        })
+
+    }*/
 
     override fun onStart() {
         super.onStart()

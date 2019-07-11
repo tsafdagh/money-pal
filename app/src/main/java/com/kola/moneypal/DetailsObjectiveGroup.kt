@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,11 +22,8 @@ import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.ObjectiveGroup
 import com.kola.moneypal.entities.UserGroupeEntitie
 import com.kola.moneypal.fragments.SelectUserListDialogFragment
+import com.kola.moneypal.utils.*
 import com.kola.moneypal.utils.AnotherUtil.getdateNow
-import com.kola.moneypal.utils.DynamicLinkUtil
-import com.kola.moneypal.utils.FireStoreUtil
-import com.kola.moneypal.utils.GobalConfig
-import com.kola.moneypal.utils.LocalPhoneUtil
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -53,8 +51,19 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details_objective_group)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        setUpRemoteConfig()
         defaultInitView()
+    }
+
+    private fun setUpRemoteConfig() {
+
+        val isRemoteConfigActivateColor = RemoteConfigutils.isRemoteConfigColorsAcived()
+        if (isRemoteConfigActivateColor) {
+            //context!!.toast("Nouveau theme !!!")
+            val headerColor = RemoteConfigutils.getHeaderColor()
+            id_detail_obj_group_header.setBackgroundColor(Color.parseColor(headerColor))
+            progressBar_p_objectif.setBackgroundColor(Color.WHITE)
+        }
     }
 
     private fun defaultInitView() {

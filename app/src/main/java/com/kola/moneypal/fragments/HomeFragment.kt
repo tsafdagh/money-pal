@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.kola.moneypal.BuildConfig
 import com.kola.moneypal.DetailsTransactonActivity
 
 import com.kola.moneypal.R
@@ -29,6 +33,7 @@ import com.kola.moneypal.entities.TransactionEntitie
 import com.kola.moneypal.glide.GlideApp
 import com.kola.moneypal.mes_exemple.smsObjet
 import com.kola.moneypal.utils.AnotherUtil
+import com.kola.moneypal.utils.RemoteConfigutils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.OnItemClickListener
 import com.xwray.groupie.Section
@@ -107,6 +112,21 @@ class HomeFragment : Fragment() {
             .transform(CircleCrop())
             .placeholder(R.drawable.nom_user)
             .into(id_image_user_account)
+
+        setUpRemoteConfig()
+    }
+
+    private fun setUpRemoteConfig() {
+
+        val isRemoteConfigActivateColor = RemoteConfigutils.isRemoteConfigColorsAcived()
+        if (isRemoteConfigActivateColor) {
+            //context!!.toast("Nouveau theme !!!")
+            val headerColor = RemoteConfigutils.getHeaderColor()
+            header_home_fragment.setBackgroundColor(Color.parseColor(headerColor))
+            val middleColor = RemoteConfigutils.getMiddleColor()
+            id_middle_categorie_transaction.setBackgroundColor(Color.parseColor(middleColor))
+            //id_btn_tout_voir.setBackgroundColor(Color.WHITE)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -138,6 +158,7 @@ class HomeFragment : Fragment() {
 
             findSpecificOrAllTransaction(null, true)
         }
+
 
     }
 

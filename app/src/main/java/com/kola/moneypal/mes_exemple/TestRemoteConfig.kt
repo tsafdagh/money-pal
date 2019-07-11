@@ -93,7 +93,7 @@ class TestRemoteConfig : AppCompatActivity() {
         // [START get_config_values]
         val welcomeMessage = remoteConfig.getString(WELCOME_MESSAGE_KEY)
         // [END get_config_values]
-        welcomeTextView.isAllCaps = remoteConfig.getBoolean(WELCOME_MESSAGE_CAPS_KEY)
+       // welcomeTextView.isAllCaps = remoteConfig.getBoolean(WELCOME_MESSAGE_CAPS_KEY)
         welcomeTextView.text = welcomeMessage
 
         val isDefaultConfigActivated =  remoteConfig.getBoolean(DEMARER_TOUTES_LES8_APPLIS_VIA_DEMO)
@@ -120,14 +120,13 @@ class TestRemoteConfig : AppCompatActivity() {
         // Remote Config keys
         private const val LOADING_PHRASE_CONFIG_KEY = "loading_phrase"
         private const val WELCOME_MESSAGE_KEY = "welcome_message"
-        private const val WELCOME_MESSAGE_CAPS_KEY = "welcome_message_caps"
         private const val MESSAGE_SPLASH_SCREEN1 = "message_splash_sreen1"
         private const val MESSAGE_SPLASH_SCREEN2 = "message_splash_sreen2"
         private const val MESSAGE_SPLASH_SCREEN3 = "message_splash_sreen3"
         private const val DEMARER_TOUTES_LES8_APPLIS_VIA_DEMO = "demarage_de_toutes_les_applis_via_demo"
 
         private const val COULEUR_MILIEUR_OBJECTIVE_GROUP_FRAMENT = "fragment_objective_group_color_middle"
-        private const val COULEUR_ENTETE_OBJECTIVE_GROUP_FRAMENT = "fragment_objective_group_color_header"
+        private const val COULEUR_ENTETE_OBJECTIVE_GROUP_FRAMENT = "remote_color_primary"
     }
 
 }

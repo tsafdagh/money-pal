@@ -11,24 +11,31 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
+            android:name=".MoneyPalApplication"
             android:allowBackup="true"
             android:icon="@drawable/logo_money_pal"
             android:label="@string/app_name"
             android:roundIcon="@drawable/logo_money_pal"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            android:name=".MoneyPalApplication"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".mes_exemple.TestProgramablyColor">
+
+        </activity>
         <activity android:name=".PayementActivity">
-  <!--          <meta-data
+
+            <!--
+                <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".DetailsObjectiveGroup"/>-->
+                    android:value=".DetailsObjectiveGroup"/>
+            -->
         </activity>
         <activity android:name=".intro_slider.MainScreen">
         </activity>
         <activity android:name=".intro_slider.FirtsSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -40,10 +47,13 @@
                     android:value=".MainActivity"/>
         </activity>
         <activity android:name=".mes_exemple.TestRemoteConfig">
-         <!--   <intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".DetailsTransactonActivity">
             <meta-data
@@ -66,15 +76,16 @@
         <activity
                 android:name=".MainActivity"
                 android:label="@string/app_name">
-
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".MainActivity"/>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data
                         android:host="kola.moneypal.com"
                         android:scheme="https"/>
@@ -84,7 +95,6 @@
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts"/>
-
         <meta-data
                 android:name="com.hover.ApiKey"
                 android:value="fde21e57e7a350536109737e3910c57b"/>

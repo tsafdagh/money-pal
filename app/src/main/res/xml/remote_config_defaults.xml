@@ -6,10 +6,6 @@
         <value>Fetching config…</value>
     </entry>
     <entry>
-        <key>welcome_message_caps</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>welcome_message</key>
         <value>Welcome to my awesome app!</value>
     </entry>
@@ -34,8 +30,16 @@
         <value>#000000</value>
     </entry>
     <entry>
-        <key>fragment_objective_group_color_header</key>
+        <key>middle_color_all</key>
+        <value>#FFFFFF</value>
+    </entry>
+    <entry>
+        <key>header_color_all</key>
         <value>#42C4D3</value>
+    </entry>
+    <entry>
+        <key>active_remote_colors</key>
+        <value>false</value>
     </entry>
 
 </defaultsMap>

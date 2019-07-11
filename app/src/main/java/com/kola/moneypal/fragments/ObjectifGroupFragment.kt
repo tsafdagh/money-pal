@@ -17,6 +17,7 @@ import com.kola.moneypal.R
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
 import com.kola.moneypal.entities.UserGroupeEntitie
 import com.kola.moneypal.utils.FireStoreUtil
+import com.kola.moneypal.utils.RemoteConfigutils
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -46,10 +47,12 @@ class ObjectifGroupFragment : Fragment() {
                 updateRecycleView(it)
             }
         )
+        //val red = Color.parseColor()
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_objectif_group, container, false)
     }
+
 
     @SuppressLint("MissingSuperCall")
     override fun onDestroyView() {
@@ -98,7 +101,6 @@ class ObjectifGroupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-    }
+         }
 
 }

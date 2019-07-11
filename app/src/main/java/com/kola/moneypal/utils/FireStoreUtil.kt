@@ -273,13 +273,34 @@ object FireStoreUtil {
         for (itemPhonenumber in listOfMember) {
             getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
                 // on recupère les informations de l'utilisateur pour le groupe courent
-                firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
+/*                firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
                     .addOnSuccessListener {
                         val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
                         val curentUserGroupEntitie = UserGroupeEntitie(
                             user.userName,
                             tmpinfo[0].contributed_date,
                             tmpinfo[0].montant_cotiser,
+                            user.profilePicturePath!!,
+                            user.phoneNumber
+                        )
+                        // context.toast(curentUserGroupEntitie.toString())
+
+                        items.add(
+                            UserGroupeitem(curentUserGroupEntitie, context)
+                        )
+                        onListen(items)
+                    }.addOnFailureListener {
+                        Log.e(TAG, it.printStackTrace().toString())
+                    }*/
+
+                // on recupère les informations de l'utilisateur pour le groupe courent
+                firestoreInstance.collection("users").document(itemPhonenumber).collection(GobalConfig.USER_OBJECTIVES_GROUPS).document(groupeId).get()
+                    .addOnSuccessListener {
+                        val tmpinfo = it.toObject(UserInfoForGroup::class.java)
+                        val curentUserGroupEntitie = UserGroupeEntitie(
+                            user.userName,
+                            tmpinfo!!.contributed_date,
+                            tmpinfo.montant_cotiser,
                             user.profilePicturePath!!,
                             user.phoneNumber
                         )
@@ -359,13 +380,13 @@ object FireStoreUtil {
             for (itemPhonenumber in objectiveGroup.members!!) {
                 getUsersByPhoneNumber(itemPhonenumber, onComplete = { user ->
                     // on recupère les informations de l'utilisateur pour le groupe courent
-                    firestoreInstance.collection("users").document(itemPhonenumber).collection(groupeId).get()
+                    firestoreInstance.collection("users").document(itemPhonenumber).collection(GobalConfig.USER_OBJECTIVES_GROUPS).document(groupeId).get()
                         .addOnSuccessListener {
-                            val tmpinfo = it.toObjects(UserInfoForGroup::class.java)
+                            val tmpinfo = it.toObject(UserInfoForGroup::class.java)
                             val curentUserGroupEntitie = UserGroupeEntitie(
                                 user.userName,
-                                tmpinfo[0].contributed_date,
-                                tmpinfo[0].montant_cotiser,
+                                tmpinfo!!.contributed_date,
+                                tmpinfo.montant_cotiser,
                                 user.profilePicturePath!!,
                                 user.phoneNumber
                             )
@@ -411,7 +432,7 @@ object FireStoreUtil {
                     return@addSnapshotListener
                 }
 
-                // on met dans un try cach car io peut arriver que le groupe ai été supprimer entre-temps
+                // on met dans un try cach car il peut arriver que le groupe ai été supprimer entre-temps
                 try {
                     val newObjGroup = querySnapshot?.toObject(ObjectiveGroup::class.java)!!
                     onListen(newObjGroup)
@@ -478,7 +499,17 @@ object FireStoreUtil {
         defaulftUserGroupConfig[GobalConfig.CONTRIBUTED_USER_AMOUNT] = 0.0
         defaulftUserGroupConfig[GobalConfig.DATE_CONTRIBUTED_ON_GROUP] = AnotherUtil.getdateNow()
 
-        userCollection.document(userPhoneNumber).collection(objectivegroupId).add(defaulftUserGroupConfig)
+/*        userCollection.document(userPhoneNumber).collection(objectivegroupId).add(defaulftUserGroupConfig)
+            .addOnSuccessListener {
+                Log.i(TAG, "Ajout du groupe au profils de l'utilisateur effectuer avec success")
+                onComplete(true)
+
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Erreur d'ajout des infos du groupe au profil de l'utilisateur")
+                onComplete(false)
+            }*/
+        userCollection.document(userPhoneNumber).collection(GobalConfig.USER_OBJECTIVES_GROUPS).document(objectivegroupId).set(defaulftUserGroupConfig)
             .addOnSuccessListener {
                 Log.i(TAG, "Ajout du groupe au profils de l'utilisateur effectuer avec success")
                 onComplete(true)
@@ -499,7 +530,7 @@ object FireStoreUtil {
         onComplete: (status: Boolean) -> Unit
     ) {
         // on recupère d'abord la dernière contribution de l'utilisateur
-        currentUserDocRef.collection(objectivegroupId).get()
+/*        currentUserDocRef.collection(objectivegroupId).get()
             .addOnSuccessListener {
                 var oldContributedAmount = it.documents[0][GobalConfig.CONTRIBUTED_USER_AMOUNT] as Number
 
@@ -508,6 +539,31 @@ object FireStoreUtil {
                 //ensuite on met à jours le nouveau solde de contribution
                 val documentId = it.documents[0].id
                 currentUserDocRef.collection(objectivegroupId).document(documentId)
+                    .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, newAmount).addOnSuccessListener {
+                        Log.d("FireStoreUtil", "Solde mis à jours")
+                        notifyGroupeAndUpdateCurrentContributedAmount(
+                            objectivegroupId,
+                            newContributedAmount,
+                            onComplete = {
+                                onComplete(it)
+                            })
+                    }
+                    .addOnFailureListener {
+                        Log.e("FireStoreUtil", "Solde non mis à jours" + it.stackTrace.toString())
+                        onComplete(false)
+                    }
+            }*/
+
+        // on recupère d'abord la dernière contribution de l'utilisateur
+        currentUserDocRef.collection(GobalConfig.USER_OBJECTIVES_GROUPS).document(objectivegroupId).get()
+            .addOnSuccessListener {
+                var oldContributedAmount = it[GobalConfig.CONTRIBUTED_USER_AMOUNT] as Number
+
+                val newAmount = oldContributedAmount.toDouble() + newContributedAmount
+
+                //ensuite on met à jours le nouveau solde de contribution
+                val documentId = it.id
+                currentUserDocRef.collection(GobalConfig.USER_OBJECTIVES_GROUPS).document(documentId)
                     .update(GobalConfig.CONTRIBUTED_USER_AMOUNT, newAmount).addOnSuccessListener {
                         Log.d("FireStoreUtil", "Solde mis à jours")
                         notifyGroupeAndUpdateCurrentContributedAmount(
@@ -587,8 +643,6 @@ object FireStoreUtil {
 
 
     fun addUserOnGroupViaDynamicLink(groupeId: String, onComplete: (isOk: Boolean) -> Unit) {
-
-
 
         // on commence par recuperer les membres du groupe courant afin de vérifier que l'utilisateur n'en fait pas encore partir
         findSpecificGroupByID(groupeId, onComplete = {

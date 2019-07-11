@@ -25,23 +25,24 @@ import org.jetbrains.anko.makeCall
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.toast
 
-class UserGroupeitem (val usercontribution: UserGroupeEntitie,
-                      val context: Context
+class UserGroupeitem(
+    val usercontribution: UserGroupeEntitie,
+    val context: Context
 ) : Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
 
         viewHolder.apply {
             id_text_view_name.text = usercontribution.username
             id_textview_date.text = usercontribution.contributionDate
-            val montantFcfA = usercontribution.contributionMontant.toString()+" FCFA"
+            val montantFcfA = usercontribution.contributionMontant.toString() + " FCFA"
             id_tv_member_montant.text = montantFcfA
-                    if (usercontribution.imageSrc != "") {
-                        GlideApp.with(context)
-                            .load(usercontribution.imageSrc)
-                            .transform(CircleCrop())
-                            .placeholder(R.drawable.noun_user_group_)
-                            .into(viewHolder.imageView_profile_picture)
-                    }
+            if (usercontribution.imageSrc != "") {
+                GlideApp.with(context)
+                    .load(usercontribution.imageSrc)
+                    .transform(CircleCrop())
+                    .placeholder(R.drawable.noun_user_group_)
+                    .into(viewHolder.imageView_profile_picture)
+            }
 
 /*            cardView_item_person_group.setOnClickListener {
                 if(usercontribution.phoneNumber != FirebaseAuth.getInstance().currentUser?.phoneNumber){
@@ -53,15 +54,31 @@ class UserGroupeitem (val usercontribution: UserGroupeEntitie,
 
 
 
-        if(usercontribution.contributionMontant == 0.0){
-            viewHolder.id_tv_member_montant.textColor = Color.RED
-        }else
-            viewHolder.id_tv_member_montant.textColor = Color.GREEN
+        chekColor(viewHolder)
 
-if(usercontribution.phoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber)
-    viewHolder.contributed_user_cardView.setCardBackgroundColor(Color.parseColor("#ff4901"))
+        if (usercontribution.phoneNumber == FirebaseAuth.getInstance().currentUser?.phoneNumber) {
+            viewHolder.apply {
+                contributed_user_cardView.setCardBackgroundColor(Color.parseColor("#ff4901"))
+                id_tv_member_montant.textColor = Color.WHITE
+            }
+        } else {
+            viewHolder.apply {
+                contributed_user_cardView.setCardBackgroundColor(Color.TRANSPARENT)
+                id_tv_member_montant.textColor = Color.WHITE
+            }
+            chekColor(viewHolder)
+
+        }
 
     }
+
+    private fun chekColor(viewHolder: ViewHolder) {
+        if (usercontribution.contributionMontant == 0.0) {
+            viewHolder.id_tv_member_montant.textColor = Color.RED
+        } else
+            viewHolder.id_tv_member_montant.textColor = Color.GREEN
+    }
+
 
     /*fun withItems(usercontribution: UserGroupeEntitie) {
 

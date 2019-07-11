@@ -23,12 +23,12 @@ import java.util.ArrayList
 class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
     var montantRestant = 0.0
     override fun onError(p0: String?) {
-       // toast("erreur de télécharger de l'action " + p0)
+        // toast("erreur de télécharger de l'action " + p0)
 
     }
 
     override fun onSuccess(p0: ArrayList<HoverAction>?) {
-       // toast("Action télécharger avec succes ${p0.toString()}")
+        // toast("Action télécharger avec succes ${p0.toString()}")
     }
 
     private lateinit var objGroupe: ObjectiveGroup
@@ -60,14 +60,14 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
 
         id_btn_proceder_payement.setOnClickListener {
             montantAPayer = id_editText_montant_payement.text.toString()
-            if (montantAPayer == "") {
+            if (montantAPayer == "" || montantAPayer.toDouble() == 0.0) {
                 id_editText_montant_payement.error = getString(R.string.ms_entre_mnt_correct)
             } else {
-                if(montantAPayer.toDouble() <= montantRestant){
+                if (montantAPayer.toDouble() <= montantRestant) {
 
                     payementProcess(montantAPayer)
 
-                }else  id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
+                } else id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
             }
         }
 

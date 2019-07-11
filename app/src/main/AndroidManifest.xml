@@ -35,7 +35,9 @@
         <activity android:name=".mes_exemple.PieadCardActivity">
         </activity>
         <activity android:name=".DetailsObjectiveGroup">
-
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MainActivity"/>
         </activity>
         <activity android:name=".mes_exemple.TestRemoteConfig">
          <!--   <intent-filter>

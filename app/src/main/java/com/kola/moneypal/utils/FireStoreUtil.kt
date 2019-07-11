@@ -588,22 +588,40 @@ object FireStoreUtil {
 
     fun addUserOnGroupViaDynamicLink(groupeId: String, onComplete: (isOk: Boolean) -> Unit) {
 
-        //on ajoute le groupe dans la reference de l'utilisateur
-        addObjectiveGroupInfoToUser(
-            groupeId,
-            FirebaseAuth.getInstance().currentUser?.phoneNumber!!,
-            onComplete = {
-                if (it) {
-                    val curentUser = User(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,"","","")
-                    val listSingleUser= ArrayList<User>()
-                    listSingleUser.add(curentUser)
-                    // on ajoute le numéro de téléphone de l'utilisateur dans la liste des numéro du groupe
-                    addMemberToObjectiveGroup(groupeId,  listSingleUser, onComplete = {
-                        onComplete(it)
-                    } )
-                } else
-                    onComplete(false)
-            })
+
+
+        // on commence par recuperer les membres du groupe courant afin de vérifier que l'utilisateur n'en fait pas encore partir
+        findSpecificGroupByID(groupeId, onComplete = {
+            val members = it.members
+            var userIsIngroup = false
+            // on ajoute l'utilisateur dans le groupe que s'il n'y était pas déja
+            for (phoneUser in members!!) {
+                if(phoneUser ==FirebaseAuth.getInstance().currentUser!!.phoneNumber!!)
+                    userIsIngroup = true
+            }
+
+            // on ajoute l'utilisateur dans le groupe si il n'y était pas déja
+
+            if (!userIsIngroup){
+                //on ajoute le groupe dans la reference de l'utilisateur
+                addObjectiveGroupInfoToUser(
+                    groupeId,
+                    FirebaseAuth.getInstance().currentUser?.phoneNumber!!,
+                    onComplete = {
+                        if (it) {
+                            val curentUser = User(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!,"","","")
+                            val listSingleUser= ArrayList<User>()
+                            listSingleUser.add(curentUser)
+                            // on ajoute le numéro de téléphone de l'utilisateur dans la liste des numéro du groupe
+                            addMemberToObjectiveGroup(groupeId,  listSingleUser, onComplete = {
+                                onComplete(it)
+                            } )
+                        } else
+                            onComplete(false)
+                    })
+            }else onComplete(false)
+
+        })
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.hover.sdk.actions.HoverAction
 import com.hover.sdk.api.Hover
@@ -101,12 +102,23 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             )
             .extra(PayementConfiguration.ETAPE_2_PAYEMENT_ORANGE_MONEY, montant)
             .buildIntent()
+
         // pour les payement de orange money vers MTN money
         /*val payementIntent  = HoverParameters.Builder(this)
             .request(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY_VERS_MTN)
             .extra(PayementConfiguration.ETAPE_1_PAYEMENT_ORANGE_MONEY_VERS_MTN,objGroupe.AdminPhoneNumber)
             .extra(PayementConfiguration.ETAPE_2_PAYEMENT_ORANGE_MONEY_VERS_MTN, montant.toInt().toString())
             .buildIntent()*/
+
+        // pour les payement mtn vers mtn
+/*        val payementIntent  = HoverParameters.Builder(this)
+            .request(PayementConfiguration.ID_ACTION_PAYEMENT_MTN_MONEY_VERS_MTN)
+            .extra(PayementConfiguration.ETAPE_1_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
+            .extra(PayementConfiguration.ETAPE_2_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
+            .extra(PayementConfiguration.ETAPE_3_PAYEMENT_MTN_MONEY_VERS_MTN,objGroupe.adminPhoneNumber.substring(4))
+            .extra(PayementConfiguration.ETAPE_4_PAYEMENT_MTN_MONEY_VERS_MTN, montant.toInt().toString())
+            .buildIntent()*/
+
         startActivityForResult(payementIntent, PayementConfiguration.REQUEST_CODE_FOR_PAYEMENY_ORANGE_MONEY)
         /* }else{
              Snackbar.make(
@@ -127,6 +139,12 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             //val sessionTextArr = data?.getStringArrayExtra("ussd_messages")
             //val uuid = data?.getStringExtra("uuid")
             val allMessage = data?.getStringArrayExtra("ussd_messages")
+            val resultMessage  = ""
+            if (allMessage != null) {
+                for (i in 0 until allMessage.size-1){
+                    resultMessage.plus(allMessage[i])
+                }
+            }
             val message = allMessage!!.last()
             toast("Message= $message")
             Snackbar.make(
@@ -141,7 +159,16 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                 if (it){
                     toast("Payement mis à jours avec succes")
                     progressdialog.dismiss()
-                    this.onBackPressed()
+
+                    AlertDialog.Builder(this)
+                        .setTitle("Message de retour")
+                        .setMessage(resultMessage)
+                        .setIcon(R.drawable.ic_action_form)
+                        .setNeutralButton("OK"
+                        ) { dialog, id ->
+                            dialog.cancel()
+                        }.show()
+                    //this.onBackPressed()
                 }else{
                     toast("Erreur de mis à jour du payement")
                     progressdialog.dismiss()
@@ -150,7 +177,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                         "Erreur de mis à jour du payement",
                         Snackbar.LENGTH_LONG
                     ).show()
-                    this.onBackPressed()
+                    //this.onBackPressed()
                 }
             })
 

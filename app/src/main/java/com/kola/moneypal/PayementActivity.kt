@@ -65,7 +65,24 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             } else {
                 if (montantAPayer.toDouble() <= montantRestant) {
 
-                    payementProcess(montantAPayer)
+                    //payementProcess(montantAPayer)
+                    val progressdialog = indeterminateProgressDialog("Mise à jours du solde dans le groupe...")
+                    FireStoreUtil.updateContributedAmountOnobjectiveGroupForCurentuser(groupId, montantAPayer.toDouble(), onComplete = {
+                        if (it){
+                            toast("Payement mis à jours avec succes")
+                            progressdialog.dismiss()
+                            this.onBackPressed()
+                        }else{
+                            toast("Erreur de mis à jour du payement")
+                            progressdialog.dismiss()
+                            Snackbar.make(
+                                id_payement_activity,
+                                "Erreur de mis à jour du payement",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            this.onBackPressed()
+                        }
+                    })
 
                 } else id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
             }

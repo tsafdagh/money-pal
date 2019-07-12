@@ -33,7 +33,7 @@ object FireStoreUtil {
     private val currentUserDocRef: DocumentReference
         get() = firestoreInstance.document(
             "users/${FirebaseAuth.getInstance().currentUser?.phoneNumber
-                ?: throw NullPointerException("Phone number is null..")}"
+                ?: throw NullPointerException("Phone number is null..") }"
         )
 
     private val userCollection = firestoreInstance.collection(GobalConfig.REFFERENCE_USERS)
@@ -470,9 +470,9 @@ object FireStoreUtil {
                 .addOnSuccessListener {
 
                     Log.i(TAG, "Ajout du groupe au profils de chaque utilisateur ")
-                    // parcourir la réference de chaque utilisateur et y ajouter l'id du groupe
-                    for (phoneuser in members!!) {
-                        addObjectiveGroupInfoToUser(groupeid, phoneuser, onComplete = {
+                    // parcourir la réference de chaque utilisateu de la liste à ajouter et on y ajoute l'id du groupe
+                    for (phoneuser in listOfUsers!!) {
+                        addObjectiveGroupInfoToUser(groupeid, phoneuser.phoneNumber, onComplete = {
                         })
                     }
 

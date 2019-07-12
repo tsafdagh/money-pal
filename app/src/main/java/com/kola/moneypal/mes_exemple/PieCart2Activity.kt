@@ -1,5 +1,7 @@
 package com.kola.moneypal.mes_exemple
 
+import android.annotation.TargetApi
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
@@ -11,8 +13,10 @@ import android.text.style.StyleSpan
 import android.text.style.RelativeSizeSpan
 import android.text.SpannableString
 import android.graphics.Color
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.data.PieData
@@ -27,6 +31,7 @@ import com.github.mikephil.charting.components.Legend
 import com.kola.moneypal.entities.CategorieNature
 import com.kola.moneypal.utils.SmsUtils
 import kotlinx.android.synthetic.main.activity_pie_cart2.*
+import org.jetbrains.anko.ctx
 import org.jetbrains.anko.toast
 
 
@@ -106,7 +111,6 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
         chart!!.animateY(2000, Easing.EaseInOutQuad)
         // chart.spin(2000, 0, 360);
 
-
         var l = chart!!.legend
         l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
@@ -139,7 +143,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
         depenseOarCategories.add(4, totalFactureEneot.toFloat())
         depenseOarCategories.add(5, totalAchatConnexion.toFloat())
 
-        val depensesTotales =depenseOarCategories.sum()
+        val depensesTotales = depenseOarCategories.sum()
 
         val depense = "Dépenses totales $depensesTotales FCFA"
         id_tv_depenses_totales.text = depense
@@ -161,7 +165,6 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0f, 40f)
         dataSet.selectionShift = 5f
-
 
 
         //creation des couleurs
@@ -206,10 +209,36 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
     }
 
     override fun onValueSelected(e: Entry?, h: Highlight?) {
-        toast("Depensess")
+        //toast("Depensess")
+
+        //var post1 = e.toString().indexOf("(sum): ")
+        val amount = e.toString().substring(16)
+
+        Log.i("Statistique", amount)
+/*        for(i in 0 until depenseOarCategories.size -1){
+            if(depenseOarCategories[i] == amount.toFloat()){
+                post1 = i
+                break
+            }
+        }
+
+        toast(e.toString())
+        toast(h.toString())*/
+
+        // val categoRie  = categoriesTransactions[post1 +1]
+        //toast("Categorie $categoRie \n Valeures: $amount")
+
+
+        AlertDialog.Builder(this)
+            .setTitle("Montant total de la transaction")
+            .setMessage("Le montant total de vos dépenses pour cette catégorie est de: $amount FCFA")
+            .setIcon(R.drawable.ic_action_form)
+            .setNeutralButton("OK"
+            ) { dialog, id ->
+                dialog.cancel()
+            }.show()
+
     }
-
-
 
 
     fun sumTransactionsByCategorie() {
@@ -230,7 +259,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
                 listorangeTransactions,
                 CategorieNature.NATURE_DEPOS_ARGENT
             )
-        for (element in transactionType){
+        for (element in transactionType) {
             totalDeposArgent += element.montanttransaction
         }
 
@@ -238,7 +267,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
         // les achats de credit dans le compte de l'utilisateur
         transactionType =
             SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_ACHAT_CREDIT)
-        for (element in transactionType){
+        for (element in transactionType) {
             totalAchatdecredit += element.montanttransaction
         }
 
@@ -246,8 +275,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
         //les factures d'éneo
         transactionType =
             SmsUtils.findSpecificSpending(listorangeTransactions, CategorieNature.NATURE_FACTURE_ENEO)
-        for (element in transactionType)
-        {
+        for (element in transactionType) {
             totalFactureEneot += element.montanttransaction
         }
 
@@ -257,8 +285,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
                 listorangeTransactions,
                 CategorieNature.NATURE_ACHAT_CONNEXION
             )
-        for (element in transactionType)
-        {
+        for (element in transactionType) {
             totalAchatConnexion += element.montanttransaction
         }
 
@@ -268,8 +295,7 @@ class PieCart2Activity : AppCompatActivity(), OnChartValueSelectedListener {
                 listorangeTransactions,
                 CategorieNature.NATURE_RETRAIT_ARGENT
             )
-        for (element in transactionType)
-        {
+        for (element in transactionType) {
             totalRetraitArgent += element.montanttransaction
         }
     }

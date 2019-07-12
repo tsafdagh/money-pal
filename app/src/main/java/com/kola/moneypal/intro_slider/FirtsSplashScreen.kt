@@ -20,7 +20,6 @@ class FirtsSplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_firts_splash_screen)
 
-        //TODO bloquer la rotation de cette activiter pour éviter le crash de l'application
         setUpRemoteConfig()
 
         /* val myThread = Thread {

@@ -60,7 +60,6 @@
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:src="@drawable/nom_user"
                             tools:ignore="VectorDrawableCompat"/>

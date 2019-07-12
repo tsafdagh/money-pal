@@ -106,5 +106,7 @@
     <string name="ajouter_graup">Ajouter les membres sélectionnés</string>
     <string name="text_creation_lient_en_cours">Création du lien en cours...</string>
     <string name="snackbar_ajout_group_succes">Vous avez été ajouter dans le groupe avec succes</string>
+    <string name="informations_du_groupe">informations du groupe</string>
+    <string name="chat_de_groupe">chat de groupe</string>
 
 </resources>

@@ -11,9 +11,6 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
 import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
 import com.kola.moneypal.RecycleView.item.SimpleuserItem
 import com.kola.moneypal.RecycleView.item.UserGroupeitem
@@ -642,10 +639,12 @@ object FireStoreUtil {
     }
 
 
-    fun addUserOnGroupViaDynamicLink(groupeId: String, onComplete: (isOk: Boolean) -> Unit) {
+    fun addUserOnGroupViaDynamicLink(groupeId: String, onComplete: (addedObjcGroup: ObjectiveGroup?) -> Unit) {
 
         // on commence par recuperer les membres du groupe courant afin de vérifier que l'utilisateur n'en fait pas encore partir
+        var  addedObjcGroup :ObjectiveGroup?= null
         findSpecificGroupByID(groupeId, onComplete = {
+            addedObjcGroup = it
             val members = it.members
             var userIsIngroup = false
             // on ajoute l'utilisateur dans le groupe que s'il n'y était pas déja
@@ -655,7 +654,6 @@ object FireStoreUtil {
             }
 
             // on ajoute l'utilisateur dans le groupe si il n'y était pas déja
-
             if (!userIsIngroup){
                 //on ajoute le groupe dans la reference de l'utilisateur
                 addObjectiveGroupInfoToUser(
@@ -668,12 +666,12 @@ object FireStoreUtil {
                             listSingleUser.add(curentUser)
                             // on ajoute le numéro de téléphone de l'utilisateur dans la liste des numéro du groupe
                             addMemberToObjectiveGroup(groupeId,  listSingleUser, onComplete = {
-                                onComplete(it)
+                                onComplete(addedObjcGroup)
                             } )
                         } else
-                            onComplete(false)
+                            onComplete(addedObjcGroup)
                     })
-            }else onComplete(false)
+            }else onComplete(addedObjcGroup)
 
         })
     }

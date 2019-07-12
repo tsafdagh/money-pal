@@ -95,12 +95,12 @@
                         android:paddingTop="13dp"
                         android:paddingRight="15dp">
 
-                    <EditText
+                    <MultiAutoCompleteTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/description_groupe"
-                            android:textColor="@color/colorPrimary"
                             android:inputType="textMultiLine"
+                            android:textColor="@color/colorPrimary"
                             android:id="@+id/id_editText_description_objectif"
                             android:maxLines="1"
                             android:ellipsize="end"/>

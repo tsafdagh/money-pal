@@ -9,17 +9,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.kola.moneypal.authentification.UserprofileActivitu
@@ -31,8 +27,8 @@ import com.kola.moneypal.mes_exemple.PieCart2Activity
 import com.kola.moneypal.utils.FireStoreUtil
 import com.kola.moneypal.utils.GobalConfig
 import com.kola.moneypal.utils.StorageUtil
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.create_group_dialog.view.*
+import kotlinx.android.synthetic.main.my_dialog.view.*
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -90,27 +86,22 @@ class MainActivity : AppCompatActivity() {
                     val progress = indeterminateProgressDialog("Ajout dans le groupe en cours")
                     FireStoreUtil.addUserOnGroupViaDynamicLink(idGroup, onComplete = {
 
-                        if (it) {
+                        if (it != null) {
                             progress.dismiss()
-                            Snackbar.make(
-                                container,
-                                getString(R.string.snackbar_ajout_group_succes),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                            isWillHomeFragment = true
-                            replaceFragment(ObjectifGroupFragment())
+                            showConfirmationDialog(it)
                         } else progress.dismiss()
 
                     })
                 }
             }
             .addOnFailureListener {
-                // initialisation par défaut de la vue
+
             }.addOnCompleteListener {
             }
 
         //setUpRemoteConfig()
     }
+
 /*
     private fun setUpRemoteConfig() {
         RemoteConfigutils.fetchRemoteConfigFromServer(this, onComplete = {
@@ -314,6 +305,31 @@ class MainActivity : AppCompatActivity() {
             GlideApp.with(this)
                 .load(selectedImagePathUri).circleCrop()
                 .into(mDialogView!!.imageView_profile_groupe_picture)
+        }
+    }
+
+    // cette fonction est appelée lorsqu'un utilisateur a été ajouter avec succes dans un groupe
+    private fun showConfirmationDialog(addedObjectiveGroupt: ObjectiveGroup) {
+        val viewGroup = findViewById<ViewGroup>(android.R.id.content)
+
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.my_dialog, viewGroup, false)
+
+        val builder = AlertDialog.Builder(this)
+        val text ="Vous avez été ajouter avec sucess dans le groupe" +
+                " ${addedObjectiveGroupt.groupeName}\nDescription du groupe: " +
+                "${addedObjectiveGroupt.groupeDescription}. " +
+                "\nPour plus d'informations concernant ce groupe, rendrez vous à l'onglet Objectifs et sélectionnez le nom du groupe"
+
+        dialogView.textview_info_dialog.text =text
+        builder.setView(dialogView)
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+
+        dialogView.buttonOk.setOnClickListener {
+            alertDialog.dismiss()
+            isWillHomeFragment = true
+            replaceFragment(ObjectifGroupFragment())
         }
     }
 }

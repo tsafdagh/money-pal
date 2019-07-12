@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/informations_du_groupe"
+          android:id="@+id/id_info_group"
+          android:icon="@drawable/interogation_menu"
+          app:showAsAction="ifRoom"/>
+
+    <item android:title="@string/chat_de_groupe"
+          android:id="@+id/id_chat_menu_item"
+          android:icon="@drawable/ic_chat_menu2"
+          app:showAsAction="ifRoom"/>
+</menu>

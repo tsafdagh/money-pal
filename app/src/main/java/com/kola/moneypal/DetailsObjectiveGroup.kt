@@ -9,6 +9,8 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -37,13 +39,12 @@ import kotlin.collections.ArrayList
 
 class DetailsObjectiveGroup : AppCompatActivity() {
 
+    //TODO ajout du menu pour la description du group
     private var shouldInitrecycleView = true
     val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1
     private lateinit var usergroupSection: Section
     private lateinit var objGroupe: ObjectiveGroup
     private lateinit var groupId: String
-
-    private var contributedCurentAmount: Double = 0.0
 
     private lateinit var specificgroupeListenerRegistration: ListenerRegistration
 
@@ -76,6 +77,8 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             progressBar_p_objectif.apply {
                 max = it.objectiveamount.toInt()
                 progress = it.courentAmount.toInt()
+
+                objGroupe = it
                 id_text_objectif.text = it.groupeName
 
                 id_val_solde_total.text = objGroupe.objectiveamount.toString()
@@ -296,7 +299,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
         try {
             FireStoreUtil.removeListener(specificgroupeListenerRegistration)
             shouldInitrecycleView = true
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("DetailsObjectiveGroup", e.toString())
         }
 
@@ -357,6 +360,34 @@ class DetailsObjectiveGroup : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.objective_group_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.id_info_group -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Informations du groupe ${objGroupe.groupeName}")
+                    .setMessage("Description: ${objGroupe.groupeDescription}\n" +
+                            "Montant à atteindre: ${objGroupe.objectiveamount} FCFA\n" +
+                            "Montant courant: ${objGroupe.courentAmount} FCFA\n" +
+                            "Date d'échéance: ${objGroupe.DateEcheance}\n" +
+                            "Nombre de membre: ${objGroupe.members!!.size}\n")
+                    .setIcon(R.drawable.ic_action_form)
+                    .setNeutralButton("OK"
+                    ) { dialog, id ->
+                        dialog.cancel()
+                    }.show()
+            }
+
+            R.id.id_chat_menu_item -> {
+                toast("chat du groupe, en cours de developpement...")
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     fun shareLink(link: String) {
         val intent = Intent()

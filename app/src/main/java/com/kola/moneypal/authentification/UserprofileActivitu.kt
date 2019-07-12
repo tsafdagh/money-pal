@@ -25,6 +25,7 @@ import com.kola.moneypal.utils.StorageUtil
 import kotlinx.android.synthetic.main.activity_userprofile_activitu.*
 import org.jetbrains.anko.*
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 
 class UserprofileActivitu : AppCompatActivity() {
@@ -32,11 +33,10 @@ class UserprofileActivitu : AppCompatActivity() {
     private val RC_SELECT_IMAGE = 2
     private val REQUESTrEADiMAGE = 1
     private var isImageSelected = false
-    private var pictureJustChanged = false
     private var selectedImagePathUri: Uri? = null
     private lateinit var selectedImageBytes: ByteArray
 
-
+    //TODO corection du burg lié à la sélection de l'image de profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fresco.initialize(this)
@@ -83,32 +83,32 @@ class UserprofileActivitu : AppCompatActivity() {
                 val myName = id_editText_name.text.toString()
                 val emailAddresse = id_editText_email.text.toString()
 
-                if(selectedImagePathUri != null ){
-                    StorageUtil.uploadFromLocalFile(selectedImagePathUri!!,GobalConfig.REFERENCE_USER_IMAGE_PROFIL,onSuccess = { url->
-                        FireStoreUtil.updateCurrentUser(
-                            myName,
-                            emailAddresse,
-                            url,
-                            selectedImagePathUri,
-                            onComplete = { user, isOk ->
-                                if (isOk) {
-                                    Log.d("UserProfileActivity:", "User name is set!")
-                                    progressdialog.dismiss()
-                                    toast(user.phoneNumber)
-                                    toast(user.userName)
-                                    toast(user.email!!)
-                                    startActivity(intentFor<MainActivity>().newTask().clearTask())
-                                } else {
-                                    progressdialog.dismiss()
-                                    Snackbar.make(
-                                        id_user_profil,
-                                        getString(R.string.snackbar_erreur_connexion),
-                                        Snackbar.LENGTH_LONG
-                                    ).show()
-                                }
-                            })
-                    })
-                }else{
+                if (selectedImagePathUri != null) {
+                    StorageUtil.uploadFromLocalFile(
+                        selectedImagePathUri!!,
+                        GobalConfig.REFERENCE_USER_IMAGE_PROFIL,
+                        onSuccess = { url ->
+                            FireStoreUtil.updateCurrentUser(
+                                myName,
+                                emailAddresse,
+                                url,
+                                selectedImagePathUri,
+                                onComplete = { user, isOk ->
+                                    if (isOk) {
+                                        Log.d("UserProfileActivity:", "User name is set!")
+                                        progressdialog.dismiss()
+                                        startActivity(intentFor<MainActivity>().newTask().clearTask())
+                                    } else {
+                                        progressdialog.dismiss()
+                                        Snackbar.make(
+                                            id_user_profil,
+                                            getString(R.string.snackbar_erreur_connexion),
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
+                                    }
+                                })
+                        })
+                } else {
                     FireStoreUtil.updateCurrentUser(
                         myName,
                         emailAddresse,
@@ -118,9 +118,6 @@ class UserprofileActivitu : AppCompatActivity() {
                             if (isOk) {
                                 Log.d("UserProfileActivity:", "User name is set!")
                                 progressdialog.dismiss()
-                                toast(user.phoneNumber)
-                                toast(user.userName)
-                                toast(user.email!!)
                                 startActivity(intentFor<MainActivity>().newTask().clearTask())
                             } else {
                                 progressdialog.dismiss()
@@ -165,20 +162,14 @@ class UserprofileActivitu : AppCompatActivity() {
 
             GlideApp.with(this)
                 .load(selectedImagePathUri)
-                .placeholder(R.drawable.nom_user)
                 .transform(CircleCrop())
                 .into(imageView_profile_picture)
-
-
-            pictureJustChanged = true
 
         }
     }
 
     override fun onStart() {
         super.onStart()
-        id_edit_telephone.setText(FirebaseAuth.getInstance().currentUser!!.phoneNumber)
-        id_editText_name.setText(FirebaseAuth.getInstance().currentUser!!.displayName ?: "")
 
 /*        if (!pictureJustChanged) {
             imageView_profile_picture.clearColorFilter()
@@ -186,15 +177,22 @@ class UserprofileActivitu : AppCompatActivity() {
                 .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
                 .into(imageView_profile_picture)
         }*/
+        id_edit_telephone.setText(FirebaseAuth.getInstance().currentUser!!.phoneNumber)
+        id_editText_name.setText(FirebaseAuth.getInstance().currentUser!!.displayName ?: "")
 
-        GlideApp.with(this)
-            .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
-            .placeholder(R.drawable.nom_user)
-            .transform(CircleCrop())
-            .into(imageView_profile_picture)
-      /*  FireStoreUtil.getCurrentUserFromFireStore {
-
-        }*/
-
+        val progressdialog = indeterminateProgressDialog("Chargement de vos informations...")
+        FireStoreUtil.getCurrentUserFromFireStore {
+            id_editText_email.setText(it.email)
+            progressdialog.dismiss()
+            try {
+                GlideApp.with(this)
+                    .load(it.profilePicturePath)
+                    .placeholder(R.drawable.nom_user)
+                    .transform(CircleCrop())
+                    .into(imageView_profile_picture)
+            } catch (e: Exception) {
+                Log.e("UrerProfilActivity", e.message.toString())
+            }
+        }
     }
 }

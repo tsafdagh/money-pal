@@ -72,4 +72,8 @@ object RemoteConfigutils {
     fun getMiddleColor(): String {
         return remoteConfig.getString(RemoteProperties.MEDDLE_COLOR_ALL)
     }
+
+    fun isForcerdemarageViaDemo():Boolean{
+        return remoteConfig.getBoolean(RemoteProperties.DEMARER_TOUTES_LES8_APPLIS_VIA_DEMO)
+    }
 }

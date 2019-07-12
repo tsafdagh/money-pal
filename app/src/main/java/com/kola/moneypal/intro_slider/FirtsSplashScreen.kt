@@ -7,6 +7,8 @@ import android.util.Half
 import com.google.firebase.auth.FirebaseAuth
 import com.kola.moneypal.MainActivity
 import com.kola.moneypal.R
+import com.kola.moneypal.datas.SharedPreference
+import com.kola.moneypal.datas.SheredprefKeysObj
 import com.kola.moneypal.utils.RemoteConfigutils
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
@@ -32,14 +34,23 @@ class FirtsSplashScreen : AppCompatActivity() {
          myThread.start()*/
     }
 
+
+    private var preferenceManager: SharedPreference? = null
     private fun setUpRemoteConfig() {
 
-        val pDialog = indeterminateProgressDialog("Chargement des configuration en cours ...")
+        // on déclenche la recupération des configurations dans remoteConfig
+        val pDialog = indeterminateProgressDialog("Chargement des configurations en cours ...")
         RemoteConfigutils.fetchRemoteConfigFromServer(this, onComplete = {
-            val isRemoteConfigActivateColor = RemoteConfigutils.isRemoteConfigColorsAcived()
-            if (isRemoteConfigActivateColor) {
-                startAnotherActivity()
+
+            // Si le démarage via l'intro est forcé, on autorise la première initialisation et on démarre via l'intro
+            val isForcerdemarageViaDemo = RemoteConfigutils.isForcerdemarageViaDemo()
+            if (isForcerdemarageViaDemo) {
+                preferenceManager = SharedPreference(this)
+                preferenceManager?.save(SheredprefKeysObj.FIRST_INITIALISATION_OF_APP, false)
+
+                startActivity<MainScreen>()
             } else {
+                //si non on sui la procedure normale
                 startAnotherActivity()
             }
 

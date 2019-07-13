@@ -382,8 +382,11 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             }
 
             R.id.id_chat_menu_item -> {
-                //TODO creer le chat pour le group courant
-                toast("chat du groupe, en cours de developpement...")
+                val intent = Intent(this, ChatGroupe::class.java)
+                intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_STRING, objGroupe)
+                intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupId)
+                intent.putExtra(GobalConfig.EXTRAT_REFERENCE_OBJ_GROUP_ID_STRING, groupId)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)

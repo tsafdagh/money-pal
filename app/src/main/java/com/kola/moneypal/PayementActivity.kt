@@ -123,7 +123,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             .request(PayementConfiguration.ID_ACTION_PAYEMENT_MTN_MONEY_VERS_MTN)
             .extra(PayementConfiguration.ETAPE_1_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
             .extra(PayementConfiguration.ETAPE_2_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
-            .extra(PayementConfiguration.ETAPE_3_PAYEMENT_MTN_MONEY_VERS_MTN,  "+237676827742".substring(4))
+            .extra(PayementConfiguration.ETAPE_3_PAYEMENT_MTN_MONEY_VERS_MTN,  objGroupe.adminPhoneNumber.substring(4))
             .extra(PayementConfiguration.ETAPE_5_PAYEMENT_MTN_MONEY_VERS_MTN, montant.toInt().toString())
             .extra(PayementConfiguration.ETAPE_4_PAYEMENT_MTN_MONEY_VERS_MTN, "Contribution pour l'objectif du groupe")
             .buildIntent()
@@ -240,6 +240,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
 
     }
 
+    //code de détection de l'opérateur orange à partir d'un numéro de téléphone
     fun isOrangeOperator(phoneNumber: String): Boolean {
         var firtsSubSeq = phoneNumber.subSequence(4, 6) as String
         var secondSubSeq = phoneNumber.subSequence(4, 7) as String
@@ -247,6 +248,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                 || secondSubSeq.toInt() in 655..659)
     }
 
+    //code de détection de l'opérateur Mtn à partir d'un numéro de téléphone
     fun isMTNOoperator(phoneNumber: String): Boolean {
         var firtsSubSeq = phoneNumber.subSequence(4, 6) as String
         var secondSubSeq = phoneNumber.subSequence(4, 7) as String

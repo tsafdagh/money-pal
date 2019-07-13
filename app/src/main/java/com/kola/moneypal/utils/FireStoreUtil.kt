@@ -11,13 +11,8 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.kola.moneypal.RecycleView.item.ObjectivegroupItem
-import com.kola.moneypal.RecycleView.item.SimpleuserItem
-import com.kola.moneypal.RecycleView.item.UserGroupeitem
-import com.kola.moneypal.entities.ObjectiveGroup
-import com.kola.moneypal.entities.User
-import com.kola.moneypal.entities.UserGroupeEntitie
-import com.kola.moneypal.entities.UserInfoForGroup
+import com.kola.moneypal.RecycleView.item.*
+import com.kola.moneypal.entities.*
 import com.xwray.groupie.kotlinandroidextensions.Item
 import org.jetbrains.anko.toast
 import java.util.*
@@ -117,6 +112,13 @@ object FireStoreUtil {
     /** Recupère l'utilisateur couran couran de fireStore**/
     fun getCurrentUserFromFireStore(onComplete: (User) -> Unit) {
         currentUserDocRef.get()
+            .addOnSuccessListener {
+                onComplete(it.toObject(User::class.java)!!)
+            }
+    }
+    /** Recupère à partir de son numéro de téléphone**/
+    fun getUserByPhoneNumber(phone:String, onComplete: (User) -> Unit) {
+        userCollection.document(phone).get()
             .addOnSuccessListener {
                 onComplete(it.toObject(User::class.java)!!)
             }
@@ -315,6 +317,7 @@ object FireStoreUtil {
 
         //onListen(items)
     }
+
 
     /**Joue le même rôle que la fonction createObjectiveGroupMembersList() mais uniquement pour un seul utilisateur du groupe**/
     fun addCreateObjectiveGroupMembersList(
@@ -674,6 +677,46 @@ object FireStoreUtil {
             }else onComplete(addedObjcGroup)
 
         })
+    }
+
+
+    /*
+Cette méthode retourne la liste des chat dans un groupe donner
+*/
+    fun addGroupeChatMessagesListener(
+        langue: String,
+        groupeId: String,
+        context: Context,
+        onListner: (List<Item>) -> Unit
+    ): ListenerRegistration {
+        return objectiveGroupeCollectionRef.document(groupeId).collection("messages")
+            .orderBy("time")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                if (firebaseFirestoreException != null) {
+                    Log.e("FIRESTORE", "ChatMessageslistener error.", firebaseFirestoreException)
+                    return@addSnapshotListener
+                }
+
+                val items = mutableListOf<Item>()
+                querySnapshot!!.documents.forEach {
+                    if (it["type"] == MessageType.TEXT) {
+                        val textMessage = it.toObject(TextMessage::class.java)!!
+                        items.add(TextMessageItemGroup(langue, textMessage, context))
+                    } else {
+                        val imageMessage = it.toObject(ImageMessage::class.java)!!
+                        items.add(ImageMessageItemGroup(imageMessage, context))
+                    }
+                    return@forEach
+                }
+                onListner(items)
+            }
+    }
+
+    // permet d'envoyer un message de groupe
+    fun sendGroupeMessage(message: Message, groupeId: String) {
+        objectiveGroupeCollectionRef.document(groupeId)
+            .collection("messages")
+            .add(message)
     }
 
     fun removeListener(registration: ListenerRegistration) = registration.remove()

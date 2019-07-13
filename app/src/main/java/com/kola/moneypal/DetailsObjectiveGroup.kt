@@ -39,7 +39,6 @@ import kotlin.collections.ArrayList
 
 class DetailsObjectiveGroup : AppCompatActivity() {
 
-    //TODO ajout du menu pour la description du group
     private var shouldInitrecycleView = true
     val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1
     private lateinit var usergroupSection: Section
@@ -383,6 +382,7 @@ class DetailsObjectiveGroup : AppCompatActivity() {
             }
 
             R.id.id_chat_menu_item -> {
+                //TODO creer le chat pour le group courant
                 toast("chat du groupe, en cours de developpement...")
             }
         }

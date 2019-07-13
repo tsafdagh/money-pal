@@ -66,7 +66,35 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             } else {
                 if (montantAPayer.toDouble() <= montantRestant) {
 
-                    payementProcess(montantAPayer)
+                    AlertDialog.Builder(this)
+                        .setTitle("Avertissement")
+                        .setMessage(
+                            "L'application MoneyPal dans son état actuel ne gère que les payements orange et MTN Money, et aussi elle ne permet pas encore les payements entre deux opérateurs differents.\n" +
+                                    " Un algorithme de charge de détecter automatiquement l'operateur du numéro de telephone du destinataire\n" +
+                                    "1- Pour pouvoir payer à un numéro orange, vous devez avoir une carte sim orange dans votre téléphone\n" +
+                                    "2- Pour pouvoir payer à un numéro MTN, vous devez avoir une carte sim MTN dans votre téléphone.\n" +
+                                    "En cas de non respect de ces rêgles, le destinataire ne recevra pas l'argent"
+                        )
+                        .setIcon(R.drawable.ic_warning)
+                        .setPositiveButton(
+                            "Compris"
+                        ) { dialog, id ->
+                            dialog.cancel()
+                            when {
+                                isMTNOoperator(objGroupe.adminPhoneNumber) -> payementMTNVersMTNProcess(montantAPayer)
+                                isOrangeOperator(objGroupe.adminPhoneNumber) -> payementOrangeVersorangeProcess(montantAPayer)
+                                else -> Snackbar.make(
+                                    id_payement_activity,
+                                    "Désoler nous n'avons pas pus Reconaitre l'opérateur du destinataire..",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+
+                        }
+                        .setNegativeButton("Pas compris") { dialog, id ->
+                            toast("Désoler ...")
+                            dialog.cancel()
+                        }.show()
 
                 } else id_editText_montant_payement.error = getString(R.string.ms_montant_tres_grand)
             }
@@ -87,13 +115,28 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
         //startActivityForResult(Intent(this, PermissionActivity::class.java), 0)
     }
 
-    private fun payementProcess(montant: String) {
+    //TODO regarder et corriger le burg du payement
+
+    // pour les payements mtn vers mtn
+    private fun payementMTNVersMTNProcess(montant: String) {
+        val payementIntent = HoverParameters.Builder(this)
+            .request(PayementConfiguration.ID_ACTION_PAYEMENT_MTN_MONEY_VERS_MTN)
+            .extra(PayementConfiguration.ETAPE_1_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
+            .extra(PayementConfiguration.ETAPE_2_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
+            .extra(PayementConfiguration.ETAPE_3_PAYEMENT_MTN_MONEY_VERS_MTN,  "+237676827742".substring(4))
+            .extra(PayementConfiguration.ETAPE_5_PAYEMENT_MTN_MONEY_VERS_MTN, montant.toInt().toString())
+            .extra(PayementConfiguration.ETAPE_4_PAYEMENT_MTN_MONEY_VERS_MTN, "Contribution pour l'objectif du groupe")
+            .buildIntent()
+        startActivityForResult(payementIntent, PayementConfiguration.REQUEST_CODE_FOR_PAYEMENY_ORANGE_MONEY)
+    }
+
+    // pour les payements orange vers orange
+    private fun payementOrangeVersorangeProcess(montant: String) {
 
         // on vérifie si l'utilisateur a u=dans son telephone une carte SIM permettant d'éffectuer
         // le payement pour cette operateur
         //if(Hover.isActionSimPresent(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY, this)){
         // 690935868
-
         val payementIntent = HoverParameters.Builder(this)
             .request(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY)
             .extra(
@@ -104,22 +147,12 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             .buildIntent()
 
         // pour les payement de orange money vers MTN money
-        /*val payementIntent  = HoverParameters.Builder(this)
-            .request(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY_VERS_MTN)
-            .extra(PayementConfiguration.ETAPE_1_PAYEMENT_ORANGE_MONEY_VERS_MTN,objGroupe.AdminPhoneNumber)
-            .extra(PayementConfiguration.ETAPE_2_PAYEMENT_ORANGE_MONEY_VERS_MTN, montant.toInt().toString())
-            .buildIntent()*/
+        /*    val payementIntent  = HoverParameters.Builder(this)
+                .request(PayementConfiguration.ID_ACTION_PAYEMENT_ORANGE_MONEY_VERS_MTN)
+                .extra(PayementConfiguration.ETAPE_1_PAYEMENT_ORANGE_MONEY_VERS_MTN,objGroupe.AdminPhoneNumber)
+                .extra(PayementConfiguration.ETAPE_2_PAYEMENT_ORANGE_MONEY_VERS_MTN, montant.toInt().toString())
+                .buildIntent()*/
 
-        // pour les payement mtn vers mtn
-/*        val payementIntent  = HoverParameters.Builder(this)
-            .request(PayementConfiguration.ID_ACTION_PAYEMENT_MTN_MONEY_VERS_MTN)
-            .extra(PayementConfiguration.ETAPE_1_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
-            .extra(PayementConfiguration.ETAPE_2_PAYEMENT_MTN_MONEY_VERS_MTN, "1")
-            .extra(PayementConfiguration.ETAPE_3_PAYEMENT_MTN_MONEY_VERS_MTN,objGroupe.adminPhoneNumber.substring(4))
-            .extra(PayementConfiguration.ETAPE_4_PAYEMENT_MTN_MONEY_VERS_MTN, montant.toInt().toString())
-            .buildIntent()*/
-
-        startActivityForResult(payementIntent, PayementConfiguration.REQUEST_CODE_FOR_PAYEMENY_ORANGE_MONEY)
         /* }else{
              Snackbar.make(
                  id_payement_activity,
@@ -127,6 +160,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                  Snackbar.LENGTH_LONG
              ).show()
          }*/
+        startActivityForResult(payementIntent, PayementConfiguration.REQUEST_CODE_FOR_PAYEMENY_ORANGE_MONEY)
 
     }
 
@@ -139,9 +173,9 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
             //val sessionTextArr = data?.getStringArrayExtra("ussd_messages")
             //val uuid = data?.getStringExtra("uuid")
             val allMessage = data?.getStringArrayExtra("ussd_messages")
-            val resultMessage  = ""
+            val resultMessage = ""
             if (allMessage != null) {
-                for (i in 0 until allMessage.size-1){
+                for (i in 0 until allMessage.size - 1) {
                     resultMessage.plus(allMessage[i])
                 }
             }
@@ -155,31 +189,35 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
 
             //quand tout est ok on met à jours le payement dans firebase
             val progressdialog = indeterminateProgressDialog("Mise à jours du solde dans le groupe...")
-            FireStoreUtil.updateContributedAmountOnobjectiveGroupForCurentuser(groupId, montantAPayer.toDouble(), onComplete = {
-                if (it){
-                    toast("Payement mis à jours avec succes")
-                    progressdialog.dismiss()
+            FireStoreUtil.updateContributedAmountOnobjectiveGroupForCurentuser(
+                groupId,
+                montantAPayer.toDouble(),
+                onComplete = {
+                    if (it) {
+                        toast("Payement mis à jours avec succes")
+                        progressdialog.dismiss()
 
-                    AlertDialog.Builder(this)
-                        .setTitle("Message de retour")
-                        .setMessage(resultMessage)
-                        .setIcon(R.drawable.ic_action_form)
-                        .setNeutralButton("OK"
-                        ) { dialog, id ->
-                            dialog.cancel()
-                        }.show()
-                    //this.onBackPressed()
-                }else{
-                    toast("Erreur de mis à jour du payement")
-                    progressdialog.dismiss()
-                    Snackbar.make(
-                        id_payement_activity,
-                        "Erreur de mis à jour du payement",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    //this.onBackPressed()
-                }
-            })
+                        AlertDialog.Builder(this)
+                            .setTitle("Message de retour")
+                            .setMessage(resultMessage)
+                            .setIcon(R.drawable.ic_action_form)
+                            .setNeutralButton(
+                                "OK"
+                            ) { dialog, id ->
+                                dialog.cancel()
+                            }.show()
+                        //this.onBackPressed()
+                    } else {
+                        toast("Erreur de mis à jour du payement")
+                        progressdialog.dismiss()
+                        Snackbar.make(
+                            id_payement_activity,
+                            "Erreur de mis à jour du payement",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        //this.onBackPressed()
+                    }
+                })
 
         } else {
             // en cas d'érreur de l'initialisation de la transaction
@@ -201,4 +239,20 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
         super.onBackPressed()
 
     }
+
+    fun isOrangeOperator(phoneNumber: String): Boolean {
+        var firtsSubSeq = phoneNumber.subSequence(4, 6) as String
+        var secondSubSeq = phoneNumber.subSequence(4, 7) as String
+        return (firtsSubSeq.toInt() == 69
+                || secondSubSeq.toInt() in 655..659)
+    }
+
+    fun isMTNOoperator(phoneNumber: String): Boolean {
+        var firtsSubSeq = phoneNumber.subSequence(4, 6) as String
+        var secondSubSeq = phoneNumber.subSequence(4, 7) as String
+        return (firtsSubSeq.toInt() == 67
+                || (secondSubSeq.toInt() in 650..654) || secondSubSeq.toInt() == 680)
+    }
+
+
 }

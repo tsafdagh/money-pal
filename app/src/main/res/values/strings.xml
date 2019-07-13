@@ -2,7 +2,6 @@
     <string name="app_name">MoneyPal</string>
     <string name="title_home">Home</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_groupe">groupes</string>
     <string name="phone_number">691621708</string>

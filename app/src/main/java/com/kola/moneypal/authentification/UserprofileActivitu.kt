@@ -35,7 +35,6 @@ class UserprofileActivitu : AppCompatActivity() {
     private var selectedImagePathUri: Uri? = null
     private lateinit var selectedImageBytes: ByteArray
 
-    //TODO corection du burg lié à la sélection de l'image de profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fresco.initialize(this)

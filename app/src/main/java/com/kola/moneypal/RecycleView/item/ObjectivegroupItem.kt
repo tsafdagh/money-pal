@@ -23,8 +23,8 @@ class ObjectivegroupItem(
 
         viewHolder.id_text_view_name_groupe_item.text = obgroup.groupeName
         viewHolder.id_textview_description_group_item.text = obgroup.groupeDescription
-        viewHolder.id_tv_montant_cotiser.text = obgroup.courentAmount.toString() + " F."
-        viewHolder.id_tv_objective_amount.text = obgroup.objectiveamount.toString() + " F."
+        viewHolder.id_tv_montant_cotiser.text = obgroup.courentAmount.toString() + " FCFA"
+        viewHolder.id_tv_objective_amount.text = obgroup.objectiveamount.toString() + " FCFA"
 
         if (obgroup.groupIcon != "") {
             GlideApp.with(context)

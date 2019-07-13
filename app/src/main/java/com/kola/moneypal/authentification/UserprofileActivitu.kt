@@ -32,7 +32,6 @@ class UserprofileActivitu : AppCompatActivity() {
 
     private val RC_SELECT_IMAGE = 2
     private val REQUESTrEADiMAGE = 1
-    private var isImageSelected = false
     private var selectedImagePathUri: Uri? = null
     private lateinit var selectedImageBytes: ByteArray
 
@@ -70,7 +69,6 @@ class UserprofileActivitu : AppCompatActivity() {
                     action = Intent.ACTION_GET_CONTENT
                     putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
                 }
-                isImageSelected = true
                 startActivityForResult(Intent.createChooser(intent, "Selectionnez une image"), RC_SELECT_IMAGE)
             }
         }
@@ -143,12 +141,12 @@ class UserprofileActivitu : AppCompatActivity() {
                 action = Intent.ACTION_GET_CONTENT
                 putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
             }
-            isImageSelected = true
             startActivityForResult(Intent.createChooser(intent, "Selectionnez une image"), RC_SELECT_IMAGE)
         }
 
     }
 
+    var isNewImageSelected = false
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
             data != null && data.data != null
@@ -165,18 +163,14 @@ class UserprofileActivitu : AppCompatActivity() {
                 .transform(CircleCrop())
                 .into(imageView_profile_picture)
 
+            isNewImageSelected = true
+
         }
     }
 
+
     override fun onStart() {
         super.onStart()
-
-/*        if (!pictureJustChanged) {
-            imageView_profile_picture.clearColorFilter()
-            Glide.with(this)
-                .load(FirebaseAuth.getInstance().currentUser!!.photoUrl)
-                .into(imageView_profile_picture)
-        }*/
         id_edit_telephone.setText(FirebaseAuth.getInstance().currentUser!!.phoneNumber)
         id_editText_name.setText(FirebaseAuth.getInstance().currentUser!!.displayName ?: "")
 
@@ -184,14 +178,30 @@ class UserprofileActivitu : AppCompatActivity() {
         FireStoreUtil.getCurrentUserFromFireStore {
             id_editText_email.setText(it.email)
             progressdialog.dismiss()
-            try {
-                GlideApp.with(this)
-                    .load(it.profilePicturePath)
-                    .placeholder(R.drawable.nom_user)
-                    .transform(CircleCrop())
-                    .into(imageView_profile_picture)
-            } catch (e: Exception) {
-                Log.e("UrerProfilActivity", e.message.toString())
+
+            // aprè avoir séléctionner l'image, on entre aussi dans la méthode onStart, ce booléen nous permet e savoir
+            // si le déclencheur da la méthode onStart c'est la sélection de l'image courante ou pas
+            if (isNewImageSelected) {
+                try {
+                    GlideApp.with(this)
+                        .load(selectedImagePathUri)
+                        .placeholder(R.drawable.nom_user)
+                        .transform(CircleCrop())
+                        .into(imageView_profile_picture)
+                } catch (e: Exception) {
+                    Log.e("UrerProfilActivity", e.message.toString())
+                }
+            } else {
+
+                try {
+                    GlideApp.with(this)
+                        .load(it.profilePicturePath)
+                        .placeholder(R.drawable.nom_user)
+                        .transform(CircleCrop())
+                        .into(imageView_profile_picture)
+                } catch (e: Exception) {
+                    Log.e("UrerProfilActivity", e.message.toString())
+                }
             }
         }
     }

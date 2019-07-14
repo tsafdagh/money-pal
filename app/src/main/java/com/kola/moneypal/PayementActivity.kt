@@ -205,6 +205,7 @@ class PayementActivity : AppCompatActivity(), Hover.DownloadListener {
                                 "OK"
                             ) { dialog, id ->
                                 dialog.cancel()
+                                this.onBackPressed()
                             }.show()
                         //this.onBackPressed()
                     } else {

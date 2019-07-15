@@ -31,11 +31,11 @@ class SimpleuserItem(
 
         viewHolder.id_chekbox.setOnCheckedChangeListener{buttonView, ischecked->
            if(ischecked){
-                context.toast("utilisateur ajouter: "+person.phoneNumber)
+                //context.toast("utilisateur ajouter: "+person.phoneNumber)
                GobalConfig.listIdUserForDynimicLinks.add(person)
 
             }else{
-                context.toast("utilisateur retirer: "+person.phoneNumber)
+               // context.toast("utilisateur retirer: "+person.phoneNumber)
                GobalConfig.listIdUserForDynimicLinks.remove(person)
 
            }
